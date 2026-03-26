@@ -97,9 +97,10 @@ echo [INFO] File .env valid.
 exit /b 0
 
 :up
-call :check_env || exit /b 1
+call :check_env
+if errorlevel 1 goto :eof
 echo [INFO] Starting containers in detached mode...
-call docker compose -f %COMPOSE_FILE% up -d
+cmd /c "docker compose -f %COMPOSE_FILE% up -d"
 echo.
 echo [SUCCESS] Containers started successfully.
 echo ============================================
@@ -112,25 +113,27 @@ goto :eof
 
 :down
 echo [INFO] Stopping and removing containers...
-call docker compose -f %COMPOSE_FILE% down
+cmd /c "docker compose -f %COMPOSE_FILE% down"
 echo [SUCCESS] Containers stopped.
 echo.
 pause
 goto :eof
 
 :build
-call :check_env || exit /b 1
+call :check_env
+if errorlevel 1 goto :eof
 echo [INFO] Rebuilding image with no-cache...
-call docker compose -f %COMPOSE_FILE% build --no-cache
+cmd /c "docker compose -f %COMPOSE_FILE% build --no-cache"
 echo [SUCCESS] Image built successfully.
 echo.
 pause
 goto :eof
 
 :restart
-call :check_env || exit /b 1
+call :check_env
+if errorlevel 1 goto :eof
 echo [INFO] Restarting containers...
-call docker compose -f %COMPOSE_FILE% restart
+cmd /c "docker compose -f %COMPOSE_FILE% restart"
 echo.
 echo [SUCCESS] Containers restarted.
 echo ============================================
@@ -142,6 +145,6 @@ pause
 goto :eof
 
 :logs
-call docker compose -f %COMPOSE_FILE% logs -f
+cmd /c "docker compose -f %COMPOSE_FILE% logs -f"
 pause
 goto :eof
