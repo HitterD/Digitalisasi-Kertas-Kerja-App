@@ -1,0 +1,12 @@
+{
+  "appId": "com.app.opnameaset",
+  "appName": "Opname Aset",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "http",
+    "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}

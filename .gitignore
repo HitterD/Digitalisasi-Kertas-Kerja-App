@@ -1,0 +1,24 @@
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Environment credentials
+.env
+.env.*
+!.env.example
+
+# Editor directories and tools
+.vscode/
+.idea/
+.gemini/
+.claude/
+.agents/
+.screenshots/
+
+# Excel test data
+*.xlsx
+
+# Windows reserved names that fail git add
+nul
+app/nul

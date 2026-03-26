@@ -1,0 +1,41 @@
+services:
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: kertas-kerja-app
+    restart: unless-stopped
+    ports:
+      - "${PORT:-5181}:${PORT:-5181}"
+    env_file:
+      - ./app/.env
+    environment:
+      - NODE_ENV=production
+    volumes:
+      # Mount data folder back to host for persistence
+      - app-data:/app/data
+      
+      # UNCOMMENT and MODIFY to mount Windows Network Share directly
+      # (Only for Linux host)
+      # - type: volume
+      #   source: windows-share
+      #   target: /mnt/share
+      #   volume:
+      #     nocopy: true
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:${PORT:-5181}/api/db/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  app-data:
+    driver: local
+
+  # windows-share:
+  #   driver: local
+  #   driver_opts:
+  #     type: cifs
+  #     device: "//192.168.2.111/pt. santos jaya abadi/AssetManagement_Files"
+  #     o: "username=your_user,password=your_pass,domain=your_domain,nounix,sec=ntlmssp"

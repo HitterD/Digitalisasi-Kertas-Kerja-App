@@ -1,0 +1,94 @@
+    def normalize_single_barcode(self, raw):
+        """
+        Legacy function for backward compatibility.
+        Now uses the enhanced parser but returns single string.
+        """
+        barcodes = self.normalize_and_expand_barcodes(raw)
+        return barcodes[0] if barcodes else ''
+
+    def parse_barcodes(self, barcode_str):
+        """
+        Enhanced barcode parsing dengan support untuk berbagai format.
+        Mengadopsi logic dari script yang diberikan dengan perbaikan.
+        
+        Args:
+            barcode_str: String barcode yang akan di-parse
+            
+        Returns:
+            List[str]: List barcode yang sudah dibersihkan
+        """
+        if pd.isna(barcode_str) or not isinstance(barcode_str, str) or barcode_str.strip() == '':
+            return ['']
+
+        # Normalisasi string dan delimiter
+        cleaned_str = str(barcode_str).replace(';', ',').replace('\n', ',').replace('|', ',')
+        
+        # Handle kasus khusus
+        special_cases = ['N/A', 'NULL', 'NONE', 'TIDAK ADA', 'KOSONG', '-']
+        if cleaned_str.strip().upper() in special_cases:
+            return [cleaned_str.strip()]
+
+        # Enhanced regex pattern untuk barcode
+        # Menangkap barcode numerik (10+ digit) dan alfanumerik legacy
+        pattern = re.compile(r'\b\d{10,}\b|\b[A-Z0-9/.-]{6,}\b', re.IGNORECASE)
+        barcodes = pattern.findall(cleaned_str)
+
+        if not barcodes:
+            # Fallback: coba ekstrak angka panjang
+            number_pattern = re.compile(r'\d{6,}')
+            numbers = number_pattern.findall(cleaned_str)
+            if numbers:
+                barcodes = numbers
+            else:
+                return ['']
+                
+        # Clean dan deduplicate
+        cleaned_barcodes = []
+        seen = set()
+        
+        for bc in barcodes:
+            bc_clean = bc.strip()
+            if bc_clean and bc_clean not in seen:
+                seen.add(bc_clean)
+                cleaned_barcodes.append(bc_clean)
+        
+        return cleaned_barcodes if cleaned_barcodes else ['']
+    
+    def expand_and_clean_barcodes(self, raw_barcode_text):
+        """
+        Legacy method untuk backward compatibility.
+        Menggunakan parse_barcodes yang sudah ditingkatkan.
+        """
+        barcodes = self.parse_barcodes(raw_barcode_text)
+        
+        # Handle range expansion (e.g., "123456-123460")
+        expanded_barcodes = []
+        for barcode in barcodes:
+            if not barcode or barcode == '':
+                continue
+                
+            # Check for range pattern
+            range_match = re.match(r'^(\d{6,})\s*-\s*(\d{6,})$', barcode)
+            if range_match:
+                try:
+                    start, end = int(range_match.group(1)), int(range_match.group(2))
+                    if start <= end and end - start <= 200000:  # Safety limit
+                        for i in range(start, end + 1):
+                            expanded_barcodes.append(str(i))
+                        continue
+                except (ValueError, TypeError):
+                    pass
+            
+            # Regular barcode
+            expanded_barcodes.append(barcode)
+        
+        # Remove duplicates while preserving order
+        seen = set()
+        final_barcodes = []
+        for bc in expanded_barcodes:
+            if bc not in seen:
+                seen.add(bc)
+                final_barcodes.append(bc)
+                
+        return final_barcodes if final_barcodes else ['']
+    

@@ -1,0 +1,82 @@
+{
+  "headers": [
+    "BARCODE",
+    "NAMA ASSET",
+    "SITE",
+    "RUANGAN",
+    "KONDISI",
+    "KETERANGAN",
+    "KET OPNAME",
+    "TRANS_DATE",
+    "BULAN",
+    "TAHUN",
+    "LAST_TRANS"
+  ],
+  "data": [
+    {
+      "BARCODE": "1300001914",
+      "NAMA ASSET": "IP PHONE EXT.",
+      "SITE": "SJA 1",
+      "RUANGAN": "007-GUDANG ICT-SJA 1",
+      "KONDISI": "RUSAK",
+      "KETERANGAN": "PERIODE OPNAME: SJA1-11202501-ICT",
+      "KET OPNAME": "rusak",
+      "TRANS_DATE": 45974,
+      "BULAN": 10,
+      "TAHUN": 2019,
+      "LAST_TRANS": "Y         "
+    },
+    {
+      "BARCODE": "1300001914",
+      "NAMA ASSET": "IP PHONE EXT.",
+      "SITE": "SJA 1",
+      "RUANGAN": "007-GUDANG ICT-SJA 1",
+      "KONDISI": "RUSAK",
+      "KETERANGAN": "RUSAK TIDAK BISA DIPERBAIKI LAGI",
+      "KET OPNAME": "rusak",
+      "TRANS_DATE": 45957.43869116898,
+      "BULAN": 10,
+      "TAHUN": 2019,
+      "LAST_TRANS": "-         "
+    },
+    {
+      "BARCODE": "1300001914",
+      "NAMA ASSET": "IP PHONE EXT.",
+      "SITE": "SJA 1",
+      "RUANGAN": "101-RUANG MANAGER MAINTENANCE-SJA 1",
+      "KONDISI": "PENDING",
+      "KETERANGAN": "NOT SCANNED - PERIODE OPNAME: SJA1-02202501-ICT",
+      "KET OPNAME": "rusak",
+      "TRANS_DATE": 45706,
+      "BULAN": 10,
+      "TAHUN": 2019,
+      "LAST_TRANS": "-         "
+    },
+    {
+      "BARCODE": "1300001914",
+      "NAMA ASSET": "IP PHONE EXT.",
+      "SITE": "SJA 1",
+      "RUANGAN": "101-RUANG MANAGER MAINTENANCE-SJA 1",
+      "KONDISI": "PENDING",
+      "KETERANGAN": "NOT SCANNED - PERIODE OPNAME: SJA1-02202501-ICT",
+      "KET OPNAME": "rusak",
+      "TRANS_DATE": 45705,
+      "BULAN": 10,
+      "TAHUN": 2019,
+      "LAST_TRANS": "-         "
+    },
+    {
+      "BARCODE": "1300001914",
+      "NAMA ASSET": "IP PHONE EXT.",
+      "SITE": "SJA 1",
+      "RUANGAN": "101-RUANG MANAGER MAINTENANCE-SJA 1",
+      "KONDISI": "PENDING",
+      "KETERANGAN": "NOT SCANNED - PERIODE OPNAME: SJA1-08202401-ICT",
+      "KET OPNAME": "rusak",
+      "TRANS_DATE": 45517,
+      "BULAN": 10,
+      "TAHUN": 2019,
+      "LAST_TRANS": "-         "
+    }
+  ]
+}

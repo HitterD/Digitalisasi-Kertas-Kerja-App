@@ -1,0 +1,36 @@
+node_modules
+dist
+.git
+.vscode
+.idea
+*.md
+.screenshots
+*.xlsx
+*.py
+*.txt
+*.json
+!package.json
+!package-lock.json
+
+# Local env files
+.env.local
+.env.development
+.env.test
+
+# Ignore logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore data folders (temp/backups)
+data/app3_temp/
+data/app4_temp/
+data/backups/
+data/app1_saves.db
+data/app1_local_defaultUser.db
+data/app3_archive/
+
+# Don't ignore src, public
+!src/
+!public/
+!data/

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#18181b</color> <!-- Charcoal 900 -->
+    <color name="colorPrimaryDark">#09090b</color> <!-- Charcoal 950 -->
+    <color name="colorAccent">#fbbf24</color> <!-- Amber 400 -->
+</resources>

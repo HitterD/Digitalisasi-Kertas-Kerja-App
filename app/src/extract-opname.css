@@ -1,0 +1,469 @@
+/* ===== EXTRACT OPNAME PAGE EXCLUSIVE STYLES ===== */
+
+.extract-page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    padding: 0 var(--space-6) var(--space-8) var(--space-6);
+    max-width: 1800px;
+    /* Widened for fluid full-width feel on ultra-wide screens */
+    width: 98%;
+    margin: 0 auto;
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Glassmorphic Bento Control Panel --- */
+.extract-controls-wrapper {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+}
+
+/* --- Control Grid Layout --- */
+.extract-controls-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+.extract-controls-row {
+    display: flex;
+    gap: var(--space-5);
+    align-items: flex-end;
+    /* Keeps labels on top but aligns inputs/buttons at the bottom */
+}
+
+/* Force the action button wrapper to stretch to the same height as the input fields */
+.extract-field-action {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+}
+
+.extract-field-action>button {
+    width: 100%;
+    height: 44px;
+    /* Explicitly match input heights from FormSelect components */
+    padding: 0 var(--space-4);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+}
+
+@media (max-width: 768px) {
+    .extract-controls-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+.extract-field-periode {
+    flex: 2;
+}
+
+.extract-field-dept {
+    flex: 1;
+}
+
+.extract-field-upload {
+    flex: 2;
+}
+
+/* (Removed duplicate .extract-field-action) */
+
+/* Custom Upload Styling */
+.extract-upload-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 44px;
+    /* Matches form-select height */
+}
+
+.extract-upload-wrapper input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.extract-upload-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+    height: 100%;
+    padding: 0 var(--space-3);
+    background: white;
+    border: 1px solid var(--neutral-300);
+    border-radius: var(--radius-md);
+    color: var(--neutral-600);
+    transition: all var(--transition-fast);
+    font-size: var(--font-size-sm);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.extract-upload-btn:hover {
+    border-color: var(--primary-400);
+}
+
+.extract-upload-btn.has-file {
+    background: var(--success-50);
+    border-color: var(--success-500);
+    color: var(--success-700);
+    font-weight: 500;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.15);
+}
+
+/* --- Sync Action Button (Downgraded to Outline) --- */
+.btn-sync-gradient {
+    background: transparent;
+    border: 1.5px solid var(--primary-300);
+    color: var(--primary-700);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    box-shadow: none;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-sync-gradient:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(11, 87, 208, 0.15);
+    background: var(--primary-50);
+    border-color: var(--primary-500);
+}
+
+.btn-sync-gradient:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* --- Premium Stat Cards --- */
+.extract-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-5);
+    margin-bottom: var(--space-2);
+}
+
+.stat-card-premium {
+    background: var(--surface-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    border: 1px solid var(--border-color);
+    box-shadow: 2px 2px 0 rgba(13,17,23,0.05); /* Brutalist subtle shadow */
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+}
+
+.stat-card-premium::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 4px; height: 100%;
+    background: var(--charcoal-900);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.stat-card-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 0 rgba(13,17,23,0.1);
+    border-color: var(--charcoal-300);
+}
+
+.stat-card-premium:hover::before {
+    opacity: 1; /* Left-border reveal on hover */
+}
+
+.stat-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: var(--radius-full);
+}
+
+.stat-icon-blue {
+    background: rgba(13, 17, 23, 0.05);
+    color: var(--charcoal-900);
+}
+
+.stat-icon-emerald {
+    background: rgba(212, 146, 74, 0.1);
+    color: var(--amber-600);
+}
+
+.stat-icon-amber {
+    background: rgba(13, 17, 23, 0.08); /* Darker charcoal tint */
+    color: var(--charcoal-700);
+}
+
+.stat-icon-rose {
+    background: rgba(220, 38, 38, 0.08); /* Muted Red */
+    color: #dc2626;
+}
+
+.stat-card-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.stat-card-value {
+    font-family: var(--font-sora);
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.stat-value-blue {
+    color: var(--charcoal-900);
+}
+
+.stat-value-emerald {
+    color: var(--amber-600);
+}
+
+.stat-value-amber {
+    color: var(--charcoal-700);
+}
+
+.stat-value-rose {
+    color: #dc2626;
+}
+
+.stat-card-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--charcoal-500);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.15rem;
+}
+
+/* --- Room List Overrides --- */
+.extract-room {
+    background: var(--surface-card);
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    border-left: 4px solid var(--neutral-300);
+    transition: border-color 0.2s ease;
+}
+
+.extract-room--done {
+    border-left-color: var(--success-500);
+}
+
+.extract-room--partial {
+    border-left-color: var(--warning-500);
+}
+
+.extract-room--empty {
+    border-left-color: var(--neutral-300);
+}
+
+.extract-room__header {
+    padding: var(--space-4) var(--space-5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    background: var(--surface-card);
+    transition: all 0.3s ease;
+    min-height: 70px;
+    /* Provide enough height for badges */
+}
+
+.extract-room__header:hover {
+    background: #f8fafc;
+    padding-left: var(--space-6);
+    /* Subtle shift effect */
+}
+
+.extract-room__counts {
+    display: flex;
+    flex-wrap: nowrap;
+    /* Prevent stacking */
+    gap: var(--space-2);
+    align-items: center;
+    /* Force vertical centering */
+    justify-content: flex-end;
+    /* Align badges to the right tightly */
+    flex: 1;
+    padding-right: var(--space-6);
+    height: 100%;
+}
+
+.extract-room__badge {
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.65rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    /* Fix vertical height issues */
+    height: 24px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.btn-preview-elegant {
+    background: transparent;
+    border: 1px solid var(--neutral-300);
+    color: var(--neutral-600);
+    border-radius: var(--radius-full);
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.btn-preview-elegant:hover {
+    background: var(--primary-50);
+    color: var(--primary-600);
+    border-color: var(--primary-200);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(11, 87, 208, 0.1);
+}
+
+.extract-room__name {
+    font-weight: 600;
+    /* Bolder font for room name */
+    font-size: var(--font-size-lg);
+    /* Larger font size */
+    color: var(--neutral-800);
+}
+
+/* --- Sticky Export Bar --- */
+.extract-export-bar {
+    position: sticky;
+    bottom: var(--space-4);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-5);
+    background: rgba(255, 255, 255, 0.85);
+    /* Glassmorphism background */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+    /* Elevated drop shadow */
+    transition: transform 0.3s ease;
+}
+
+@media (max-width: 600px) {
+    .extract-export-bar {
+        flex-direction: column;
+        gap: var(--space-3);
+        text-align: center;
+        bottom: 0;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        padding: var(--space-3);
+    }
+}
+
+/* --- Extract Table Overrides (Zebra + Hover + Sticky Header) --- */
+.extract-room__body .asset-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+
+.extract-room__body .asset-table tbody tr:nth-child(even) {
+    background-color: var(--neutral-50);
+}
+
+.extract-room__body .asset-table tbody tr:hover {
+    background-color: var(--primary-50) !important;
+}
+
+/* --- Progress Mini-bar in Accordion --- */
+.extract-room__progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 160px;
+}
+
+.extract-room__progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--warm-200);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.extract-room__progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.extract-room__progress-fill--green {
+    background: var(--charcoal-900); /* Charcoal */
+}
+
+.extract-room__progress-fill--amber {
+    background: var(--amber-500); /* Amber */
+}
+
+.extract-room__progress-text {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--charcoal-500);
+    white-space: nowrap;
+}
+
+/* --- Export Bar Info (Improved Readability) --- */
+.extract-export-bar__info {
+    font-size: var(--font-size-sm);
+    color: var(--neutral-600);
+    line-height: 1.6;
+}

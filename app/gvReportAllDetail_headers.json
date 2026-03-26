@@ -1,0 +1,28 @@
+{
+  "headers": [
+    "BARCODE",
+    "NAMA ASSET",
+    "SITE",
+    "RUANGAN",
+    "KONDISI",
+    "KETERANGAN",
+    "KET OPNAME",
+    "TRANS_DATE",
+    "BULAN",
+    "TAHUN",
+    "LAST_TRANS"
+  ],
+  "sample": [
+    "1300001914",
+    "IP PHONE EXT.",
+    "SJA 1",
+    "007-GUDANG ICT-SJA 1",
+    "RUSAK",
+    "PERIODE OPNAME: SJA1-11202501-ICT",
+    "rusak",
+    45974,
+    10,
+    2019,
+    "Y         "
+  ]
+}

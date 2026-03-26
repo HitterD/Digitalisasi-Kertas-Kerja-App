@@ -1,0 +1,168 @@
+=== FILE: d:/Digitalisasi Kertas Kerja APP/Recouncil/Hasil yang dimau/002-RUANG GM GEDUNG UTAMA LT.1-SJA1.XLSX ===
+
+--- SHEET: PERSIAPAN ---
+Merges: B6:B7, A2:I2, D6:H6, B51:C51, A1:I1, I6:I7, A3:I3, C6:C7, A6:A7, A4:I4
+Row 1 -> 0:FORM PERSIAPAN OPNAME ASSET TETAP | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined
+Row 2 -> 0:AREA 002-RUANG GM GEDUNG UTAMA LT.1-SJA1 | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined
+Row 3 -> 0:PERIODE (FEBRUARI / 2026) | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined
+Row 4 -> 0:PIC RUANGAN NOVILIA ASTAN, YESSY HANDAYANI | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined
+Row 5 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined
+Row 6 -> 0:NO | 1:BARCODE ASET | 2:NAMA ASET | 3:KETIDAKSESUAIAN OPNAME ASSET | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:KETERANGAN
+(bisa diisi no form MAT, form perbaikan, dll)
+Row 7 -> 0:undefined | 1:undefined | 2:undefined | 3:TIDAK BERLABEL / LABEL RUSAK | 4:TIDAK DITEMUKAN | 5:DI LIST TIDAK ADA, FISIK ADA | 6:DITEMUKAN ASET RUSAK | 7:DITEMUKAN ASET TDK DIGUNAKAN | 8:undefined
+Row 8 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined
+Row 9 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined
+Row 10 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined
+Row 11 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined
+
+--- SHEET: KERTAS KERJA OPNAME ---
+Merges: A2:H2, D5:E5, A1:H1, G3:H3, C5:C6, A5:A6, G5:G6, H5:H6, F5:F6, B5:B6
+Row 1 -> 0:KERTAS KERJA OPNAME ASSET TETAP | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined
+Row 2 -> 0:AREA 002-RUANG GM GEDUNG UTAMA LT.1-SJA1 | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined
+Row 3 -> 0:PERIODE (FEBRUARI / 2026) | 6:PIC RUANGAN NOVILIA ASTAN, YESSY HANDAYANI | 7:undefined
+Row 5 -> 0:NO | 1:BARCODE_ASSET | 2:NAMA_ASSET | 3:PEROLEHAN | 4:undefined | 5:ADA / TDK ADA | 6:KONDISI SAAT INI | 7:KETERANGAN
+Row 6 -> 0:undefined | 1:undefined | 2:undefined | 3:BULAN | 4:TAHUN | 5:undefined | 6:undefined | 7:undefined
+Row 7 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined
+Row 8 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined
+Row 9 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined
+Row 10 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined
+Row 11 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined
+
+--- SHEET: FORM TEMUAN HASIL OPNAME ---
+Merges: B27:C27, A3:L3, B5:B6, I5:I6, L5:L6, A5:A6, A2:L2, K5:K6, J5:J6, A1:L1, D5:H5, C5:C6
+Row 1 -> 0:FORM TEMUAN HASIL OPNAME | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined
+Row 2 -> 0:AREA 002-RUANG GM GEDUNG UTAMA LT.1-SJA1 | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined
+Row 3 -> 0:TGL OPNAME ASET TETAP (dd/mm/yyyy) | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined
+Row 4 -> 9:undefined | 10:(diisi oleh PIC Ruangan) | 11:(diisi oleh BAT)
+Row 5 -> 0:NO. | 1:BARCODE_ASSET | 2:NAMA_ASSET | 3:KETIDAKSESUAIAN OPNAME ASSET | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:KETERANGAN | 9:TARGET PENYELESAIAN | 10:ACTION PENYELESAIAN | 11:VERIFIKASI
+Row 6 -> 0:undefined | 1:undefined | 2:undefined | 3:TIDAK BERLABEL/LABEL RUSAK | 4:TIDAK DITEMUKAN | 5:DI LIST TIDAK ADA, FISIK ADA | 6:DITEMUKAN ASET RUSAK | 7:DITEMUKAN ASET TDK DIGUNAKAN | 8:undefined | 9:undefined | 10:undefined | 11:undefined
+Row 7 -> 0:1 | 1:NO BARCODE | 2:KEYBOARD LOGITECH | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:CREATE BARCODE OLEH BAT | 9:undefined | 10:undefined | 11:undefined
+Row 8 -> 0:2 | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined
+Row 9 -> 0:3 | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined
+Row 10 -> 0:4 | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined
+Row 11 -> 0:5 | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined
+
+--- SHEET: Recouncil ---
+Merges: A1:Q1, A3:Q3, A6:J6, A4:Q4, K6:P6, A2:Q2
+Row 1 -> 0:OPNAME FEBRUARI | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined | 12:undefined | 13:undefined | 14:undefined | 15:undefined | 16:undefined
+Row 2 -> 0:RUANGAN : 002-RUANG GM GEDUNG UTAMA LT.1-SJA1 | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined | 12:undefined | 13:undefined | 14:undefined | 15:undefined | 16:undefined
+Row 3 -> 0:PIC : NOVILIA ASTAN, YESSY HANDAYANI | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined | 12:undefined | 13:undefined | 14:undefined | 15:undefined | 16:undefined
+Row 4 -> 0:PERIODE :  | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined | 12:undefined | 13:undefined | 14:undefined | 15:undefined | 16:undefined
+Row 5 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined
+Row 6 -> 0:ASSET BERDASARKAN OPNAME | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:ASSET ORACLE | 11:undefined | 12:undefined | 13:undefined | 14:undefined | 15:undefined | 16:HASIL RECOUNCIL
+Row 7 -> 0:NO | 1:Oracle Asset | 2:Barcode | 3:No PO | 4:Nama_Asset | 5:Ruangan Opname | 6:Ruangan Berdasarkan Asset Management | 7:Kondisi | 8:Keterangan | 9:Action | 10:NO BARCODE | 11:ASSET ORACLE | 12:LOKASI | 13:JENIS HARTA | 14:KONDISI | 15:TAHUN Perolehan | 16:Recouncil Daft
+Row 8 -> 0:1 | 1:undefined | 2:1300003318 | 3:undefined | 4:CANON MP287 | 5:002-RUANG GM GEDUNG UTAMA LT.1-SJA1 | 6:002-RUANG GM GEDUNG UTAMA LT.1-SJA1 | 7:BAIK | 8:undefined | 9:undefined
+Row 9 -> 0:2 | 1:undefined | 2:2000008567 | 3:undefined | 4:HP PROBOOK 430 G7 | 5:002-RUANG GM GEDUNG UTAMA LT.1-SJA1 | 6:002-RUANG GM GEDUNG UTAMA LT.1-SJA1 | 7:BAIK | 8:undefined | 9:undefined
+Row 10 -> 0:3 | 1:17323 | 2:2110002987 | 3:undefined | 4:MINI PC | 5:002-RUANG GM GEDUNG UTAMA LT.1-SJA1 | 6:002-RUANG GM GEDUNG UTAMA LT.1-SJA1 | 7:BAIK | 8:undefined | 9:undefined
+Row 11 -> 0:4 | 1:72800099 | 2:2305002756 | 3:P230592  | 4:IP PHONE ALCATEL 8008 | 5:002-RUANG GM GEDUNG UTAMA LT.1-SJA1 | 6:002-RUANG GM GEDUNG UTAMA LT.1-SJA1 | 7:BAIK | 8:undefined | 9:undefined
+
+--- SHEET: BA AT HILANG ---
+Merges: A59:C59, H29:J29, K30:M30, D28:G28, J3:K3, B24:C24, K24:M24, B30:C30, H54:J54, K59:M62, K54:M54, K29:M29, E61:G61, D19:G19, E54:G54, B34:M36, K28:M28, H24:J24, B29:C29, F60:H60, H23:J23, B28:C28, H61:J61, D29:G29, K58:M58, D23:G23, G41:M43, A54:C54, A13:C13, K19:M19, L4:M4, H18:J18, B19:C19, A12:C12, B18:C18, K18:M18, A3:I4, G44:M46, H28:J28, A34:A36, H19:J19, H57:J57, B37:M39, B23:C23, K23:M23, E57:G57, A26:G26, A44:F46, G1:I2, L2:M2, J6:L6, D18:G18, A41:F43, J1:K1, D24:G24, D30:G30, L3:M3, A1:F2, L1:M1, H30:J30, J2:K2, A37:A39, A33:M33, J4:K4
+Row 1 -> 0:PT. Santos Jaya Abadi | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:FORM | 7:undefined | 8:undefined | 9:No. Dokumen | 10:undefined | 11:: QF/HRGA/72 | 12:undefined
+Row 2 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:Rev. No. | 10:undefined | 11:: 01 | 12:undefined
+Row 3 -> 0:Berita Acara | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:Halaman | 10:undefined | 11:: 1/1 | 12:undefined
+Row 4 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:Berlaku Tgl. | 10:undefined | 11:: 09/05/2016 | 12:undefined
+Row 5 -> 0: | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined | 12:undefined
+Row 6 -> 0:undefined | 1:undefined | 2:Kebakaran | 3:undefined | 4:undefined | 5:undefined | 6:Pelanggaran PKB | 7:undefined | 8:undefined | 9:Lain-lain : Hasil Temuan  | 10:undefined | 11:undefined | 12:undefined
+Row 7 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:Opname Aset Tetap  | 11:undefined | 12:undefined
+Row 8 -> 0:undefined | 1:undefined | 2:Kecelakaan | 3:undefined | 4:undefined | 5:undefined | 6:Tindak Kriminal | 7:undefined | 8:undefined | 9:undefined | 10:(Aset Hilang) | 11:undefined | 12:undefined
+Row 9 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined | 12:undefined
+Row 10 -> 0:I. LAPORAN KEJADIAN | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined | 12:undefined
+Row 11 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined | 12:undefined
+
+--- SHEET: CPAR ---
+Merges: A1:A2, B1:E2, A12:B12, F6:F8, C13:E13, A3:E4, A9:G9, G6:G8, A5:G5, G26:G29, A14:B14, A23:B23, A25:G25, A8:E8, C23:D23, F13:G13, C14:E14, A18:G18, C26:F30, A21:G21, A13:B13, A24:B24, C24:D24, E24:F24, A20:G20, E23:F23, A19:G19, C12:E12, A10:G10, F12:G12, A22:F22, F14:G14
+Row 1 -> 0:PT. Santos Jaya Abadi | 1:TINDAKAN PERBAIKAN/PENCEGAHAN KETIDAKSESUAIAN OPNAME ASET | 2:undefined | 3:undefined | 4:undefined | 5:Dokumen No. | 6:undefined
+Row 2 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:Rev. No. | 6:undefined
+Row 3 -> 0:Corrective / Preventive Action Request (CPAR) | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:Halaman | 6:: 1/1
+Row 4 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:Berlaku Tgl. | 6:undefined
+Row 5 -> 0:PETUGAS OPNAME | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined
+Row 6 -> 0:Petugas Opname | 1:undefined | 2:Divisi / Departemen : | 3:undefined | 4:undefined | 5:Tanggal : | 6:Nomor CPAR :
+Row 7 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 10:undefined
+Row 8 -> 0:Lokasi Opname : | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined
+Row 9 -> 0:     Tindakan Korektif / Perbaikan (jika timbul ketidaksesuaian) | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined
+Row 10 -> 0:     Tindakan Pencegahan (jika potensial timbul ketidaksesuaian) | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined
+Row 11 -> 0:Jenis Ketidaksesuaian / Potensial Ketidaksesuaian | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined
+=== FILE: d:/Digitalisasi Kertas Kerja APP/Recouncil/Hasil yang dimau/106-R. RAW MATERIAL MANAGER-SJA 1.XLSX ===
+
+--- SHEET: PERSIAPAN ---
+Merges: A2:I2, A3:I3, B51:C51, A1:I1, A6:A7, B6:B7, C6:C7, D6:H6, I6:I7, A4:I4
+Row 1 -> 0:FORM PERSIAPAN OPNAME ASSET TETAP | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined
+Row 2 -> 0:AREA 103-RUANG PROCUREMENT MANAGER-SJA 1 | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined
+Row 3 -> 0:PERIODE (FEBRUARI / 2026) | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined
+Row 4 -> 0:PIC RUANGAN  | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined
+Row 5 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined
+Row 6 -> 0:NO | 1:BARCODE ASET | 2:NAMA ASET | 3:KETIDAKSESUAIAN OPNAME ASSET | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:KETERANGAN
+(bisa diisi no form MAT, form perbaikan, dll)
+Row 7 -> 0:undefined | 1:undefined | 2:undefined | 3:TIDAK BERLABEL / LABEL RUSAK | 4:TIDAK DITEMUKAN | 5:DI LIST TIDAK ADA, FISIK ADA | 6:DITEMUKAN ASET RUSAK | 7:DITEMUKAN ASET TDK DIGUNAKAN | 8:undefined
+Row 8 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined
+Row 9 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined
+Row 10 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined
+Row 11 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined
+
+--- SHEET: KERTAS KERJA OPNAME ---
+Merges: A2:H2, A1:H1, A5:A6, F5:F6, G5:G6, H5:H6, D5:E5, C5:C6, B5:B6, G3:H3
+Row 1 -> 0:KERTAS KERJA OPNAME ASSET TETAP | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined
+Row 2 -> 0:AREA 103-RUANG PROCUREMENT MANAGER-SJA 1 | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined
+Row 3 -> 0:PERIODE (FEBRUARI / 2026) | 6:PIC RUANGAN  | 7:undefined
+Row 5 -> 0:NO | 1:BARCODE_ASSET | 2:NAMA_ASSET | 3:PEROLEHAN | 4:undefined | 5:ADA / TDK ADA | 6:KONDISI SAAT INI | 7:KETERANGAN
+Row 6 -> 0:undefined | 1:undefined | 2:undefined | 3:BULAN | 4:TAHUN | 5:undefined | 6:undefined | 7:undefined
+Row 7 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined
+Row 8 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined
+Row 9 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined
+Row 10 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined
+Row 11 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined
+
+--- SHEET: FORM TEMUAN HASIL OPNAME ---
+Merges: B27:C27, J5:J6, K5:K6, A1:L1, A5:A6, B5:B6, C5:C6, D5:H5, L5:L6, I5:I6, A2:L2, A3:L3
+Row 1 -> 0:FORM TEMUAN HASIL OPNAME | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined
+Row 2 -> 0:AREA 103-RUANG PROCUREMENT MANAGER-SJA 1 | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined
+Row 3 -> 0:TGL OPNAME ASET TETAP (dd/mm/yyyy) | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined
+Row 4 -> 9:undefined | 10:(diisi oleh PIC Ruangan) | 11:(diisi oleh BAT)
+Row 5 -> 0:NO. | 1:BARCODE_ASSET | 2:NAMA_ASSET | 3:KETIDAKSESUAIAN OPNAME ASSET | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:KETERANGAN | 9:TARGET PENYELESAIAN | 10:ACTION PENYELESAIAN | 11:VERIFIKASI
+Row 6 -> 0:undefined | 1:undefined | 2:undefined | 3:TIDAK BERLABEL/LABEL RUSAK | 4:TIDAK DITEMUKAN | 5:DI LIST TIDAK ADA, FISIK ADA | 6:DITEMUKAN ASET RUSAK | 7:DITEMUKAN ASET TDK DIGUNAKAN | 8:undefined | 9:undefined | 10:undefined | 11:undefined
+Row 7 -> 0:1 | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined
+Row 8 -> 0:2 | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined
+Row 9 -> 0:3 | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined
+Row 10 -> 0:4 | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined
+Row 11 -> 0:5 | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined
+
+--- SHEET: Recouncil ---
+Merges: A1:Q1, A2:Q2, A3:Q3, A4:Q4, K6:P6, A6:J6
+Row 1 -> 0:OPNAME FEBRUARI | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined | 12:undefined | 13:undefined | 14:undefined | 15:undefined | 16:undefined
+Row 2 -> 0:RUANGAN : 106-R. RAW MATERIAL MANAGER-SJA 1 | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined | 12:undefined | 13:undefined | 14:undefined | 15:undefined | 16:undefined
+Row 3 -> 0:PIC : DIA KARTIKA LESTARI | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined | 12:undefined | 13:undefined | 14:undefined | 15:undefined | 16:undefined
+Row 4 -> 0:PERIODE :  | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined | 12:undefined | 13:undefined | 14:undefined | 15:undefined | 16:undefined
+Row 5 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined | 12:undefined | 13:undefined | 14:undefined | 15:undefined | 16:undefined
+Row 6 -> 0:ASSET BERDASARKAN OPNAME | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:ASSET ORACLE | 11:undefined | 12:undefined | 13:undefined | 14:undefined | 15:undefined | 16:HASIL RECOUNCIL
+Row 7 -> 0:NO | 1:Oracle Asset | 2:Barcode | 3:No PO | 4:Nama_Asset | 5:Ruangan Opname | 6:Ruangan Berdasarkan Asset Management | 7:Kondisi | 8:Keterangan | 9:Action | 10:NO BARCODE | 11:ASSET ORACLE | 12:LOKASI | 13:JENIS HARTA | 14:KONDISI | 15:TAHUN Perolehan | 16:Recouncil Daft
+Row 8 -> 0:1 | 2:2106001441 | 3:P210543 | 4:IPH | 5:106-R. RAW MATERIAL MANAGER-SJA 1 | 6:106-R. RAW MATERIAL MANAGER-SJA 1 | 7:BAIK
+Row 9 -> 0:2 | 2:1900008104 | 4:HP ENVY | 5:106-R. RAW MATERIAL MANAGER-SJA 1 | 6:106-R. RAW MATERIAL MANAGER-SJA 1 | 7:BAIK
+
+--- SHEET: BA AT HILANG ---
+Merges: E57:G57, H57:J57, K58:M58, A59:C59, K59:M62, F60:H60, E61:G61, H61:J61, A44:F46, G44:M46, A54:C54, E54:G54, H54:J54, K54:M54, A26:G26, A41:F43, G41:M43, B29:C29, D29:G29, H29:J29, K29:M29, B30:C30, D30:G30, H30:J30, K30:M30, A33:M33, A34:A36, B34:M36, A37:A39, B37:M39, B28:C28, D28:G28, H28:J28, K28:M28, B19:C19, D19:G19, H19:J19, K19:M19, B23:C23, D23:G23, H23:J23, K23:M23, B24:C24, D24:G24, H24:J24, K24:M24, K18:M18, A3:I4, J3:K3, L3:M3, J4:K4, L4:M4, J6:L6, A12:C12, A13:C13, B18:C18, D18:G18, H18:J18, A1:F2, G1:I2, J1:K1, L1:M1, J2:K2, L2:M2
+Row 1 -> 0:PT. Santos Jaya Abadi | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:FORM | 7:undefined | 8:undefined | 9:No. Dokumen | 10:undefined | 11:: QF/HRGA/72 | 12:undefined
+Row 2 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:Rev. No. | 10:undefined | 11:: 01 | 12:undefined
+Row 3 -> 0:Berita Acara | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:Halaman | 10:undefined | 11:: 1/1 | 12:undefined
+Row 4 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:Berlaku Tgl. | 10:undefined | 11:: 09/05/2016 | 12:undefined
+Row 5 -> 0:                               | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined | 12:undefined
+Row 6 -> 0:undefined | 1:undefined | 2:Kebakaran | 3:undefined | 4:undefined | 5:undefined | 6:Pelanggaran PKB | 7:undefined | 8:undefined | 9:Lain-lain : Hasil Temuan  | 10:undefined | 11:undefined | 12:undefined
+Row 7 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:Opname Aset Tetap  | 11:undefined | 12:undefined
+Row 8 -> 0:undefined | 1:undefined | 2:Kecelakaan | 3:undefined | 4:undefined | 5:undefined | 6:Tindak Kriminal | 7:undefined | 8:undefined | 9:undefined | 10:(Aset Hilang) | 11:undefined | 12:undefined
+Row 9 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined | 12:undefined
+Row 10 -> 0:I. LAPORAN KEJADIAN | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined | 12:undefined
+Row 11 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 7:undefined | 8:undefined | 9:undefined | 10:undefined | 11:undefined | 12:undefined
+
+--- SHEET: CPAR ---
+Merges: F14:G14, F6:F8, G6:G8, A8:E8, C23:D23, E23:F23, F13:G13, C14:E14, C13:E13, A12:B12, F12:G12, A3:E4, C12:E12, A5:G5, A10:G10, A9:G9, A1:A2, G26:G29, A18:G18, A19:G19, A21:G21, A22:F22, C26:F30, A20:G20, A25:G25, A23:B23, B1:E2, A24:B24, C24:D24, E24:F24, A14:B14, A13:B13
+Row 1 -> 0:PT. Santos Jaya Abadi | 1:TINDAKAN PERBAIKAN/PENCEGAHAN KETIDAKSESUAIAN OPNAME ASET | 2:undefined | 3:undefined | 4:undefined | 5:Dokumen No. | 6:undefined
+Row 2 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:Rev. No. | 6:undefined
+Row 3 -> 0:Corrective / Preventive Action Request (CPAR) | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:Halaman | 6:: 1/1
+Row 4 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:Berlaku Tgl. | 6:undefined
+Row 5 -> 0:PETUGAS OPNAME | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined
+Row 6 -> 0:Petugas Opname | 1:undefined | 2:Divisi / Departemen : | 3:undefined | 4:undefined | 5:Tanggal : | 6:Nomor CPAR :
+Row 7 -> 0:undefined | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined | 10:undefined
+Row 8 -> 0:Lokasi Opname : | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined
+Row 9 -> 0:     Tindakan Korektif / Perbaikan (jika timbul ketidaksesuaian) | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined
+Row 10 -> 0:     Tindakan Pencegahan (jika potensial timbul ketidaksesuaian) | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined
+Row 11 -> 0:Jenis Ketidaksesuaian / Potensial Ketidaksesuaian | 1:undefined | 2:undefined | 3:undefined | 4:undefined | 5:undefined | 6:undefined

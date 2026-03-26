@@ -1,0 +1,56 @@
+[
+  {
+    "username": "ICT_SJA1",
+    "password": "1234",
+    "role": "admin",
+    "access": [
+      "app1",
+      "app2",
+      "app3"
+    ]
+  },
+  {
+    "username": "DASHBOARD_ASSET_SJA",
+    "password": "1234",
+    "role": "user",
+    "access": [
+      "app3"
+    ]
+  },
+  {
+    "username": "amel",
+    "password": "$2b$10$yQ/zBGC1Q2QOxx.Ou4QkPe/ZMoaHk9jhpeqGkLHlwbPAED309LO6m",
+    "role": "user",
+    "access": [
+      "app1",
+      "app2",
+      "app3"
+    ],
+    "id": "USR-1773737701399",
+    "isActive": true
+  },
+  {
+    "username": "ICT_SJA2",
+    "password": "81fcbd943311276993bb07003c5a19c6549144719b8f2ec7604ed2066f50c389",
+    "role": "user",
+    "access": [
+      "app1",
+      "app2",
+      "app3"
+    ],
+    "id": "USR-1773798080566",
+    "isActive": true
+  },
+  {
+    "username": "ICT_SMG",
+    "password": "81fcbd943311276993bb07003c5a19c6549144719b8f2ec7604ed2066f50c389",
+    "role": "user",
+    "access": [
+      "app1",
+      "app2",
+      "app3"
+    ],
+    "id": "USR-1773798106754",
+    "isActive": true
+  }
+]

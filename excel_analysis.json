@@ -1,0 +1,134 @@
+{
+  "Kamus Data Master new.xlsx": {
+    "columns": [
+      "NO BARCODE",
+      "ASSET ORACLE",
+      "LOKASI",
+      "JENIS HARTA",
+      "KONDISI",
+      "Tahun Perolehan"
+    ],
+    "first_row": {
+      "NO BARCODE": "007-QC",
+      "ASSET ORACLE": "12848",
+      "LOKASI": "011-GUDANG BARANG PAT ICT-SJA 2",
+      "JENIS HARTA": "1 UNIT PC HP PRODESK 400 G5 MT 5FS98PA/BASEA1 (C2IT 18-09) U/WAREHOUSE",
+      "KONDISI": "1900000023 (BAIK), 1900000029 (PENDING)",
+      "Tahun Perolehan": "2018-12-01 00:00:00"
+    }
+  },
+  "Kamus Data Master new 2.xlsx": {
+    "columns": [
+      "NO BARCODE",
+      "ASSET ORACLE",
+      "LOKASI",
+      "JENIS HARTA",
+      "KONDISI",
+      "Tahun Perolehan"
+    ],
+    "first_row": {
+      "NO BARCODE": "007-QC",
+      "ASSET ORACLE": "12848",
+      "LOKASI": "011-GUDANG BARANG PAT ICT-SJA 2",
+      "JENIS HARTA": "1 UNIT PC HP PRODESK 400 G5 MT 5FS98PA/BASEA1 (C2IT 18-09) U/WAREHOUSE",
+      "KONDISI": "1900000023 (BAIK), 1900000029 (PENDING)",
+      "Tahun Perolehan": "2018-12-01 00:00:00"
+    }
+  },
+  "01 EXA UNDER 2025 BAT.xlsx": {
+    "columns": [
+      "Unnamed: 0",
+      "PT. SANTOS JAYA ABADI",
+      "Unnamed: 2",
+      "Unnamed: 3",
+      "Unnamed: 4",
+      "Unnamed: 5",
+      "Unnamed: 6",
+      "Unnamed: 7",
+      "Unnamed: 8",
+      "Unnamed: 9",
+      "Unnamed: 10"
+    ],
+    "first_row": {
+      "Unnamed: 0": null,
+      "PT. SANTOS JAYA ABADI": "A K T I V A   T E T A P  : I N V E N T A R I S  PABRIK",
+      "Unnamed: 2": null,
+      "Unnamed: 3": null,
+      "Unnamed: 4": null,
+      "Unnamed: 5": null,
+      "Unnamed: 6": null,
+      "Unnamed: 7": null,
+      "Unnamed: 8": null,
+      "Unnamed: 9": null,
+      "Unnamed: 10": null
+    }
+  },
+  "01. ADD ASET JANUARI 26 BAT.xlsx": {
+    "columns": [
+      "Unnamed: 0",
+      "PT. SANTOS JAYA ABADI",
+      "Unnamed: 2",
+      "Unnamed: 3",
+      "Unnamed: 4",
+      "Unnamed: 5",
+      "Unnamed: 6",
+      "Unnamed: 7",
+      "Unnamed: 8",
+      "Unnamed: 9",
+      "Unnamed: 10"
+    ],
+    "first_row": {
+      "Unnamed: 0": null,
+      "PT. SANTOS JAYA ABADI": "A K T I V A   T E T A P  : I N V E N T A R I S  PABRIK",
+      "Unnamed: 2": null,
+      "Unnamed: 3": null,
+      "Unnamed: 4": null,
+      "Unnamed: 5": null,
+      "Unnamed: 6": null,
+      "Unnamed: 7": null,
+      "Unnamed: 8": null,
+      "Unnamed: 9": null,
+      "Unnamed: 10": null
+    }
+  },
+  "01. INV 2026 BAT.xlsx": {
+    "columns": [
+      "Unnamed: 0",
+      "Unnamed: 1",
+      "Unnamed: 2",
+      "PT. SANTOS JAYA ABADI",
+      "Unnamed: 4",
+      "Unnamed: 5",
+      "Unnamed: 6",
+      "Unnamed: 7",
+      "Unnamed: 8",
+      "Unnamed: 9",
+      "Unnamed: 10",
+      "Unnamed: 11",
+      "Unnamed: 12",
+      "Unnamed: 13",
+      "Unnamed: 14",
+      "Unnamed: 15",
+      "Unnamed: 16"
+    ],
+    "first_row": {
+      "Unnamed: 0": null,
+      "Unnamed: 1": null,
+      "Unnamed: 2": null,
+      "PT. SANTOS JAYA ABADI": "A K T I V A   T E T A P  : I N V E N T A R I S  PABRIK",
+      "Unnamed: 4": null,
+      "Unnamed: 5": null,
+      "Unnamed: 6": null,
+      "Unnamed: 7": null,
+      "Unnamed: 8": null,
+      "Unnamed: 9": null,
+      "Unnamed: 10": null,
+      "Unnamed: 11": null,
+      "Unnamed: 12": null,
+      "Unnamed: 13": null,
+      "Unnamed: 14": null,
+      "Unnamed: 15": null,
+      "Unnamed: 16": null
+    }
+  }
+}

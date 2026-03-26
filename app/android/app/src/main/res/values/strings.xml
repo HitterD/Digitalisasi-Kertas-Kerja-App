@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Opname Aset</string>
+    <string name="title_activity_main">Opname Aset</string>
+    <string name="package_name">com.app.opnameaset</string>
+    <string name="custom_url_scheme">com.app.opnameaset</string>
+</resources>
