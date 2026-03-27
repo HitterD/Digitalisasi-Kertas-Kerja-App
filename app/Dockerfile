@@ -35,5 +35,8 @@ COPY --from=builder /app/vite.config.js ./vite.config.js
 # Expose port (can be overridden by docker-compose)
 EXPOSE 5181
 
+# Enable legacy OpenSSL provider for NTLM auth (required by @marsaud/smb2)
+ENV NODE_OPTIONS=--openssl-legacy-provider
+
 # Run Vite in preview mode
 CMD ["npm", "run", "preview"]

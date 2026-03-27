@@ -9,19 +9,15 @@ services:
       - "${PORT:-5181}:${PORT:-5181}"
     env_file:
       - ./app/.env
+      - ./app/.env.production  # Override SHARE_ACCESS_MODE → smb
     environment:
       - NODE_ENV=production
+      - NODE_OPTIONS=--openssl-legacy-provider
+      - SHARE_ACCESS_MODE=smb
     volumes:
       # Mount data folder back to host for persistence
       - app-data:/app/data
-      
-      # UNCOMMENT and MODIFY to mount Windows Network Share directly
-      # (Only for Linux host)
-      # - type: volume
-      #   source: windows-share
-      #   target: /mnt/share
-      #   volume:
-      #     nocopy: true
+
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:${PORT:-5181}/api/db/status"]
       interval: 30s
@@ -32,10 +28,3 @@ services:
 volumes:
   app-data:
     driver: local
-
-  # windows-share:
-  #   driver: local
-  #   driver_opts:
-  #     type: cifs
-  #     device: "//192.168.2.111/pt. santos jaya abadi/AssetManagement_Files"
-  #     o: "username=your_user,password=your_pass,domain=your_domain,nounix,sec=ntlmssp"
