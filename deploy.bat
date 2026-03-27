@@ -78,27 +78,28 @@ if not exist "app\.env" (
 )
 
 :: Cek JWT_SECRET
-findstr /R /C:"^JWT_SECRET=$" "app\.env" >nul
-if %errorlevel% equ 0 (
-    echo [ERROR] JWT_SECRET di app\.env masih kosong!
+findstr /R "^JWT_SECRET=." "app\.env" >nul
+if errorlevel 1 (
+    echo [ERROR] JWT_SECRET di app\.env tidak ditemukan atau kosong!
     pause
     exit /b 1
 )
 
 :: Cek PASSWORD_SALT
-findstr /R /C:"^PASSWORD_SALT=$" "app\.env" >nul
-if %errorlevel% equ 0 (
-    echo [ERROR] PASSWORD_SALT di app\.env masih kosong!
+findstr /R "^PASSWORD_SALT=." "app\.env" >nul
+if errorlevel 1 (
+    echo [ERROR] PASSWORD_SALT di app\.env tidak ditemukan atau kosong!
     pause
     exit /b 1
 )
 
 echo [INFO] File .env valid.
+ver > nul
 exit /b 0
 
 :up
 call :check_env
-if errorlevel 1 goto :eof
+if errorlevel 1 goto menu
 echo [INFO] Starting containers in detached mode...
 cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env up -d"
 echo.
@@ -121,7 +122,7 @@ goto :eof
 
 :build
 call :check_env
-if errorlevel 1 goto :eof
+if errorlevel 1 goto menu
 echo [INFO] Rebuilding image with no-cache...
 cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env build --no-cache"
 echo [SUCCESS] Image built successfully.
@@ -131,7 +132,7 @@ goto :eof
 
 :restart
 call :check_env
-if errorlevel 1 goto :eof
+if errorlevel 1 goto menu
 echo [INFO] Restarting containers...
 cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env restart"
 echo.
