@@ -15,7 +15,14 @@ const safeVal = (v) => v === null || v === undefined ? '' : String(v).trim();
 // ── Load the template as ArrayBuffer ──
 async function fetchTemplate(url) {
     const res = await fetch(url);
-    if (!res.ok) throw new Error(`Failed to load template ${url}`);
+    if (!res.ok) throw new Error(`Failed to load template ${url}. Status: ${res.status}`);
+    
+    // Validasi agar HTML fallback (SPA route) tidak diparse sebagai xlsx (menyebabkan error JSZip)
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.includes('text/html')) {
+        throw new Error(`Gagal memuat template Excel '${url}'. Server merespon dengan HTML (file kemungkinan tidak masuk saat build/docker).`);
+    }
+    
     return await res.arrayBuffer();
 }
 

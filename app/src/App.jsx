@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation, Navigate, Outlet, useNavigate } from 'react-router-dom';
 import { OpnameProvider } from './store/OpnameContext';
 import UploadPage from './pages/UploadPage';
@@ -15,10 +15,38 @@ import './index.css';
 import './extract-opname.css';
 import App3ConsolidationPage from './pages/App3ConsolidationPage';
 import UnifiedMasterDataPage from './pages/UnifiedMasterDataPage';
-import { isCapacitor } from './utils/apiConfig';
+import { isCapacitor, fetchWithAuth } from './utils/apiConfig';
 import { getAuthStr, clearAuth } from './utils/auth';
 
 const isNativePlatform = isCapacitor();
+
+/* ---- Global Auth Refresher (Mencegah JWT Expired) ---- */
+function AuthRefresher() {
+  useEffect(() => {
+    // Jalankan pengecekan token setiap 1 jam untuk mencegah sesi kadaluarsa (12 jam dari backend).
+    const interval = setInterval(async () => {
+      const authStr = getAuthStr();
+      if (!authStr) return; // Jika belum login, skip
+
+      try {
+        const response = await fetchWithAuth('/api/auth/verify');
+        if (response && response.success && response.token) {
+          if (localStorage.getItem('jwt')) {
+            localStorage.setItem('jwt', response.token);
+          } else if (sessionStorage.getItem('jwt')) {
+            sessionStorage.setItem('jwt', response.token);
+          }
+        }
+      } catch (err) {
+        console.error('[Auth] Silent refresh failed:', err);
+      }
+    }, 60 * 60 * 1000); // Berjalan setiap 1 jam (60 * 60 * 1000 ms)
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return null;
+}
 
 /* ---- Auth Guard ---- */
 function RequireAuth({ children, requiredApp, requireAdmin }) {
@@ -227,6 +255,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
+        <AuthRefresher />
         <Routes>
           {/* Public */}
           <Route path="/login" element={<LoginPage />} />

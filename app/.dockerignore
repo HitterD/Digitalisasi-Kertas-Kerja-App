@@ -12,6 +12,11 @@ dist
 !package.json
 !package-lock.json
 
+# PENGECUALIAN: Jangan ignore file Excel di dalam public folder
+# Penting untuk fitur export (Template_Opname.xlsx, dll)
+!public/*.xlsx
+
+
 # Local env files
 .env.local
 .env.development
