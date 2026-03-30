@@ -19,6 +19,10 @@ FROM node:22-alpine
 
 WORKDIR /app
 
+# [NEW] Install Python and required libraries for Data Consolidation & Recouncil plugins
+RUN apk add --no-cache python3 py3-pip py3-pandas py3-numpy py3-openpyxl && \
+    ln -sf /usr/bin/python3 /usr/bin/python
+
 # Copy package config and install only production dependencies
 COPY package*.json ./
 RUN npm ci --ignore-scripts
@@ -31,6 +35,10 @@ COPY --from=builder /app/src/server ./src/server
 COPY --from=builder /app/src/utils ./src/utils
 COPY --from=builder /app/data ./data
 COPY --from=builder /app/vite.config.js ./vite.config.js
+
+# [NEW] Copy python processors and JS processors (e.g., app4_processor.js)
+COPY --from=builder /app/*_processor.* ./
+COPY --from=builder /app/test_*.py ./
 
 # Expose port (can be overridden by docker-compose)
 EXPOSE 5181

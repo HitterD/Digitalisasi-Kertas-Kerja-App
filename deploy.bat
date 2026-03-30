@@ -41,6 +41,7 @@ echo   [2] down    - Menghentikan dan menghapus container
 echo   [3] build   - Build ulang image tanpa cache
 echo   [4] restart - Restart container
 echo   [5] logs    - Menampilkan log berjalan (live)
+echo   [6] deploy  - Down, Build, dan Up secara berurutan (Rebuild Total)
 echo   [0] Keluar
 echo.
 set /p "choice=Masukkan angka pilihan Anda: "
@@ -50,6 +51,7 @@ if "%choice%"=="2" set "COMMAND=down"
 if "%choice%"=="3" set "COMMAND=build"
 if "%choice%"=="4" set "COMMAND=restart"
 if "%choice%"=="5" set "COMMAND=logs"
+if "%choice%"=="6" set "COMMAND=deploy"
 if "%choice%"=="0" exit /b 0
 
 if "%COMMAND%"=="" (
@@ -64,6 +66,7 @@ if /I "%COMMAND%"=="down" goto down
 if /I "%COMMAND%"=="build" goto build
 if /I "%COMMAND%"=="restart" goto restart
 if /I "%COMMAND%"=="logs" goto logs
+if /I "%COMMAND%"=="deploy" goto deploy
 
 echo Perintah "%COMMAND%" tidak dikenali.
 pause
@@ -147,5 +150,25 @@ goto :eof
 
 :logs
 cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env logs -f"
+pause
+goto :eof
+
+:deploy
+call :check_env
+if errorlevel 1 goto menu
+echo [INFO] Menjalankan proses Rebuild Total...
+echo [1/3] Menghentikan container aktif...
+cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env down"
+echo [2/3] Build ulang container (No Cache)...
+cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env build --no-cache"
+echo [3/3] Menjalankan container baru...
+cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env up -d"
+echo.
+echo [SUCCESS] Rebuild Total Selesai.
+echo ============================================
+echo   Aplikasi dapat diakses di:
+echo   http://%LOCAL_IP%:%APP_PORT%
+echo ============================================
+echo.
 pause
 goto :eof

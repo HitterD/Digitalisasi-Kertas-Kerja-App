@@ -412,10 +412,20 @@ if __name__ == "__main__":
         sys.exit(1)
         
     command = sys.argv[1]
+    
+    # Check if sys.argv[2] is a file path and read from it
     try:
-        data = json.loads(sys.argv[2])
+        if len(sys.argv) > 2:
+            input_arg = sys.argv[2]
+            if os.path.exists(input_arg):
+                with open(input_arg, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+            else:
+                data = json.loads(input_arg)
+        else:
+            data = {}
     except Exception as e:
-        print(json.dumps({"status": "error", "message": "Invalid JSON input"}))
+        print(json.dumps({"status": "error", "message": f"Invalid JSON input: {str(e)}"}))
         sys.exit(1)
         
     if command == "get_bat":

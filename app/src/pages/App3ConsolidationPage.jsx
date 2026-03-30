@@ -48,7 +48,7 @@ export default function App3ConsolidationPage() {
 
         try {
             const token = sessionStorage.getItem('jwt') || localStorage.getItem('jwt');
-            const res = await fetch('/api/app3/get-bats', { method: 'POST', headers: { 'Authorization': `Bearer ${token} ` }, body: formData });
+            const res = await fetch('/api/app3/get-bats', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData });
             const data = await res.json();
             if (data.status === 'success') { setBats(data.data); setStep(2); }
             else setErrorMsg(data.error || 'Server Processing Error');
@@ -67,7 +67,7 @@ export default function App3ConsolidationPage() {
 
         try {
             const token = sessionStorage.getItem('jwt') || localStorage.getItem('jwt');
-            const res = await fetch('/api/app3/process', { method: 'POST', headers: { 'Authorization': `Bearer ${token} ` }, body: formData });
+            const res = await fetch('/api/app3/process', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData });
             if (res.ok) {
                 const blob = await res.blob();
                 const url = window.URL.createObjectURL(blob);

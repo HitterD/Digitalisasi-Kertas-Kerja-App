@@ -18,6 +18,7 @@ dist-ssr/
 
 # Excel test data
 *.xlsx
+!app/public/*.xlsx
 
 # Windows reserved names that fail git add
 nul

@@ -31,7 +31,9 @@ function app4Middleware(req, res, next) {
   const sendJson = createJsonSender(req, res);
   if (handleCorsIfPreflight(req, res, '/api/app4/', 'POST, GET, OPTIONS')) return;
 
-  if (req.url === '/api/app4/process' && req.method === 'POST') {
+  const pathname = new URL(req.url, `http://${req.headers.host || 'localhost'}`).pathname;
+
+  if (pathname === '/api/app4/process' && req.method === 'POST') {
     uploadApp4.fields([
       { name: 'opname', maxCount: 100 },
       { name: 'master', maxCount: 1 },
@@ -71,7 +73,8 @@ function app4Middleware(req, res, next) {
 
         // Execute node script asynchronously
         try {
-          const { stdout } = await execFileAsync('node', ['app4_processor.js', 'process', tempIn]);
+          const processorPath = path.join(process.cwd(), 'app4_processor.js');
+          const { stdout } = await execFileAsync('node', [processorPath, 'process', tempIn], { cwd: process.cwd() });
           try { fs.unlinkSync(tempIn); } catch(e){} // Cleanup JSON payload
 
           const parsed = JSON.parse(stdout.trim().split('\n').pop() || "{}");

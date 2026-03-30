@@ -43,11 +43,16 @@ function app3Middleware(req, res, next) {
     });
   };
 
-  if (req.url === '/api/app3/get-bats' && req.method === 'POST') {
+  const pathname = new URL(req.url, `http://${req.headers.host || 'localhost'}`).pathname;
+
+  if (pathname === '/api/app3/get-bats' && req.method === 'POST') {
     runUpload(req, res, async () => {
       const cleanupFiles = () => cleanupUploadedFiles(req.files);
 
       try {
+        if (!req.files) {
+          return sendJson(400, { success: false, error: 'Tidak ada file yang diunggah.' });
+        }
         const files = {};
         if (req.files.exa) files.exa = req.files.exa[0].path;
         if (req.files.add) files.add = req.files.add[0].path;
@@ -62,7 +67,8 @@ function app3Middleware(req, res, next) {
         fs.writeFileSync(tempIn, inputJson, 'utf8');
 
         try {
-          const { stdout } = await execFileAsync('python', ['app3_processor.py', 'get_bat', tempIn]);
+          const processorPath = path.join(process.cwd(), 'app3_processor.py');
+          const { stdout } = await execFileAsync('python', [processorPath, 'get_bat', tempIn], { cwd: process.cwd() });
           try { fs.unlinkSync(tempIn); } catch(e){} // Cleanup JSON payload
           cleanupFiles(); // Cleanup original uploaded files
           const parsed = JSON.parse(stdout.trim().split('\n').pop() || "{}"); // last line
@@ -81,11 +87,14 @@ function app3Middleware(req, res, next) {
     return;
   }
 
-  if (req.url === '/api/app3/process' && req.method === 'POST') {
+  if (pathname === '/api/app3/process' && req.method === 'POST') {
     runUpload(req, res, async () => {
       const cleanupFiles = () => cleanupUploadedFiles(req.files);
 
       try {
+        if (!req.files) {
+          return sendJson(400, { success: false, error: 'Tidak ada file yang diunggah.' });
+        }
         const files = {};
         if (req.files.exa) files.exa = req.files.exa[0].path;
         if (req.files.add) files.add = req.files.add[0].path;
@@ -110,7 +119,8 @@ function app3Middleware(req, res, next) {
 
         // Execute python script asynchronously
         try {
-          const { stdout } = await execFileAsync('python', ['app3_processor.py', 'process', tempIn]);
+          const processorPath = path.join(process.cwd(), 'app3_processor.py');
+          const { stdout } = await execFileAsync('python', [processorPath, 'process', tempIn], { cwd: process.cwd() });
           try { fs.unlinkSync(tempIn); } catch(e){} // Cleanup JSON payload
 
           const parsed = JSON.parse(stdout.trim().split('\n').pop() || "{}");
