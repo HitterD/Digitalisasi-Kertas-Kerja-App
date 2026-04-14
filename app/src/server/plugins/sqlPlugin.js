@@ -335,6 +335,56 @@ function sqlServerMiddleware(req, res, next) {
     return;
   }
 
+  // GET /api/db/mat-history/:barcode
+  const matHistoryMatch = req.url?.match(/^\/api\/db\/mat-history\/([^/?]+)/);
+  if (matHistoryMatch && req.method === 'GET') {
+    const barcode = decodeURIComponent(matHistoryMatch[1]);
+    (async () => {
+      if (!barcode.trim()) {
+        sendJson(400, { success: false, error: 'Barcode tidak boleh kosong' });
+        return;
+      }
+      try {
+        const pool = await getPool();
+        const result = await pool.request()
+          .input('barcode', sql.NVarChar, barcode.trim())
+          .query(`
+            SELECT
+              TRXID, NO_MAT, JENIS_MAT,
+              ASAL_RUANGAN_ID, TUJUAN_RUANGAN_ID,
+              LPB, KONDISI_ID, CREATED_DATE,
+              USER_MAKER, NAME_MAKER,
+              STATUS, PENJELASAN,
+              COUNTER_NUM, STEP_APPROVAL,
+              DEPT, BARCODE_ASSET, NAMA_ASSET,
+              NEXT_VERIFICATOR, NEXT_ROLE_VERIFICATOR
+            FROM [dbo].[V_TRX_MAT]
+            WHERE LTRIM(RTRIM(BARCODE_ASSET)) = @barcode
+            ORDER BY CREATED_DATE DESC
+          `);
+
+        const INACTIVE_STATUSES = ['COMPLETED', 'REJECTED'];
+        const hasActiveMAT = result.recordset.some(
+          (r) => !INACTIVE_STATUSES.includes((r.STATUS || '').toUpperCase())
+        );
+
+        console.log(`[SQL Server] MAT history for ${barcode}: ${result.recordset.length} records, hasActiveMAT=${hasActiveMAT}`);
+        sendJson(200, {
+          success: true,
+          barcode: barcode.trim(),
+          hasActiveMAT,
+          count: result.recordset.length,
+          data: result.recordset,
+          timestamp: new Date().toISOString(),
+        });
+      } catch (err) {
+        console.error('[SQL Server] MAT history query failed:', err.message);
+        sendJson(500, { success: false, error: err.message });
+      }
+    })();
+    return;
+  }
+
   next();
 }
 
