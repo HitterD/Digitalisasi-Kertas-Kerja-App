@@ -100,3 +100,25 @@
 @keyframes bcs-slide-up { from { opacity: 0; transform: translateY(40px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes bcs-slide-up-mob { from { transform: translateY(100%); } to { transform: translateY(0); } }
 @keyframes bcs-stag { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── MAT History Track Button ─────────────────────────────── */
+.bcs-mat-track-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 0 8px;
+    padding: 10px 20px;
+    background: var(--neutral-900, #0f172a);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.01em;
+}
+.bcs-mat-track-btn:hover {
+    background: var(--neutral-700, #334155);
+    transform: translateY(-1px);
+}
