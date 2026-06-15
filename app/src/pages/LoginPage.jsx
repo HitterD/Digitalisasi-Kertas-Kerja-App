@@ -111,87 +111,75 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="lp-page">
-            {/* ── LEFT: Brand Panel ── */}
-            <div className="lp-left">
-                {/* Shared noise texture overlay */}
-                <div className="lp-noise" />
+        <div className="login-page" style={{
+            display: 'grid',
+            gridTemplateColumns: '1.15fr 1fr',
+            minHeight: '100vh',
+            background: 'var(--cream-bg)',
+            fontFamily: 'var(--font-sora)',
+        }}>
+            <style>{`
+                @media (max-width: 900px) {
+                    .login-page { grid-template-columns: 1fr !important; }
+                    .login-page > div:first-child { padding: 32px 24px !important; min-height: 40vh; }
+                }
+            `}</style>
 
-                {/* Header */}
-                <div className="lp-left__header">
-                    <div className="lp-badge">
-                        <div className="lp-badge__dot" />
-                        <span>Asset Management System</span>
+            {/* LEFT: Brand Panel */}
+            <div style={{
+                padding: '48px 56px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                position: 'relative',
+            }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.22em', color: 'var(--charcoal-400)', textTransform: 'uppercase' }}>
+                    Kertas Kerja Digital
+                </div>
+
+                <div>
+                    <h1 style={{
+                        fontSize: '44px', lineHeight: 1.05, fontWeight: 600,
+                        color: 'var(--charcoal-900)', letterSpacing: '-0.025em', margin: 0,
+                    }}>
+                        Kertas Kerja<br/>Digital
+                    </h1>
+                    <p style={{ fontSize: '14px', color: 'var(--charcoal-500)', marginTop: '12px', maxWidth: '420px', lineHeight: 1.55 }}>
+                        Opname fisik aset PT Santos Jaya Abadi, dicatat sekali dan selamanya.
+                    </p>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '28px 0 18px' }}>
+                        <div style={{ height: '1px', background: 'var(--charcoal-900)', flex: 1, maxWidth: '180px' }} />
+                        <div style={{ width: '6px', height: '6px', background: 'var(--terracotta-500)', borderRadius: '50%' }} />
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 28px', fontSize: '13px', color: 'var(--charcoal-900)' }}>
+                        {MODULES.map((mod) => (
+                            <div key={mod.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 0', borderTop: '1px solid rgba(26,26,26,0.08)' }}>
+                                <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--charcoal-400)', fontSize: '9px' }}>{mod.id}</span>
+                                {mod.label}
+                            </div>
+                        ))}
                     </div>
                 </div>
 
-                {/* Hero text */}
-                <div className="lp-left__hero">
-                    <h1 className="lp-hero-title">
-                        Kertas Kerja<br />
-                        <span className="lp-hero-accent">Digital.</span>
-                    </h1>
-                    <p className="lp-hero-sub">
-                        Sistem pengendalian opname aset<br />
-                        cerdas &amp; terintegrasi — PT Santos Jaya Abadi
-                    </p>
-                </div>
-
-                {/* Module cards */}
-                <div className="lp-modules">
-                    {MODULES.map((mod, i) => (
-                        <div key={mod.id} className="lp-mod" style={{ animationDelay: `${0.1 + i * 0.12}s` }}>
-                            <div className="lp-mod__img-wrap">
-                                <img
-                                    src={mod.img}
-                                    alt={mod.label}
-                                    className="lp-mod__img"
-                                    draggable={false}
-                                />
-                            </div>
-                            <div className="lp-mod__body">
-                                <span className="lp-mod__num">{mod.id}</span>
-                                <h3 className="lp-mod__title">{mod.label}</h3>
-                                <p className="lp-mod__desc">{mod.desc}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Footer */}
-                <div className="lp-left__footer">
-                    <span>© 2026 PT Santos Jaya Abadi — Internal System</span>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', color: 'var(--charcoal-400)', letterSpacing: '0.1em' }}>
+                    PT SANTOS JAYA ABADI · INTERNAL
                 </div>
             </div>
 
-            {/* ── RIGHT: Form Panel ── */}
-            <div className="lp-right">
-                <div className="lp-noise" />
+            {/* RIGHT: Form Panel */}
+            <div style={{ padding: '48px 56px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: '100%', maxWidth: '380px' }}>
+                    <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--charcoal-900)', letterSpacing: '-0.01em' }}>Masuk</div>
+                    <div style={{ fontSize: '12px', color: 'var(--charcoal-500)', marginTop: '4px' }}>Lanjutkan ke sistem opname Anda.</div>
 
-                <div className="lp-form-wrap">
-                    {/* Logo */}
-                    <div className="lp-form-logo">
-                        <span className="lp-form-logo__dot" />
-                        <span className="lp-form-logo__text">KERTAS KERJA DIGITAL</span>
-                    </div>
-
-                    <div className="lp-form-header">
-                        <p className="lp-form-eyebrow">Portal Masuk</p>
-                        <h2 className="lp-form-heading">Masuk ke<br />Sistem</h2>
-                        <p className="lp-form-tagline">
-                            Digitalisasi opname fisik aset tetap perusahaan
-                        </p>
-                    </div>
-
-                    <form onSubmit={handleSubmit} className="lp-form">
-                        <div className="lp-field">
-                            <label className="lp-field__label">
-                                <User size={11} strokeWidth={2} />
-                                Username
-                            </label>
+                    <form onSubmit={handleSubmit} style={{ marginTop: '24px' }}>
+                        <div style={{ marginBottom: '14px' }}>
+                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', color: 'var(--charcoal-400)', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: '6px' }}>Username</div>
                             <input
                                 type="text"
-                                className="lp-field__input"
+                                className="wa-input"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 placeholder="Masukkan username"
@@ -200,115 +188,65 @@ export default function LoginPage() {
                             />
                         </div>
 
-                        <div className="lp-field">
-                            <label className="lp-field__label">
-                                <Lock size={11} strokeWidth={2} />
-                                Password
-                            </label>
-                            <div className="lp-field__pw-wrap">
+                        <div style={{ marginBottom: '14px' }}>
+                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', color: 'var(--charcoal-400)', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: '6px' }}>Password</div>
+                            <div style={{ position: 'relative' }}>
                                 <input
                                     type={showPassword ? 'text' : 'password'}
-                                    className="lp-field__input"
+                                    className="wa-input"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="Masukkan password"
                                     autoComplete="current-password"
+                                    style={{ paddingRight: '40px' }}
                                 />
-                                <button
-                                    type="button"
-                                    className="lp-field__eye"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    tabIndex={-1}
-                                    aria-label="Toggle password visibility"
-                                >
+                                <button type="button" onClick={() => setShowPassword(!showPassword)} tabIndex={-1}
+                                    style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px', color: 'var(--charcoal-500)' }}
+                                    aria-label="Toggle password visibility">
                                     {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
                                 </button>
                             </div>
                         </div>
 
-                        <div className="lp-remember">
-                            <input
-                                type="checkbox"
-                                id="rememberMe"
-                                checked={rememberMe}
-                                onChange={(e) => setRememberMe(e.target.checked)}
-                            />
-                            <label htmlFor="rememberMe">Ingat sesi saya</label>
-                        </div>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px', fontSize: '11px', color: 'var(--charcoal-500)' }}>
+                            <input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} style={{ accentColor: 'var(--terracotta-500)' }} />
+                            Ingat sesi saya
+                        </label>
 
                         {error && (
-                            <div className="lp-error" role="alert">
+                            <div role="alert" style={{ marginTop: '12px', padding: '10px 12px', background: 'var(--danger-50)', color: 'var(--danger-500)', borderRadius: '8px', fontSize: '11.5px' }}>
                                 {error}
                             </div>
                         )}
 
-                        <button
-                            type="submit"
-                            className="lp-submit"
-                            disabled={loading || !username || !password}
-                        >
-                            {loading ? (
-                                <span className="lp-submit__spinner" />
-                            ) : null}
+                        <button type="submit" disabled={loading || !username || !password} className="wa-btn" style={{ width: '100%', marginTop: '18px', padding: '12px' }}>
                             {loading ? 'Memproses…' : 'Masuk'}
                         </button>
 
-                        {isNativePlatform && (
-                            <div style={{ marginTop: '1.25rem', textAlign: 'center' }}>
-                                <button
-                                    type="button"
-                                    className="lp-settings-btn"
-                                    onClick={() => { setTempUrl(baseUrl); setShowSettings(true); }}
-                                >
-                                    <Settings size={12} />
-                                    Server Configuration
-                                </button>
-                            </div>
-                        )}
+                        <div style={{ marginTop: '16px', textAlign: 'center', fontSize: '10px', color: 'var(--charcoal-400)' }}>
+                            Hak akses terbatas. Aktivitas dicatat.
+                        </div>
                     </form>
-
-                    <p className="lp-form-footer">
-                        Solusi Pintar Untuk Kemudahan Opname Aset Terintegrasi
-                    </p>
                 </div>
             </div>
 
-            {/* Config Modal for Native Apps */}
+            {/* Server config modal (native only) — keep existing structure, just restyle */}
             {showSettings && isNativePlatform && (
-                <div className="lp-modal-overlay">
-                    <div className="lp-modal">
-                        <div className="lp-modal__header">
-                            <Settings size={17} style={{ color: 'var(--amber-500)' }} />
-                            <h3>Server Configuration</h3>
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 }}>
+                    <div className="wa-card" style={{ maxWidth: '480px', width: '100%', padding: '24px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+                            <Settings size={17} style={{ color: 'var(--terracotta-500)' }} />
+                            <h3 style={{ fontSize: '15px', fontWeight: 600, color: 'var(--charcoal-900)' }}>Server Configuration</h3>
                         </div>
-                        <p className="lp-modal__desc">
-                            Konfigurasi target API server.<br />
-                            • <b>USB (ADB Reverse):</b> <code>http://localhost:5181</code><br />
-                            • <b>WiFi (PC IP):</b> <code>http://192.168.x.x:5181</code>
+                        <p style={{ fontSize: '11.5px', color: 'var(--charcoal-500)', lineHeight: 1.5, marginBottom: '12px' }}>
+                            Konfigurasi target API server.<br/>
+                            <b>USB (ADB Reverse):</b> <code>http://localhost:5181</code><br/>
+                            <b>WiFi (PC IP):</b> <code>http://192.168.x.x:5181</code>
                         </p>
-                        <input
-                            type="text"
-                            value={tempUrl}
-                            onChange={(e) => setTempUrl(e.target.value)}
-                            className="lp-modal__input"
-                            placeholder="http://localhost:5181"
-                        />
-                        <div className="lp-modal__actions">
-                            <button type="button" className="lp-modal__btn lp-modal__btn--cancel" onClick={() => setShowSettings(false)}>
-                                Batal
-                            </button>
-                            <button
-                                type="button"
-                                className="lp-modal__btn lp-modal__btn--save"
-                                onClick={() => {
-                                    const newUrl = tempUrl.trim();
-                                    setServerUrl(newUrl);
-                                    setBaseUrl(newUrl);
-                                    setShowSettings(false);
-                                }}
-                            >
-                                Simpan
-                            </button>
+                        <input type="text" value={tempUrl} onChange={(e) => setTempUrl(e.target.value)} className="wa-input" placeholder="http://localhost:5181" style={{ marginBottom: '12px' }} />
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                            <button type="button" className="wa-btn-ghost" onClick={() => setShowSettings(false)}>Batal</button>
+                            <button type="button" className="wa-btn" onClick={() => { setServerUrl(tempUrl.trim()); setBaseUrl(tempUrl.trim()); setShowSettings(false); }}>Simpan</button>
                         </div>
                     </div>
                 </div>
