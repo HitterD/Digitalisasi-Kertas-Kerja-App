@@ -102,3 +102,82 @@ export class CircuitBreaker {
     };
   }
 }
+
+function readConfig(overrides = {}) {
+  const num = (v, d) => {
+    const n = parseInt(v);
+    return Number.isFinite(n) ? n : d;
+  };
+  return {
+    requestTimeoutMs: overrides.requestTimeoutMs ?? num(process.env.UPSTREAM_REQUEST_TIMEOUT_MS, 15000),
+    smbTimeoutMs: overrides.smbTimeoutMs ?? num(process.env.UPSTREAM_SMB_TIMEOUT_MS, 20000),
+    probeTimeoutMs: overrides.probeTimeoutMs ?? num(process.env.UPSTREAM_PROBE_TIMEOUT_MS, 5000),
+    failureThreshold: overrides.failureThreshold ?? num(process.env.CB_FAILURE_THRESHOLD, 3),
+    openDurationMs: overrides.openDurationMs ?? num(process.env.CB_OPEN_DURATION_MS, 30000),
+    probeIntervalMs: overrides.probeIntervalMs ?? num(process.env.CB_HALF_OPEN_PROBE_INTERVAL_MS, 30000),
+  };
+}
+
+export class UpstreamRegistry {
+  constructor(overrides = {}) {
+    this.config = readConfig(overrides);
+    this.breakers = new Map();
+  }
+
+  getBreaker(name) {
+    if (!this.breakers.has(name)) {
+      this.breakers.set(name, new CircuitBreaker({
+        failureThreshold: this.config.failureThreshold,
+        openDurationMs: this.config.openDurationMs,
+      }));
+    }
+    return this.breakers.get(name);
+  }
+
+  async guard(name, fn, opts = {}) {
+    const breaker = this.getBreaker(name);
+    const state = breaker.getState();
+    const timeoutMs = opts.timeoutMs ?? this.config.requestTimeoutMs;
+    const nowMs = Date.now();
+
+    if (state === STATE.OPEN) {
+      const retryAfter = Math.max(1, Math.ceil((breaker.openedAt + breaker.openDurationMs - nowMs) / 1000));
+      throw new UpstreamOpenError(name, retryAfter);
+    }
+
+    if (state === STATE.HALF_OPEN) {
+      if (breaker.probeInFlight) {
+        const retryAfter = Math.max(1, Math.ceil(breaker.openDurationMs / 1000));
+        throw new UpstreamOpenError(name, retryAfter);
+      }
+      breaker.probeInFlight = true;
+    }
+
+    let timeoutHandle = null;
+    try {
+      const result = await new Promise((resolve, reject) => {
+        timeoutHandle = setTimeout(() => reject(new UpstreamTimeoutError(name, timeoutMs)), timeoutMs);
+        Promise.resolve()
+          .then(() => fn())
+          .then(resolve, reject);
+      });
+      breaker.recordSuccess();
+      return result;
+    } catch (err) {
+      breaker.recordFailure(err);
+      throw err;
+    } finally {
+      if (timeoutHandle) clearTimeout(timeoutHandle);
+    }
+  }
+
+  getStatus() {
+    const result = {};
+    for (const [name, breaker] of this.breakers.entries()) {
+      result[name] = breaker.getStatus();
+    }
+    return result;
+  }
+}
+
+export const registry = new UpstreamRegistry();
