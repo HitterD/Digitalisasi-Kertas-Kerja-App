@@ -2,29 +2,21 @@ import fs from 'fs';
 import path from 'path';
 import SMB2 from '@marsaud/smb2';
 import { getAllowedOrigin, createJsonSender, handleCorsIfPreflight } from '../utils/common.js';
-
-// ============================================================
-// Konfigurasi Share — Dual Mode (Native FS / SMB2)
-// ============================================================
-// Mode ditentukan oleh env SHARE_ACCESS_MODE:
-//   'native' (default) = fs langsung (Windows dev, drive letter / UNC)
-//   'smb'              = SMB2 client (Docker production)
-// ============================================================
+import { registry, UpstreamOpenError, UpstreamTimeoutError } from '../utils/upstreamHealth.js';
 
 const SHARE_ACCESS_MODE = (process.env.SHARE_ACCESS_MODE || 'native').toLowerCase();
 const rawSharePath = process.env.SHARE_BASE_PATH;
+const SMB_REQUEST_TIMEOUT_MS = parseInt(process.env.UPSTREAM_SMB_TIMEOUT_MS || '20000');
 
 if (!rawSharePath) {
   console.warn('[FileBrowser] ⚠️ SHARE_BASE_PATH belum diatur di .env. File browser akan nonaktif.');
 }
 
-// --- SMB2 Client ---
 let smb2Client = null;
-let smbSubPath = ''; // subpath setelah share name, e.g. "AssetManagement_Files"
+let smbSubPath = '';
+let shareConnected = false; // declared before resetSmbClient to avoid TDZ
 
 function parseSmbPath(uncPath) {
-  // Input:  \\192.168.2.111\pt. santos jaya abadi\AssetManagement_Files
-  // Output: { share: '\\\\192.168.2.111\\pt. santos jaya abadi', subPath: 'AssetManagement_Files' }
   const clean = uncPath.replace(/^[/\\]+/, '');
   const segments = clean.split(/[/\\]+/).filter(Boolean);
   if (segments.length < 2) {
@@ -33,37 +25,37 @@ function parseSmbPath(uncPath) {
   const host = segments[0];
   const shareName = segments[1];
   const subPath = segments.slice(2).join('/');
-  return {
-    share: `\\\\${host}\\${shareName}`,
-    subPath,
-  };
+  return { share: `\\\\${host}\\${shareName}`, subPath };
 }
 
 function getSmbClient() {
   if (smb2Client) return smb2Client;
-
   const parsed = parseSmbPath(rawSharePath);
   smbSubPath = parsed.subPath;
-
   smb2Client = new SMB2({
     share: parsed.share,
     domain: process.env.SHARE_DOMAIN || '',
     username: process.env.SHARE_USER || 'Guest',
     password: process.env.SHARE_PASSWORD || '',
-    autoCloseTimeout: 0, // Keep connection alive
+    autoCloseTimeout: 0,
   });
-
   console.log(`[FileBrowser] 🔌 SMB2 client created for: ${parsed.share} (subPath: ${smbSubPath})`);
   return smb2Client;
 }
 
 function smbPath(...segments) {
-  // Join smbSubPath + segments with backslash for SMB
   const joined = [smbSubPath, ...segments].filter(Boolean).join('\\');
   return joined.replace(/\//g, '\\');
 }
 
-// --- Native FS helpers ---
+function resetSmbClient() {
+  if (smb2Client) {
+    console.log('[FileBrowser] 🔄 Resetting SMB2 client');
+  }
+  smb2Client = null;
+  shareConnected = false;
+}
+
 function normalizeSharePath(rawPath) {
   if (!rawPath) return rawPath;
   if (/^[A-Za-z]:/.test(rawPath)) return rawPath;
@@ -76,33 +68,37 @@ function normalizeSharePath(rawPath) {
 }
 
 const nativeBasePath = normalizeSharePath(rawSharePath);
-let shareConnected = false;
 
-// --- Unified File Access API ---
-// Semua method return Promise
+function withTimeout(promise, timeoutMs, name = 'smb') {
+  return new Promise((resolve, reject) => {
+    const t = setTimeout(() => reject(new UpstreamTimeoutError(name, timeoutMs)), timeoutMs);
+    promise.then(
+      (v) => { clearTimeout(t); resolve(v); },
+      (e) => { clearTimeout(t); reject(e); }
+    );
+  });
+}
 
 const fileAccess = {
   async connect() {
     if (shareConnected) return;
-
     if (!rawSharePath) {
       throw new Error('[FileBrowser] SHARE_BASE_PATH belum dikonfigurasi di .env');
     }
-
     if (SHARE_ACCESS_MODE === 'smb') {
-      // SMB2: test koneksi dengan readdir root
       const client = getSmbClient();
       try {
-        await client.readdir(smbSubPath || '.');
+        await withTimeout(client.readdir(smbSubPath || '.'), SMB_REQUEST_TIMEOUT_MS, 'smb');
         console.log(`[FileBrowser] ✅ SMB2 connected to share`);
       } catch (err) {
+        resetSmbClient();
+        if (err instanceof UpstreamTimeoutError) throw err;
         throw new Error(
           `[FileBrowser] Gagal koneksi SMB2 ke "${rawSharePath}": ${err.message}. ` +
           'Pastikan SHARE_USER, SHARE_PASSWORD, dan SHARE_BASE_PATH sudah benar.'
         );
       }
     } else {
-      // Native FS
       if (!fs.existsSync(nativeBasePath)) {
         const hint = nativeBasePath.startsWith('/')
           ? 'Pastikan path sudah di-mount.'
@@ -120,12 +116,13 @@ const fileAccess = {
     if (SHARE_ACCESS_MODE === 'smb') {
       const client = getSmbClient();
       const fullPath = smbPath(relativePath);
-
       try {
-        // Gunakan parameter { stats: true } dari library smb2 jika didukung
-        const entries = await client.readdir(fullPath, { stats: true });
-        
-        const mapped = entries.map((e) => {
+        const entries = await withTimeout(
+          client.readdir(fullPath, { stats: true }),
+          SMB_REQUEST_TIMEOUT_MS,
+          'smb'
+        );
+        return entries.map((e) => {
           let name, isDir, isF, mtime = null, size = 0;
           if (typeof e === 'object' && e.name !== undefined) {
             name = e.name;
@@ -141,24 +138,17 @@ const fileAccess = {
             size = e.EndofFile || 0;
           } else {
             name = e;
-            // Fallback jika library smb2 lama hanya mereturn string (array of strings)
-            // Asumsikan ada titik ekstensi = file, tidak ada = direktori. (Aman untuk kasus Kertas Kerja)
             const hasExt = /\.[a-zA-Z0-9]+$/.test(name);
             isDir = !hasExt;
             isF = hasExt;
           }
-          return {
-            name,
-            isDirectory: () => isDir,
-            isFile: () => isF,
-            mtime,
-            size
-          };
+          return { name, isDirectory: () => isDir, isFile: () => isF, mtime, size };
         });
-        
-        console.log(`[FileBrowser Debug] Mapped directories count for ${relativePath}:`, mapped.filter(x => x.isDirectory()).length);
-        return mapped;
       } catch (err) {
+        if (err instanceof UpstreamTimeoutError) {
+          resetSmbClient();
+          throw err;
+        }
         throw new Error(`Gagal membaca direktori: ${err.message}`);
       }
     } else {
@@ -175,9 +165,13 @@ const fileAccess = {
     if (SHARE_ACCESS_MODE === 'smb') {
       const client = getSmbClient();
       try {
-        await client.exists(smbPath(relativePath));
+        await withTimeout(client.exists(smbPath(relativePath)), SMB_REQUEST_TIMEOUT_MS, 'smb');
         return true;
-      } catch {
+      } catch (err) {
+        if (err instanceof UpstreamTimeoutError) {
+          resetSmbClient();
+          throw err;
+        }
         return false;
       }
     } else {
@@ -188,13 +182,21 @@ const fileAccess = {
   async stat(relativePath) {
     if (SHARE_ACCESS_MODE === 'smb') {
       const client = getSmbClient();
-      const stats = await client.stat(smbPath(relativePath));
-      return {
-        size: stats.size || 0,
-        mtime: stats.mtime ? new Date(stats.mtime) : new Date(),
-        isDirectory: () => !!stats.isDirectory,
-        isFile: () => !stats.isDirectory,
-      };
+      try {
+        const stats = await withTimeout(client.stat(smbPath(relativePath)), SMB_REQUEST_TIMEOUT_MS, 'smb');
+        return {
+          size: stats.size || 0,
+          mtime: stats.mtime ? new Date(stats.mtime) : new Date(),
+          isDirectory: () => !!stats.isDirectory,
+          isFile: () => !stats.isDirectory,
+        };
+      } catch (err) {
+        if (err instanceof UpstreamTimeoutError) {
+          resetSmbClient();
+          throw err;
+        }
+        throw err;
+      }
     } else {
       return fs.statSync(path.join(nativeBasePath, relativePath || ''));
     }
@@ -203,40 +205,55 @@ const fileAccess = {
   async createReadStream(relativePath) {
     if (SHARE_ACCESS_MODE === 'smb') {
       const client = getSmbClient();
-      // @marsaud/smb2 createReadStream is async and returns stream via callback/promise
-      return await client.createReadStream(smbPath(relativePath));
+      return await withTimeout(client.createReadStream(smbPath(relativePath)), SMB_REQUEST_TIMEOUT_MS, 'smb');
     } else {
       return fs.createReadStream(path.join(nativeBasePath, relativePath || ''));
     }
   },
 };
 
-// ============================================================
-// Validation
-// ============================================================
 function isValidPathSegment(segment) {
   return /^[a-zA-Z0-9\-_. ()]+$/.test(segment) && !segment.includes('..');
 }
 
-// ============================================================
-// Middleware
-// ============================================================
+function handleGuardError(err, sendJson, res) {
+  if (err instanceof UpstreamOpenError) {
+    res.setHeader('Retry-After', String(err.retryAfter));
+    sendJson(503, {
+      success: false,
+      error: err.message,
+      code: err.code,
+      retryAfter: err.retryAfter,
+    });
+    return true;
+  }
+  if (err instanceof UpstreamTimeoutError) {
+    sendJson(504, {
+      success: false,
+      error: err.message,
+      code: err.code,
+    });
+    return true;
+  }
+  return false;
+}
+
 function fileBrowserMiddleware(req, res, next) {
   const sendJson = createJsonSender(req, res);
   if (handleCorsIfPreflight(req, res, '/api/files/', 'GET, OPTIONS')) return;
 
-  // GET /api/files/folders — list root folders
+  // GET /api/files/folders
   if (req.url === '/api/files/folders' && req.method === 'GET') {
     (async () => {
       try {
-        await fileAccess.connect();
-        const entries = await fileAccess.readdir('');
-        const folders = entries
-          .filter(e => e.isDirectory())
-          .map(e => e.name)
-          .sort();
+        const folders = await registry.guard('smb', async () => {
+          await fileAccess.connect();
+          const entries = await fileAccess.readdir('');
+          return entries.filter(e => e.isDirectory()).map(e => e.name).sort();
+        }, { timeoutMs: SMB_REQUEST_TIMEOUT_MS });
         sendJson(200, { success: true, folders });
       } catch (err) {
+        if (handleGuardError(err, sendJson, res)) return;
         console.error('[FileBrowser] Error listing folders:', err.message);
         sendJson(500, { success: false, error: err.message });
       }
@@ -244,85 +261,62 @@ function fileBrowserMiddleware(req, res, next) {
     return;
   }
 
-  // GET /api/files/periods/:folder — list periods with Excel files
+  // GET /api/files/periods/:folder
   const periodsMatch = req.url?.match(/^\/api\/files\/periods\/([^/?]+)/);
   if (periodsMatch && req.method === 'GET') {
     const folder = decodeURIComponent(periodsMatch[1]);
     (async () => {
       try {
         if (!isValidPathSegment(folder)) return sendJson(400, { success: false, error: 'Nama folder tidak valid' });
-        await fileAccess.connect();
-
-        const folderPath = folder;
-        
-        let entries;
-        try {
-          entries = await fileAccess.readdir(folderPath);
-        } catch(e) {
-          return sendJson(404, { success: false, error: `Folder tidak ditemukan atau tidak dapat diakses: ${folderPath}` });
-        }
-
-        const subDirs = entries.filter(e => e.isDirectory());
-        if (subDirs.length === 0) {
-          return sendJson(404, { success: false, error: `Belum ada subfolder periode di dalam ${folderPath}` });
-        }
-
-        const allFiles = [];
-
-        // Kumpulkan dari SEMUA subfolder agar tidak gagal jika ada folder yang kosong
-        for (const dir of subDirs) {
-          const periodName = dir.name;
-          const lkoRelPath = `${folder}/${periodName}/Lembar Kerja Opname`;
-
-          let subEntries = null;
+        const allFiles = await registry.guard('smb', async () => {
+          await fileAccess.connect();
+          const folderPath = folder;
+          let entries;
           try {
-            subEntries = await fileAccess.readdir(lkoRelPath);
-          } catch(e) {
-            continue; // Skip jika folder Lembar Kerja Opname tidak ada di periode ini
+            entries = await fileAccess.readdir(folderPath);
+          } catch (e) {
+            const err = new Error(`Folder tidak ditemukan atau tidak dapat diakses: ${folderPath}`);
+            err.statusCode = 404;
+            throw err;
           }
-
-          if (subEntries) {
-            // Kita tidak perlu mengecek se.isFile() terlalu ketat jika fallback SMB kadang gagal,
-            // Cukup andalkan ekstensi .xlsx / .xls.
-            const excelFiles = subEntries.filter(se => /\.(xlsx|xls)$/i.test(se.name));
-
-            for (const fe of excelFiles) {
-              const fileRelPath = `${lkoRelPath}/${fe.name}`;
-              let modifiedDate = null;
-              if (fe.mtime) {
-                modifiedDate = fe.mtime.toISOString();
-              } else {
-                try {
-                  const stat = await fileAccess.stat(fileRelPath);
-                  modifiedDate = stat.mtime.toISOString();
-                } catch { }
+          const subDirs = entries.filter(e => e.isDirectory());
+          if (subDirs.length === 0) {
+            const err = new Error(`Belum ada subfolder periode di dalam ${folderPath}`);
+            err.statusCode = 404;
+            throw err;
+          }
+          const all = [];
+          for (const dir of subDirs) {
+            const periodName = dir.name;
+            const lkoRelPath = `${folder}/${periodName}/Lembar Kerja Opname`;
+            let subEntries = null;
+            try { subEntries = await fileAccess.readdir(lkoRelPath); } catch (e) { continue; }
+            if (subEntries) {
+              const excelFiles = subEntries.filter(se => /\.(xlsx|xls)$/i.test(se.name));
+              for (const fe of excelFiles) {
+                const fileRelPath = `${lkoRelPath}/${fe.name}`;
+                let modifiedDate = null;
+                if (fe.mtime) {
+                  modifiedDate = fe.mtime.toISOString();
+                } else {
+                  try {
+                    const stat = await fileAccess.stat(fileRelPath);
+                    modifiedDate = stat.mtime.toISOString();
+                  } catch { }
+                }
+                all.push({ filename: fe.name, periodName, modifiedDate, sortKey: fe.name });
               }
-
-              // Menentukan sort key dari file murni
-              const sortKey = fe.name;
-
-              allFiles.push({
-                filename: fe.name,
-                periodName,
-                modifiedDate,
-                sortKey,
-              });
             }
           }
-        }
-
-        allFiles.sort((a, b) => {
-          const dateA = a.modifiedDate || a.sortKey;
-          const dateB = b.modifiedDate || b.sortKey;
-          return dateB.localeCompare(dateA);
-        });
-
-        sendJson(200, {
-          success: true,
-          files: allFiles,
-          timestamp: new Date().toISOString(),
-        });
+          all.sort((a, b) => (b.modifiedDate || b.sortKey).localeCompare(a.modifiedDate || a.sortKey));
+          return all;
+        }, { timeoutMs: SMB_REQUEST_TIMEOUT_MS });
+        sendJson(200, { success: true, files: allFiles, timestamp: new Date().toISOString() });
       } catch (err) {
+        if (handleGuardError(err, sendJson, res)) return;
+        if (err.statusCode === 404) {
+          return sendJson(404, { success: false, error: err.message });
+        }
         console.error('[FileBrowser] Error listing periods:', err.message);
         sendJson(500, { success: false, error: err.message });
       }
@@ -330,7 +324,7 @@ function fileBrowserMiddleware(req, res, next) {
     return;
   }
 
-  // GET /api/files/workbooks/:folder/:period — list Excel workbooks
+  // GET /api/files/workbooks/:folder/:period
   const workbooksMatch = req.url?.match(/^\/api\/files\/workbooks\/([^/]+)\/([^/?]+)/);
   if (workbooksMatch && req.method === 'GET') {
     const folder = decodeURIComponent(workbooksMatch[1]);
@@ -340,25 +334,28 @@ function fileBrowserMiddleware(req, res, next) {
         if (!isValidPathSegment(folder) || !isValidPathSegment(period)) {
           return sendJson(400, { success: false, error: 'Parameter tidak valid' });
         }
-        await fileAccess.connect();
-        const lkoRelPath = `${folder}/${period}/Lembar Kerja Opname`;
-        if (!(await fileAccess.exists(lkoRelPath))) {
-          return sendJson(404, { success: false, error: 'Folder Lembar Kerja Opname tidak ditemukan' });
-        }
-
-        const entries = await fileAccess.readdir(lkoRelPath);
-        const files = [];
-
-        for (const e of entries.filter(e => /\.(xlsx|xls)$/i.test(e.name))) {
-          let size = e.size || 0;
-          let modifiedDate = e.mtime ? e.mtime.toISOString() : null;
-          
-          files.push({ name: e.name, size, modifiedDate });
-        }
-
-        files.sort((a, b) => (b.modifiedDate || '').localeCompare(a.modifiedDate || ''));
+        const files = await registry.guard('smb', async () => {
+          await fileAccess.connect();
+          const lkoRelPath = `${folder}/${period}/Lembar Kerja Opname`;
+          if (!(await fileAccess.exists(lkoRelPath))) {
+            const err = new Error('Folder Lembar Kerja Opname tidak ditemukan');
+            err.statusCode = 404;
+            throw err;
+          }
+          const entries = await fileAccess.readdir(lkoRelPath);
+          const out = [];
+          for (const e of entries.filter(e => /\.(xlsx|xls)$/i.test(e.name))) {
+            out.push({ name: e.name, size: e.size || 0, modifiedDate: e.mtime ? e.mtime.toISOString() : null });
+          }
+          out.sort((a, b) => (b.modifiedDate || '').localeCompare(a.modifiedDate || ''));
+          return out;
+        }, { timeoutMs: SMB_REQUEST_TIMEOUT_MS });
         sendJson(200, { success: true, files });
       } catch (err) {
+        if (handleGuardError(err, sendJson, res)) return;
+        if (err.statusCode === 404) {
+          return sendJson(404, { success: false, error: err.message });
+        }
         console.error('[FileBrowser] Error listing workbooks:', err.message);
         sendJson(500, { success: false, error: err.message });
       }
@@ -366,7 +363,7 @@ function fileBrowserMiddleware(req, res, next) {
     return;
   }
 
-  // GET /api/files/download/:folder/:period/:filename — download file
+  // GET /api/files/download/:folder/:period/:filename
   const downloadMatch = req.url?.match(/^\/api\/files\/download\/([^/]+)\/([^/]+)\/([^/?]+)/);
   if (downloadMatch && req.method === 'GET') {
     const folder = decodeURIComponent(downloadMatch[1]);
@@ -377,25 +374,29 @@ function fileBrowserMiddleware(req, res, next) {
         if (!isValidPathSegment(folder) || !isValidPathSegment(period) || !isValidPathSegment(filename)) {
           return sendJson(400, { success: false, error: 'Parameter tidak valid' });
         }
-        await fileAccess.connect();
-        const fileRelPath = `${folder}/${period}/Lembar Kerja Opname/${filename}`;
-        if (!(await fileAccess.exists(fileRelPath))) {
-          return sendJson(404, { success: false, error: 'File tidak ditemukan' });
-        }
+        const { readStream, size } = await registry.guard('smb', async () => {
+          await fileAccess.connect();
+          const fileRelPath = `${folder}/${period}/Lembar Kerja Opname/${filename}`;
+          if (!(await fileAccess.exists(fileRelPath))) {
+            const err = new Error('File tidak ditemukan');
+            err.statusCode = 404;
+            throw err;
+          }
+          const stream = await fileAccess.createReadStream(fileRelPath);
+          let streamSize = 0;
+          try {
+            const stats = await fileAccess.stat(fileRelPath);
+            streamSize = stats.size || 0;
+          } catch (e) { }
+          return { readStream: stream, size: streamSize };
+        }, { timeoutMs: SMB_REQUEST_TIMEOUT_MS });
 
-        const readStream = await fileAccess.createReadStream(fileRelPath);
         res.setHeader('Access-Control-Allow-Origin', getAllowedOrigin(req));
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-
-        try {
-          const stats = await fileAccess.stat(fileRelPath);
-          res.setHeader('Content-Length', stats.size);
-        } catch (e) { /* size header optional */ }
-
+        if (size) res.setHeader('Content-Length', size);
         res.statusCode = 200;
         readStream.pipe(res);
-
         readStream.on('error', (err) => {
           console.error('[FileBrowser] Download stream error:', err);
           if (!res.headersSent) {
@@ -404,6 +405,10 @@ function fileBrowserMiddleware(req, res, next) {
           }
         });
       } catch (err) {
+        if (handleGuardError(err, sendJson, res)) return;
+        if (err.statusCode === 404) {
+          return sendJson(404, { success: false, error: err.message });
+        }
         console.error('[FileBrowser] Error downloading file:', err.message);
         sendJson(500, { success: false, error: err.message });
       }
@@ -424,4 +429,11 @@ export default function viteFileBrowserPlugin() {
       server.middlewares.use(fileBrowserMiddleware);
     },
   };
+}
+
+if (process.env.SHARE_ACCESS_MODE === 'smb') {
+  registry.registerProbe('smb', async () => {
+    await fileAccess.connect();
+    await fileAccess.readdir('');
+  });
 }
