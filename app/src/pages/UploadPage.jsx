@@ -189,7 +189,7 @@ export default function UploadPage() {
                     <div style={{ backgroundColor: 'var(--warm-50)', width: '100%', maxWidth: '900px', boxShadow: '8px 8px 0px rgba(15,23,42,1)', maxHeight: '85vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', border: '3px solid var(--charcoal-900)', borderRadius: '0' }} onClick={e => e.stopPropagation()}>
                         <div style={{ padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#ffffff', borderBottom: '3px solid var(--charcoal-900)' }}>
                             <h2 style={{ fontSize: '18px', fontFamily: 'var(--font-sora)', fontWeight: 900, margin: 0, display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--charcoal-900)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                                <div style={{ width: 36, height: 36, background: 'var(--amber-400)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--charcoal-900)', border: '2px solid var(--charcoal-900)' }}>
+                                <div className="wa-icon-wrap" style={{ background: 'rgba(201,100,66,0.10)', color: 'var(--terracotta-500)' }}>
                                     <FileSpreadsheet size={18} strokeWidth={3} />
                                 </div>
                                 BROWSE FILE SERVER

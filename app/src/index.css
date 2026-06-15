@@ -1585,12 +1585,12 @@ html.plt-android .login-submit {
   align-items: center;
   justify-content: space-between;
   padding: var(--space-4) var(--space-6);
-  border-bottom: 2px solid var(--charcoal-900);
+  border-bottom: 1px solid rgba(26,26,26,0.06);
   background: var(--warm-50);
   position: sticky;
   top: 0;
   z-index: 50;
-  box-shadow: 0 2px 0 var(--amber-500);
+  box-shadow: 0 1px 0 var(--cream-input);
 }
 
 .bento-header__left {
@@ -2201,7 +2201,7 @@ html.plt-android .login-submit {
   background: var(--warm-50);
   border: 1px solid var(--charcoal-900);
   border-radius: 0;
-  box-shadow: 4px 4px 0 var(--charcoal-900);
+  box-shadow: 0 1px 2px rgba(45,45,45,0.04), 0 6px 18px rgba(45,45,45,0.06);
   padding: var(--space-8);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -2413,7 +2413,7 @@ html.plt-android .login-submit {
   font-weight: 600;
   font-size: var(--font-size-sm);
   border: 1px solid var(--charcoal-900);
-  box-shadow: 4px 4px 0 var(--charcoal-900);
+  box-shadow: 0 1px 2px rgba(45,45,45,0.04), 0 6px 18px rgba(45,45,45,0.06);
 }
 
 .admin-alert--success {
@@ -4240,7 +4240,7 @@ html.plt-android .login-submit {
 .upload-zone.dragging {
   border: 1px solid var(--charcoal-900) !important;
   background: var(--warm-100) !important;
-  box-shadow: 4px 4px 0 rgba(13,17,23,0.1) !important; /* Brutalist shadow */
+  box-shadow: 0 1px 2px rgba(45,45,45,0.04), 0 6px 18px rgba(45,45,45,0.06) !important;
 }
 .upload-zone__icon,
 .upload-zone--dashed svg {

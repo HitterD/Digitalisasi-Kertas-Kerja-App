@@ -129,31 +129,22 @@ export default function App4RecouncilPage() {
                 onDragOver={e => handleDrag(e, type)}
                 onDrop={e => handleDrop(e, type)}
                 onClick={() => fileInputRefs[type].current.click()}
-                style={{
-                    border: isSet ? '2px solid var(--success-600)' : '2px dashed var(--charcoal-900)',
-                    background: isSet ? 'var(--success-50)' : isDragging ? 'var(--warm-200)' : 'rgba(255, 255, 255, 0.5)',
-                    padding: '24px',
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease-out',
-                    position: 'relative',
-                    boxShadow: isSet ? '4px 4px 0px var(--success-600)' : '4px 4px 0px var(--charcoal-900)',
-                    transform: isDragging ? 'scale(1.02)' : 'none'
-                }}
+                className={`wa-zone ${isSet ? 'loaded' : ''}`}
+                style={{ padding: 24, textAlign: 'center' }}
             >
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                    <div style={{ marginBottom: '12px' }}>
-                        {isSet ? <CheckCircle2 size={32} color="var(--success-600)" /> : <Icon size={32} color="var(--charcoal-500)" />}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
+                    <div style={{ marginBottom: 12 }}>
+                        {isSet ? <CheckCircle2 size={32} color="var(--success-500)" /> : <Icon size={32} color="var(--charcoal-900)" />}
                     </div>
-                    <h3 style={{ fontFamily: 'var(--font-sora)', fontWeight: 800, fontSize: '16px', color: 'var(--charcoal-900)', margin: '0 0 4px 0' }}>{title}</h3>
+                    <h3 style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, fontSize: 16, color: 'var(--charcoal-900)', margin: '0 0 4px 0' }}>{title}</h3>
                     {optional && !isSet && (
                         <span style={{
-                            display: 'inline-block', fontSize: '10px', fontWeight: 800, fontFamily: 'var(--font-mono)',
-                            background: 'var(--amber-400)', color: 'var(--charcoal-900)', border: '1px solid var(--charcoal-900)',
-                            padding: '2px 8px', marginBottom: '8px', textTransform: 'uppercase'
+                            display: 'inline-block', fontSize: 10, fontWeight: 700, fontFamily: 'var(--font-mono)',
+                            background: 'var(--amber-100)', color: 'var(--charcoal-700)', border: '1px solid var(--amber-300)',
+                            padding: '2px 8px', marginBottom: '8px', borderRadius: 9999, textTransform: 'uppercase'
                         }}>Opsional</span>
                     )}
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: isSet ? 'var(--success-700)' : 'var(--charcoal-500)', margin: 0 }}>
+                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: isSet ? 'var(--success-500)' : 'var(--charcoal-500)', margin: 0 }}>
                         {labelDesc}
                     </p>
                 </div>
@@ -196,15 +187,15 @@ export default function App4RecouncilPage() {
                 </div>
 
                 {successMsg && (
-                    <div style={{ background: 'var(--success-50)', border: '2px solid var(--success-600)', padding: '16px', display: 'flex', gap: '12px', alignItems: 'flex-start', boxShadow: '4px 4px 0px var(--success-600)', marginBottom: '24px' }}>
-                        <CheckCircle2 color="var(--success-600)" size={20} />
-                        <div style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, fontSize: '13px', color: 'var(--success-800)' }}>{successMsg}</div>
+                    <div className="wa-status success" style={{ padding: 12, background: 'rgba(22,163,74,0.05)', border: '1px solid rgba(22,163,74,0.2)', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 10, marginBottom: '24px' }}>
+                        <CheckCircle2 size={16} color="var(--success-500)" />
+                        <div style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, fontSize: 13, color: 'var(--success-800)' }}>{successMsg}</div>
                     </div>
                 )}
                 {errorMsg && (
-                    <div style={{ background: 'var(--danger-50)', border: '2px solid var(--danger-600)', padding: '16px', display: 'flex', gap: '12px', alignItems: 'flex-start', boxShadow: '4px 4px 0px var(--danger-600)', marginBottom: '24px' }}>
-                        <FileWarning color="var(--danger-600)" size={20} />
-                        <div style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, fontSize: '13px', color: 'var(--danger-800)' }}>{errorMsg}</div>
+                    <div className="wa-status danger" style={{ padding: 12, background: 'rgba(220,38,38,0.05)', border: '1px solid rgba(220,38,38,0.2)', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 10, marginBottom: '24px' }}>
+                        <FileWarning size={16} color="var(--danger-500)" />
+                        <div style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, fontSize: 13, color: 'var(--danger-800)' }}>{errorMsg}</div>
                     </div>
                 )}
 

@@ -125,24 +125,15 @@ export default function App3ConsolidationPage() {
                 onDragOver={handleDragOver}
                 onDrop={e => handleDrop(e, type)}
                 onClick={() => fileInputRefs[type].current.click()}
-                style={{
-                    border: isSet ? '2px solid var(--success-600)' : isDrag ? '2px dashed var(--amber-500)' : '2px dashed var(--charcoal-900)',
-                    background: isSet ? 'var(--success-50)' : isDrag ? 'var(--warm-200)' : 'rgba(255, 255, 255, 0.5)',
-                    padding: '24px',
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease-out',
-                    position: 'relative',
-                    boxShadow: isSet ? '4px 4px 0px var(--success-600)' : isDrag ? '4px 4px 0px var(--amber-500)' : '4px 4px 0px var(--charcoal-900)',
-                    transform: isDrag ? 'scale(1.02)' : 'none'
-                }}
+                className={`wa-zone ${isSet ? 'loaded' : ''}`}
+                style={{ padding: 24, textAlign: 'center' }}
             >
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
-                    <div style={{ marginBottom: '12px' }}>
-                        {isSet ? <CheckCircle2 size={32} color="var(--success-600)" /> : <Icon size={32} color="var(--charcoal-500)" />}
+                    <div style={{ marginBottom: 12 }}>
+                        {isSet ? <CheckCircle2 size={32} color="var(--success-500)" /> : <Icon size={32} color="var(--charcoal-900)" />}
                     </div>
-                    <h3 style={{ fontFamily: 'var(--font-sora)', fontWeight: 800, fontSize: '16px', color: 'var(--charcoal-900)', margin: '0 0 4px 0' }}>{title}</h3>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: isSet ? 'var(--success-700)' : 'var(--charcoal-500)', margin: 0 }}>
+                    <h3 style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, fontSize: 16, color: 'var(--charcoal-900)', margin: '0 0 4px 0' }}>{title}</h3>
+                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: isSet ? 'var(--success-500)' : 'var(--charcoal-500)', margin: 0 }}>
                         {isSet ? files[type].name : subtitle}
                     </p>
                 </div>
@@ -239,15 +230,15 @@ export default function App3ConsolidationPage() {
                 </div>
 
                 {successMsg && (
-                    <div style={{ background: 'var(--success-50)', border: '2px solid var(--success-600)', padding: '16px', display: 'flex', gap: '12px', alignItems: 'flex-start', boxShadow: '4px 4px 0px var(--success-600)', marginBottom: '24px' }}>
-                        <CheckCircle2 color="var(--success-600)" size={20} />
-                        <div style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, fontSize: '13px', color: 'var(--success-800)' }}>{successMsg}</div>
+                    <div className="wa-status success" style={{ padding: 12, background: 'rgba(22,163,74,0.05)', border: '1px solid rgba(22,163,74,0.2)', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 10, marginBottom: '24px' }}>
+                        <CheckCircle2 size={16} color="var(--success-500)" />
+                        <div style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, fontSize: 13, color: 'var(--success-800)' }}>{successMsg}</div>
                     </div>
                 )}
                 {errorMsg && (
-                    <div style={{ background: 'var(--danger-50)', border: '2px solid var(--danger-600)', padding: '16px', display: 'flex', gap: '12px', alignItems: 'flex-start', boxShadow: '4px 4px 0px var(--danger-600)', marginBottom: '24px' }}>
-                        <FileWarning color="var(--danger-600)" size={20} />
-                        <div style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, fontSize: '13px', color: 'var(--danger-800)' }}>{errorMsg}</div>
+                    <div className="wa-status danger" style={{ padding: 12, background: 'rgba(220,38,38,0.05)', border: '1px solid rgba(220,38,38,0.2)', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 10, marginBottom: '24px' }}>
+                        <FileWarning size={16} color="var(--danger-500)" />
+                        <div style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, fontSize: 13, color: 'var(--danger-800)' }}>{errorMsg}</div>
                     </div>
                 )}
 
@@ -260,16 +251,11 @@ export default function App3ConsolidationPage() {
                     transform: step === 1 ? 'translateY(0)' : 'translateY(-10px)'
                 }}>
                     <div className="editorial-glass-card" style={{ padding: 0, overflow: 'hidden' }}>
-                        <div style={{ padding: '24px', borderBottom: '2px solid var(--charcoal-900)', background: 'rgba(255, 255, 255, 0.4)', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                            <div style={{
-                                width: '48px', height: '48px', background: 'var(--charcoal-900)', color: '#fff',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-sora)',
-                                fontSize: '20px', fontWeight: 900, border: '2px solid var(--charcoal-900)',
-                                boxShadow: '4px 4px 0px var(--amber-400)'
-                            }}>1</div>
-                            <div>
-                                <h2 style={{ fontFamily: 'var(--font-sora)', fontWeight: 900, fontSize: '20px', color: 'var(--charcoal-900)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Pipeline Ingestion</h2>
-                                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--charcoal-500)', margin: 0 }}>Unggah file sumber untuk diekstrak filternya.</p>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 22px', borderBottom: '1px solid rgba(26,26,26,0.06)' }}>
+                            <div style={{ width: 28, height: 28, background: 'var(--charcoal-900)', color: 'var(--cream-surface)', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700 }}>1</div>
+                            <div style={{ flex: 1 }}>
+                                <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--charcoal-900)' }}>Pipeline Ingestion</div>
+                                <div style={{ fontSize: 11, color: 'var(--charcoal-500)', marginTop: 2 }}>Unggah file sumber untuk diekstrak filternya.</div>
                             </div>
                         </div>
 
@@ -285,23 +271,13 @@ export default function App3ConsolidationPage() {
                                 <button
                                     onClick={extractBats}
                                     disabled={loadingBats || (!files.exa && !files.add && !files.inv)}
-                                    style={{
-                                        background: 'var(--charcoal-900)', color: 'var(--amber-400)',
-                                        border: '2px solid var(--charcoal-900)', borderRadius: '0',
-                                        padding: '16px 32px', display: 'flex', alignItems: 'center', gap: '12px',
-                                        fontFamily: 'var(--font-sora)', fontWeight: 900, fontSize: '14px',
-                                        textTransform: 'uppercase', letterSpacing: '0.05em', cursor: 'pointer',
-                                        transition: 'all 0.1s',
-                                        boxShadow: (!files.exa && !files.add && !files.inv) ? 'none' : '6px 6px 0px var(--charcoal-900)',
-                                        opacity: (!files.exa && !files.add && !files.inv) ? 0.6 : 1
-                                    }}
-                                    onMouseOver={e => { if(!loadingBats && (files.exa || files.add || files.inv)) { e.currentTarget.style.transform = 'translate(2px, 2px)'; e.currentTarget.style.boxShadow = '4px 4px 0px var(--charcoal-900)'; } }}
-                                    onMouseOut={e => { if(!loadingBats && (files.exa || files.add || files.inv)) { e.currentTarget.style.transform = 'translate(0px, 0px)'; e.currentTarget.style.boxShadow = '6px 6px 0px var(--charcoal-900)'; } }}
+                                    className="wa-btn-terracotta"
+                                    style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 24px', fontSize: 12 }}
                                 >
                                     {loadingBats ? (
-                                        <><Loader2 size={18} className="animate-spin" /> MENGANALISA...</>
+                                        <><Loader2 size={16} className="spin" /> MENGANALISA...</>
                                     ) : (
-                                        <><Filter size={18} strokeWidth={2.5} /> EKSTRAK FILTER KATEGORI <ArrowRight size={18} strokeWidth={2.5} /></>
+                                        <><Filter size={16} /> EKSTRAK FILTER KATEGORI <ArrowRight size={16} /></>
                                     )}
                                 </button>
                             </div>
@@ -312,17 +288,12 @@ export default function App3ConsolidationPage() {
                 {/* Step 2: Intelligent Filter & Process */}
                 {step === 2 && (
                     <div style={{ marginTop: '32px' }}>
-                        <div className="editorial-glass-card" style={{ padding: 0, overflow: 'hidden', borderColor: 'var(--amber-500)', boxShadow: '8px 8px 0px var(--amber-500)' }}>
-                            <div style={{ padding: '24px', borderBottom: '2px solid var(--charcoal-900)', background: 'rgba(255, 255, 255, 0.4)', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                                <div style={{
-                                    width: '48px', height: '48px', background: 'var(--amber-500)', color: 'var(--charcoal-900)',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-sora)',
-                                    fontSize: '20px', fontWeight: 900, border: '2px solid var(--charcoal-900)',
-                                    boxShadow: '4px 4px 0px var(--charcoal-900)'
-                                }}>2</div>
-                                <div>
-                                    <h2 style={{ fontFamily: 'var(--font-sora)', fontWeight: 900, fontSize: '20px', color: 'var(--charcoal-900)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Target Filtrasi & Eksekusi</h2>
-                                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--charcoal-500)', margin: 0 }}>Pilih BAT dan lakukan konsolidasi akhir.</p>
+                        <div className="editorial-glass-card" style={{ padding: 0, overflow: 'hidden' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 22px', borderBottom: '1px solid rgba(26,26,26,0.06)' }}>
+                                <div style={{ width: 28, height: 28, background: 'var(--charcoal-900)', color: 'var(--cream-surface)', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700 }}>2</div>
+                                <div style={{ flex: 1 }}>
+                                    <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--charcoal-900)' }}>Target Filtrasi & Eksekusi</div>
+                                    <div style={{ fontSize: 11, color: 'var(--charcoal-500)', marginTop: 2 }}>Pilih BAT dan lakukan konsolidasi akhir.</div>
                                 </div>
                             </div>
 
