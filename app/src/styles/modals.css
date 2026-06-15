@@ -1,0 +1,433 @@
+/* ==========================================================================
+   modals.css — Modal & search/file-browser UI
+   --------------------------------------------------------------------------
+   Styles for modal overlays and their bodies, plus the file browser
+   surface and search-result layouts that render inside modals.
+   ========================================================================== */
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--space-4);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  background: white;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  max-width: 500px;
+  width: 100%;
+  padding: var(--space-6);
+  animation: scaleIn 0.2s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal__title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin-bottom: var(--space-4);
+}
+
+.modal__actions {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: flex-end;
+  margin-top: var(--space-5);
+}
+
+/* ===== MODAL & SEARCH UI ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: var(--space-4);
+  animation: fadeIn var(--transition-fast) ease-out;
+}
+
+.modal {
+  background: var(--surface-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp var(--transition-fast) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal--large {
+  max-width: 700px;
+  /* Wider for tablet grid */
+}
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--neutral-200);
+  background: white;
+}
+
+.modal__title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--neutral-800);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.modal__body {
+  padding: var(--space-5);
+  overflow-y: auto;
+  background: var(--neutral-50);
+}
+
+/* Search Form */
+.search-form {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.search-input-wrap {
+  position: relative;
+  flex: 1;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--neutral-400);
+}
+
+.form-input--search {
+  padding-left: 40px;
+  height: 44px;
+  font-size: var(--font-size-base);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Search Result Grid */
+.search-result-area {
+  margin-top: var(--space-5);
+  animation: fadeIn var(--transition-fast) ease-out;
+}
+
+.result-card {
+  background: white;
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+
+.result-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-3);
+}
+
+.result-card__barcode {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: monospace;
+  font-size: var(--font-size-sm);
+  color: var(--neutral-500);
+  background: var(--neutral-100);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+}
+
+.result-card__name {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--neutral-900);
+  margin-bottom: var(--space-4);
+  line-height: 1.3;
+}
+
+/* Responsive Grid for Tablet */
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  border-top: 1px solid var(--neutral-100);
+  padding-top: var(--space-4);
+}
+
+.detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.detail-item__icon {
+  color: var(--primary-500);
+  background: var(--primary-50);
+  padding: 8px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.detail-item__label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: var(--neutral-500);
+}
+
+.detail-item__value {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--neutral-800);
+  line-height: 1.4;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== SERVER FILE BROWSER ===== */
+.server-file-browser {
+  padding: var(--space-4) var(--space-5);
+}
+
+.server-file-browser__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-3);
+  text-align: center;
+}
+
+.server-file-browser__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+}
+
+.server-file-browser__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.server-file-browser__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/* File list items */
+.file-list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-md);
+  background: white;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.file-list-item:hover:not(:disabled) {
+  border-color: var(--primary-300);
+  background: var(--primary-50);
+  box-shadow: var(--shadow-sm);
+  transform: translateX(2px);
+}
+
+.file-list-item:active:not(:disabled) {
+  transform: translateX(0);
+}
+
+.file-list-item:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.file-list-item--loading {
+  border-color: var(--primary-400);
+  background: var(--primary-50);
+}
+
+.file-list-item__icon {
+  flex-shrink: 0;
+  color: var(--primary-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: var(--primary-50);
+  border-radius: var(--radius-md);
+}
+
+.file-list-item--loading .file-list-item__icon {
+  background: var(--primary-100);
+}
+
+.file-list-item__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.file-list-item__name {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--neutral-800);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-list-item__meta {
+  font-size: 11px;
+  color: var(--neutral-500);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.file-list-item__action {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.btn--xs {
+  padding: 2px 6px;
+  font-size: 11px;
+  min-height: 24px;
+}
+
+/* ─── POPUP MODAL KHUSUS BENTO ─── */
+.bento-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(13, 17, 23, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+  z-index: 1050; /* Di atas sidebar & header */
+  animation: bmFadeInUp 0.3s forwards;
+}
+
+.bento-modal-content {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(13, 17, 23, 0.08);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  box-shadow:
+    0 25px 50px -12px rgba(13, 17, 23, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Konten di dalamnya (bukan layarnya) yang scroll */
+}
+
+/* Biar scrollnya spesifik di dalam area konten ServerFileBrowser kalau perlu */
+.bento-modal-content > div:not(.bento-modal-header) {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.bento-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid rgba(13, 17, 23, 0.05);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Modals */
+.admin-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(13, 17, 23, 0.7); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: var(--space-4); }
+.admin-modal-content { width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; border: none; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+.detail-grid { display: flex; flex-direction: column; gap: 8px; }
+.detail-row { display: flex; gap: 16px; padding: 8px 0; border-bottom: 1px dashed var(--neutral-200); align-items: baseline; }
+.detail-label { width: 100px; font-weight: 700; font-size: 11px; text-transform: uppercase; color: var(--neutral-500); flex-shrink: 0; }
+.detail-val { font-family: var(--font-mono); font-size: 13px; color: var(--charcoal-900); word-break: break-all; font-weight: 500; }
+.detail-json { background: var(--charcoal-900); color: var(--accent-400); padding: 16px; border-radius: 4px; font-family: var(--font-mono); font-size: 12px; overflow-x: auto; margin-top: 8px; white-space: pre-wrap; }

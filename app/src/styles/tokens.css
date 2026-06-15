@@ -1,0 +1,104 @@
+/* ==========================================================================
+   tokens.css — Design tokens (CSS custom properties)
+   --------------------------------------------------------------------------
+   All :root blocks from the original index.css are consolidated here.
+   Two separate :root declarations existed in the source; the cascade
+   merges them. Order is preserved: primary tokens (cream / charcoal /
+   terracotta / status / typography / spacing / radius / shadows / easing)
+   first, then the LOGIN redesign palette overrides.
+   ========================================================================== */
+
+/* ===== CSS DESIGN SYSTEM ===== */
+:root {
+  /* === Cream surface === */
+  --cream-bg: #F5EFE6;
+  --cream-surface: #FDFCF7;
+  --cream-input: #FAF6EF;
+
+  /* === Charcoal text === */
+  --charcoal-900: #1A1A1A;
+  --charcoal-700: #2D2D2D;
+  --charcoal-500: #6B6660;
+  --charcoal-400: #8B8580;
+  --charcoal-300: #C9C2B5;
+
+  /* === Terracotta accent (use sparingly) === */
+  --terracotta-500: #C96442;
+  --terracotta-400: #D88865;
+  --terracotta-600: #D87554;
+
+  /* === Status === */
+  --success-500: #16a34a;
+  --success-50: rgba(22, 163, 74, 0.10);
+  --warning-500: #f59e0b;
+  --danger-500: #dc2626;
+  --danger-50: rgba(220, 38, 38, 0.10);
+
+  /* === Typography === */
+  --font-sora: 'Sora', -apple-system, sans-serif;
+  --font-mono: 'DM Mono', 'Courier New', monospace;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.8125rem;
+  --fs-base: 0.875rem;
+  --fs-lg: 1rem;
+  --fs-xl: 1.125rem;
+  --fs-2xl: 1.375rem;
+  --fs-3xl: 1.875rem;
+  --fs-4xl: 2.25rem;
+
+  /* === Spacing (8pt) === */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-8: 3rem;
+
+  /* === Radius === */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+  --radius-full: 9999px;
+
+  /* === Shadows (soft, no hard offset) === */
+  --shadow-xs: 0 1px 2px rgba(45, 45, 45, 0.02);
+  --shadow-sm: 0 1px 2px rgba(45, 45, 45, 0.04);
+  --shadow-md: 0 1px 2px rgba(45, 45, 45, 0.03), 0 6px 18px rgba(45, 45, 45, 0.04);
+  --shadow-lg: 0 2px 4px rgba(45, 45, 45, 0.04), 0 14px 30px rgba(45, 45, 45, 0.08);
+  --shadow-glow: 0 6px 14px rgba(201, 100, 66, 0.25);
+
+  /* === Easing === */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.2, 1.05, 0.4, 1);
+  --t-fast: 180ms;
+  --t-base: 220ms;
+  --t-slow: 400ms;
+}
+
+/* --- Design Tokens (LOGIN / BentoMenu redesign palette overrides) --- */
+:root {
+  --amber-300: #F4C47A;
+  --amber-400: #E8A94A;
+  --amber-500: #D4924A;
+  --amber-600: #B8742A;
+  --amber-700: #965C1A;
+
+  --charcoal-900: #0D1117;
+  --charcoal-800: #161B22;
+  --charcoal-700: #21262D;
+  --charcoal-600: #30363D;
+  --charcoal-500: #484F58;
+  --charcoal-400: #6E7681;
+
+  --warm-50:  #FDFBF7;
+  --warm-100: #F5F1EB;
+  --warm-200: #EBE4D9;
+  --warm-300: #D9CFC1;
+  --warm-400: #B8A99A;
+  --warm-500: #8C7B6B;
+
+  --font-sora: 'Sora', 'Outfit', sans-serif;
+  --font-mono: 'DM Mono', 'Courier New', monospace;
+}

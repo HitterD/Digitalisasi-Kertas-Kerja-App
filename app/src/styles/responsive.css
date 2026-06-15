@@ -1,0 +1,274 @@
+/* ==========================================================================
+   responsive.css — @media queries
+   --------------------------------------------------------------------------
+   All responsive rules consolidated here, loaded last so that media-query
+   rules naturally override base/tablet/mobile equivalents in earlier files.
+   Order matches the original index.css so cascade behavior is preserved.
+   ========================================================================== */
+
+/* Utility: show on small+ screens */
+@media (min-width: 640px) {
+  .sm\:inline {
+    display: inline !important;
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .app-main {
+    padding: var(--space-3);
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-main {
+    padding: var(--space-6);
+  }
+}
+
+/* Responsive Grid for Tablet */
+@media (min-width: 640px) {
+  .result-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5) var(--space-4);
+  }
+}
+
+/* Responsive: single column on mobile/tablet portrait */
+@media (max-width: 900px) {
+  .upload-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .upload-dashboard {
+    max-width: 800px !important;
+  }
+}
+
+/* ===== TABLET PORTRAIT (min 600px) ===== */
+@media screen and (min-width: 600px) {
+
+  /* Slightly larger base font for tablet readability */
+  html {
+    font-size: 17px;
+  }
+
+  /* Touch-friendly buttons: min 44px tap target */
+  .btn {
+    min-height: 44px;
+    padding: var(--space-2) var(--space-4);
+  }
+
+  .btn--sm {
+    min-height: 38px;
+  }
+
+  /* Wider app layout */
+  .app-main {
+    padding: var(--space-5);
+  }
+
+  /* Larger form inputs for touch */
+  .form-input,
+  .form-select {
+    min-height: 42px;
+    font-size: var(--font-size-sm);
+  }
+
+  /* Grid: 2-column on tablet portrait */
+  .grid-auto-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ===== TABLET LANDSCAPE (min 900px — Redmi Pad SE landscape) ===== */
+@media screen and (min-width: 900px) {
+  html {
+    font-size: 17px;
+  }
+
+  /* Full width layout for landscape */
+  .app-main {
+    max-width: 1600px;
+    padding: var(--space-5) var(--space-6);
+  }
+
+  /* Grid: full 3-column on landscape */
+  .grid-auto-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (min-width: 900px) {
+  html.plt-capacitor .login-form-inner,
+  html.plt-android .login-form-inner {
+    max-width: 480px;
+  }
+}
+
+@media (max-width: 767px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+  }
+
+  .bento-card--full {
+    grid-column: span 1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .admin-grid {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+@media (min-width: 640px) {
+  .app3-page {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app3-page {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .app3-title {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+@media (min-width: 768px) {
+  .app3-upload-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .app3-btn {
+    width: auto;
+  }
+}
+
+@media (min-width: 640px) {
+  .app3-actions {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 640px) {
+  .app3-process-btn {
+    width: auto;
+  }
+}
+
+@media (min-width: 768px) {
+  .unified-header-container {
+    padding: 0 var(--space-8);
+  }
+}
+
+@media (min-width: 640px) {
+  .unified-divider {
+    display: block;
+  }
+}
+
+@media (max-width: 640px) {
+  .unified-brand-icon {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .unified-tabs-wrapper {
+    display: flex;
+  }
+}
+
+@media (min-width: 1024px) {
+  .unified-mobile-tabs-wrapper {
+    display: none;
+  }
+}
+
+/* Responsive — collapse left panel on small screens */
+@media (max-width: 768px) {
+  .login-panel-brand {
+    display: none;
+  }
+  .login-panel-form {
+    padding: 2rem 1.75rem;
+  }
+}
+
+/* Responsive bento */
+@media (max-width: 860px) {
+  .bento-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .bento-hero-card {
+    grid-column: span 2;
+    grid-row: span 1;
+    min-height: 200px;
+  }
+  .bento-analytics-card,
+  .bento-admin-card {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+  .bento-hero-card,
+  .bento-stack-card {
+    grid-column: 1;
+    grid-row: span 1;
+    min-height: auto;
+  }
+  .bento-main {
+    padding: 1.5rem 1.25rem;
+  }
+  .bento-header {
+    padding: 1rem 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .theme-clean-glass {
+    /* Mengunci scroll menjadi Zero-Scroll HANYA untuk layar lebar / Tablet / Web */
+    height: calc(100vh - 70px);
+    overflow: hidden;
+    padding-bottom: 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .bento-col-half { grid-column: span 6; }
+  .bento-col-third { grid-column: span 6; }
+  .bento-col-two-third { grid-column: span 6; }
+}
+@media (min-width: 1024px) {
+  .bento-col-half { grid-column: span 6; }
+  .bento-col-third { grid-column: span 4; }
+  .bento-col-two-third { grid-column: span 8; }
+}
+
+@media (max-width: 1024px) { .admin-layout-sidebar { grid-template-columns: 1fr; } }
+
+/* ===== Opname mobile responsive ===== */
+@media (max-width: 767px) {
+  .opname-asset-table-wrapper { display: none !important; }
+  .opname-asset-cards { display: block !important; }
+}
+@media (min-width: 768px) {
+  .opname-asset-cards { display: none !important; }
+}
