@@ -1,5 +1,4 @@
 import { useNavigate, Navigate } from 'react-router-dom';
-import { LogOut, Settings, Grid } from 'lucide-react';
 
 const MODULE_META = [
     { code: '01', category: 'OPERATIONAL' },
@@ -77,15 +76,6 @@ const ModuleIcons = {
     ),
 };
 
-/* Premium KKD Logo */
-const KKDLogo = ({ size = 32 }) => (
-    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" width={size} height={size}>
-        <polygon points="18,2 34,11 34,29 18,38 2,29 2,11" fill="var(--charcoal-900)" stroke="var(--amber-600)" strokeWidth="1.5"/>
-        <polygon points="18,7 29,13.5 29,26.5 18,33 7,26.5 7,13.5" fill="none" stroke="var(--amber-500)" strokeWidth="0.75" opacity="0.5"/>
-        <text x="18" y="23" textAnchor="middle" fontFamily="'DM Mono', monospace" fontWeight="700" fontSize="10" fill="var(--amber-400)" letterSpacing="0">KKD</text>
-    </svg>
-);
-
 export default function BentoMenu() {
     const navigate = useNavigate();
 
@@ -107,126 +97,74 @@ export default function BentoMenu() {
     );
 
     return (
-        <div className="bm-page">
-            <div className={`bm-layout ${!isAdmin ? 'bm-layout--user' : ''}`}>
-                
-                {/* ── Sidebar (Admin Only) ── */}
-                {isAdmin && (
-                    <aside className="bm-aside">
-                        <div className="bm-aside__header">
-                            <KKDLogo size={28} />
-                            <div className="bm-aside__brand">
-                                OPNAME ASET <strong>PLATFORM</strong>
-                            </div>
-                        </div>
-                        <div className="bm-aside__nav">
-                            <span className="bm-aside__nav-label">MAIN MENU</span>
-                            <button className="bm-aside__link bm-aside__link--active" onClick={() => navigate('/bento')}>
-                                <Grid size={16} /> Dashboard
-                            </button>
-                            <button className="bm-aside__link" onClick={() => navigate('/admin')}>
-                                <Settings size={16} /> System Config
-                            </button>
-                        </div>
-                        <div className="bm-aside__footer">
-                            <div className="bm-aside__user">
-                                <span className="bm-aside__user-role">ADMINISTRATOR</span>
-                                <span className="bm-aside__user-name">{auth.user || 'Admin'}</span>
-                            </div>
-                            <button className="bm-aside__logout-btn" onClick={handleLogout} title="Logout">
-                                <LogOut size={14} />
-                            </button>
-                        </div>
-                    </aside>
-                )}
+        <div style={{ minHeight: '100vh', background: 'var(--cream-bg)', fontFamily: 'var(--font-sora)' }}>
+            {/* Top bar */}
+            <div className="wa-app-header">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ width: 30, height: 30, background: 'var(--charcoal-900)', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 700, color: 'var(--terracotta-500)', letterSpacing: '0.05em' }}>KKD</div>
+                    </div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--charcoal-900)', letterSpacing: '-0.01em' }}>Kertas Kerja Digital</div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: 'var(--charcoal-400)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Logged in as</div>
+                        <div style={{ fontSize: 12, color: 'var(--charcoal-900)', fontWeight: 600 }}>{auth.user || 'User'}</div>
+                    </div>
+                    <button onClick={handleLogout} className="wa-btn-ghost">Logout</button>
+                </div>
+            </div>
 
-                {/* ── Main Content Area ── */}
-                <div className="bm-main-area">
-                    
-                    {/* ── Topbar (User Layout) ── */}
-                    {!isAdmin && (
-                        <div className="bm-topbar">
-                            <div className="bm-topbar__left">
-                                <div className="bm-topbar__logo">
-                                    <KKDLogo size={24} />
-                                </div>
-                                <span className="bm-topbar__brand">OPNAME ASET PLATFORM</span>
-                            </div>
-
-                            <div className="bm-topbar__center">
-                                KERTAS KERJA DIGITAL
-                            </div>
-
-                            <div className="bm-topbar__right">
-                                <div className="bm-topbar__user-info">
-                                    <span className="bm-topbar__user-label">LOGGED IN AS</span>
-                                    <span className="bm-topbar__user-name">{auth.user || 'User'}</span>
-                                </div>
-                                <button className="bm-topbar__logout" onClick={handleLogout}>
-                                    LOGOUT
-                                </button>
-                            </div>
+            {/* Body */}
+            <div style={{ padding: '24px 28px' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 24 }}>
+                    <div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
+                            {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
                         </div>
-                    )}
-
-                    {/* ── Body Content ── */}
-                    <main className="bm-content">
-                        <div className="bm-welcome">
-                            <h1 className="bm-welcome__title">Selamat Datang<span className="bm-welcome__dot">.</span></h1>
-                            <p className="bm-welcome__sub">PILIH APLIKASI YANG INGIN DIJALANKAN</p>
+                        <div style={{ fontSize: 26, fontWeight: 600, color: 'var(--charcoal-900)', letterSpacing: '-0.02em', marginTop: 6 }}>
+                            Selamat datang, {auth.user || 'User'}.
                         </div>
+                    </div>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.15em' }}>PILIH APLIKASI →</div>
+                </div>
 
-                        <div className={`bm-grid-tight ${visibleApps.length === 3 ? 'bm-grid--3-items' : ''}`}>
-                            {visibleApps.map((app) => {
-                                const meta = MODULE_META[app.moduleIndex];
-                                const IconComp = ModuleIcons[app.id];
-                                return (
-                                    <button
-                                        key={app.id}
-                                        className={`bm-card bm-card--${app.variant}`}
-                                        onClick={() => navigate(app.path)}
-                                    >
-                                        {IconComp && (
-                                            <div className="bm-card__icon">
-                                                <IconComp />
-                                            </div>
-                                        )}
-                                        <div className="bm-card__body">
-                                            <h2 className="bm-card__title">{app.title}</h2>
-                                            <p className="bm-card__desc">{app.description}</p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 32 }}>
+                    {visibleApps.map((app) => {
+                        const meta = MODULE_META[app.moduleIndex];
+                        const IconComp = ModuleIcons[app.id];
+                        return (
+                            <button key={app.id} className="wa-card" onClick={() => navigate(app.path)}
+                                style={{ padding: 24, textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', border: 'none' }}>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 18 }}>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.2em' }}>
+                                        MOD {meta.code} · {meta.category.toUpperCase()}
+                                    </div>
+                                    {app.id === 'app1' && (
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                                            <div style={{ width: 5, height: 5, background: 'var(--terracotta-500)', borderRadius: '50%' }} />
+                                            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: 'var(--terracotta-500)', letterSpacing: '0.12em', fontWeight: 700 }}>RECENT</span>
                                         </div>
-                                        <div className="bm-card__footer">
-                                            <div className="bm-card__tag">
-                                                [ MOD {meta.code} ] {meta.category}
-                                            </div>
-                                            <div className="bm-card__action">
-                                                <svg className="bm-card__arrow-svg" viewBox="0 0 40 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <line className="bm-arrow-line" x1="0" y1="8" x2="32" y2="8" stroke="currentColor" strokeWidth="1.5"/>
-                                                    <g className="bm-arrow-head">
-                                                        <path d="M26 2 L33 8 L26 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square" />
-                                                    </g>
-                                                </svg>
-                                            </div>
-                                        </div>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </main>
+                                    )}
+                                </div>
+                                <div className="wa-icon-wrap" style={{ marginBottom: 18 }}>
+                                    {IconComp && <IconComp />}
+                                </div>
+                                <div style={{ fontSize: 17, fontWeight: 600, color: 'var(--charcoal-900)', letterSpacing: '-0.01em' }}>{app.title}</div>
+                                <div style={{ marginTop: 8, fontSize: 12, color: 'var(--charcoal-500)', lineHeight: 1.5 }}>{app.description}</div>
+                                <div style={{ marginTop: 18, display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 14, borderTop: '1px solid rgba(26,26,26,0.06)' }}>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.1em' }}>AKTIF</div>
+                                    <div style={{ fontSize: 11, color: 'var(--charcoal-900)', fontWeight: 600 }}>Buka →</div>
+                                </div>
+                            </button>
+                        );
+                    })}
+                </div>
 
-                    {/* ── Footer ── */}
-                    <footer className="bm-footer">
-                        <span className="bm-footer__brand">V1.0.4-BUILD.2026</span>
-                        <div className="bm-footer__meta">
-                            <span className="bm-footer__label">LAST UPDATE</span>
-                            <span className="bm-footer__value">MAR 26, 2026 – 14:01</span>
-                        </div>
-                        <div className="bm-footer__meta">
-                            <span className="bm-footer__label">ENVIRONMENT</span>
-                            <span className="bm-footer__value bm-footer__value--live">◆ PRODUCTION SERVER</span>
-                        </div>
-                    </footer>
-
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 18, borderTop: '1px solid rgba(26,26,26,0.08)', fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em' }}>
+                    <span>V1.0.4 · BUILD 2026.06</span>
+                    <span>PT SANTOS JAYA ABADI · INTERNAL</span>
+                    <span>◆ PRODUCTION</span>
                 </div>
             </div>
         </div>
