@@ -267,15 +267,70 @@ export default function OpnamePage() {
                         <strong>Ruangan Custom:</strong> Ruangan ini ditambahkan secara manual. Gunakan form <b>Asset Tidak Ada di Lokasi (Salah Ruangan)</b> dan <b>Asset Tanpa Barcode</b> di bawah untuk menginput data opname.
                     </div>
                 ) : (
-                    <AssetTable
-                        assets={room.assets}
-                        roomIndex={roomIdx}
-                        onToggleCheck={toggleAssetCheck}
-                        onUpdateField={updateAssetField}
-                        masterDb={masterDb}
-                        onAutofill={autofillAsset}
-                        searchQuery={searchQuery}
-                    />
+                    <>
+                        <div className="opname-asset-table-wrapper">
+                            <AssetTable
+                                assets={room.assets}
+                                roomIndex={roomIdx}
+                                onToggleCheck={toggleAssetCheck}
+                                onUpdateField={updateAssetField}
+                                masterDb={masterDb}
+                                onAutofill={autofillAsset}
+                                searchQuery={searchQuery}
+                            />
+                        </div>
+                        <div className="opname-asset-cards">
+                            {room.assets.map((asset, i) => (
+                                <div key={asset.id} className="wa-card" style={{ padding: 12, marginBottom: 8 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                        <div
+                                            className={`wa-check ${asset.isChecked ? 'on' : ''}`}
+                                            onClick={() => toggleAssetCheck(roomIdx, i)}
+                                            role="checkbox"
+                                            aria-checked={!!asset.isChecked}
+                                            tabIndex={0}
+                                        />
+                                        <div style={{ flex: 1, minWidth: 0 }}>
+                                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700, color: 'var(--terracotta-500)' }}>{asset.barcode}</div>
+                                            <div style={{ fontSize: 12.5, fontWeight: 500, color: 'var(--charcoal-900)', marginTop: 2, lineHeight: 1.3 }}>{asset.namaAset}</div>
+                                        </div>
+                                        <div className="wa-toggle">
+                                            <span
+                                                className={asset.adaTidakAda === 'Ada' ? 'on' : ''}
+                                                onClick={() => updateAssetField(roomIdx, i, 'adaTidakAda', 'Ada')}
+                                            >Ada</span>
+                                            <span
+                                                className={asset.adaTidakAda === 'Tidak Ada' ? 'on' : ''}
+                                                onClick={() => updateAssetField(roomIdx, i, 'adaTidakAda', 'Tidak Ada')}
+                                            >Tdk</span>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+                                        <select
+                                            className="wa-select"
+                                            style={{ flex: 1, fontSize: 11 }}
+                                            value={asset.kondisi || ''}
+                                            onChange={(e) => updateAssetField(roomIdx, i, 'kondisi', e.target.value)}
+                                        >
+                                            <option value="">— Kondisi —</option>
+                                            <option>Baik</option>
+                                            <option>Rusak</option>
+                                            <option>Cetak Ulang</option>
+                                            <option>Salah Ruangan</option>
+                                            <option>Pending</option>
+                                        </select>
+                                        <input
+                                            className="wa-input"
+                                            style={{ flex: 1, fontSize: 11 }}
+                                            placeholder="Keterangan…"
+                                            value={asset.keterangan || ''}
+                                            onChange={(e) => updateAssetField(roomIdx, i, 'keterangan', e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
                 )}
             </div>
 
