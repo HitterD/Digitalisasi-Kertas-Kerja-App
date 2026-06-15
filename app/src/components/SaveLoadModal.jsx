@@ -168,32 +168,32 @@ export default function SaveLoadModal({ isOpen, onClose, currentFileName, onSave
     if (!isOpen) return null;
 
     return (
-        <div className="modal-overlay" style={{ zIndex: 9999, position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 0, 0, 0.4)', backdropFilter: 'blur(2px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-            <div className="modal-content" style={{ backgroundColor: 'var(--warm-50)', width: '100%', maxWidth: '540px', boxShadow: '8px 8px 0px rgba(15, 23, 42, 1)', maxHeight: '85vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', border: '3px solid var(--charcoal-900)', borderRadius: '0' }}>
-                
+        <div className="modal-overlay" style={{ zIndex: 9999, position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
+            <div className="wa-card" style={{ width: '100%', maxWidth: '600px', maxHeight: '85vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+
                 {/* Header */}
-                <div style={{ padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#ffffff', borderBottom: '3px solid var(--charcoal-900)' }}>
-                    <h2 style={{ fontSize: '18px', fontFamily: 'var(--font-sora)', fontWeight: 900, margin: 0, display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--charcoal-900)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                        <div style={{ width: 36, height: 36, background: 'var(--amber-400)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--charcoal-900)', border: '2px solid var(--charcoal-900)' }}>
-                            <Save size={18} strokeWidth={3} />
+                <div style={{ padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(26, 26, 26, 0.06)' }}>
+                    <h2 style={{ fontSize: '17px', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--charcoal-900)' }}>
+                        <div style={{ width: 36, height: 36, background: 'rgba(201, 100, 66, 0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--terracotta-500)', borderRadius: '10px' }}>
+                            <Save size={18} strokeWidth={2.5} />
                         </div>
-                        DATA OPNAME
+                        Data Opname
                     </h2>
-                    <button onClick={onClose} style={{ background: '#fff', border: '2px solid var(--charcoal-900)', cursor: 'pointer', padding: '0', width: 36, height: 36, color: 'var(--charcoal-900)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} onMouseOver={e => { e.currentTarget.style.backgroundColor='var(--charcoal-900)'; e.currentTarget.style.color='#fff' }} onMouseOut={e => { e.currentTarget.style.backgroundColor='#fff'; e.currentTarget.style.color='var(--charcoal-900)'}}>
-                        <X size={20} strokeWidth={3}/>
+                    <button onClick={onClose} aria-label="Close" style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '0', width: 36, height: 36, color: 'var(--charcoal-900)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', transition: 'all 0.2s' }} onMouseOver={e => { e.currentTarget.style.backgroundColor='rgba(26,26,26,0.05)'; }} onMouseOut={e => { e.currentTarget.style.backgroundColor='transparent'; }}>
+                        <X size={20} strokeWidth={2.5}/>
                     </button>
                 </div>
 
-                {/* Brutalist Tabs */}
-                <div style={{ display: 'flex', borderBottom: '3px solid var(--charcoal-900)', backgroundColor: '#fff' }}>
-                    <button 
-                        style={{ flex: 1, padding: '16px', fontWeight: 900, fontSize: '13px', outline: 'none', cursor: 'pointer', fontFamily: 'var(--font-sora)', border: 'none', borderRight: '3px solid var(--charcoal-900)', background: activeTab === 'save' ? 'var(--charcoal-900)' : 'transparent', color: activeTab === 'save' ? 'var(--amber-400)' : 'var(--charcoal-900)', transition: 'all 0.1s ease', textTransform: 'uppercase', letterSpacing: '0.05em' }}
+                {/* Soft Tabs */}
+                <div style={{ display: 'flex', borderBottom: '1px solid rgba(26, 26, 26, 0.06)', backgroundColor: 'transparent' }}>
+                    <button
+                        style={{ flex: 1, padding: '14px 16px', fontWeight: 600, fontSize: '13px', outline: 'none', cursor: 'pointer', border: 'none', background: 'transparent', color: activeTab === 'save' ? 'var(--charcoal-900)' : 'rgba(26, 26, 26, 0.55)', transition: 'all 0.15s ease', borderBottom: activeTab === 'save' ? '2px solid var(--terracotta-500)' : '2px solid transparent' }}
                         onClick={() => setActiveTab('save')}
                     >
                         Simpan (Save)
                     </button>
-                    <button 
-                        style={{ flex: 1, padding: '16px', fontWeight: 900, fontSize: '13px', outline: 'none', cursor: 'pointer', fontFamily: 'var(--font-sora)', border: 'none', background: activeTab === 'load' ? 'var(--charcoal-900)' : 'transparent', color: activeTab === 'load' ? 'var(--amber-400)' : 'var(--charcoal-900)', transition: 'all 0.1s ease', textTransform: 'uppercase', letterSpacing: '0.05em' }}
+                    <button
+                        style={{ flex: 1, padding: '14px 16px', fontWeight: 600, fontSize: '13px', outline: 'none', cursor: 'pointer', border: 'none', background: 'transparent', color: activeTab === 'load' ? 'var(--charcoal-900)' : 'rgba(26, 26, 26, 0.55)', transition: 'all 0.15s ease', borderBottom: activeTab === 'load' ? '2px solid var(--terracotta-500)' : '2px solid transparent' }}
                         onClick={() => setActiveTab('load')}
                     >
                         Muat Ulang (Load)
@@ -201,71 +201,69 @@ export default function SaveLoadModal({ isOpen, onClose, currentFileName, onSave
                 </div>
 
                 {/* Body */}
-                <div style={{ padding: '24px', overflowY: 'auto', flex: 1, minHeight: '300px', backgroundColor: 'var(--warm-50)' }}>
+                <div style={{ padding: '24px', overflowY: 'auto', flex: 1, minHeight: '300px' }}>
                     
                     {error && (
-                        <div style={{ marginBottom: '20px', padding: '12px 16px', backgroundColor: '#FEF2F2', color: '#991B1B', border: '2px solid #991B1B', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 700, fontFamily: 'var(--font-mono)', textTransform: 'uppercase' }}>
-                            <AlertCircle size={18} strokeWidth={3} style={{ flexShrink: 0 }} />
+                        <div style={{ marginBottom: '20px', padding: '12px 16px', backgroundColor: 'rgba(220, 38, 38, 0.06)', color: '#991B1B', border: '1px solid rgba(220, 38, 38, 0.15)', borderRadius: 'var(--radius-md, 10px)', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 600 }}>
+                            <AlertCircle size={18} strokeWidth={2.5} style={{ flexShrink: 0 }} />
                             <span>{error}</span>
                         </div>
                     )}
 
                     {activeTab === 'save' && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-                            
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+
                             {/* New Save Input */}
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                <label style={{ fontSize: '12px', fontWeight: 900, fontFamily: 'var(--font-sora)', color: 'var(--charcoal-900)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>SIMPAN SEBAGAI FILE BARU</label>
-                                <div style={{ display: 'flex', gap: '10px', alignItems: 'stretch' }}>
-                                    <input 
-                                        type="text" 
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--charcoal-900)' }}>Simpan sebagai file baru</label>
+                                <div style={{ display: 'flex', gap: '8px', alignItems: 'stretch' }}>
+                                    <input
+                                        type="text"
                                         value={saveName}
                                         onChange={e => setSaveName(e.target.value)}
                                         placeholder="Ketik nama untuk di-save..."
-                                        style={{ flex: 1, padding: '12px 16px', border: '2px solid var(--charcoal-900)', borderRadius: '0', fontSize: '14px', outline: 'none', backgroundColor: '#fff', color: 'var(--charcoal-900)', fontWeight: 600, fontFamily: 'var(--font-mono)' }}
+                                        style={{ flex: 1, padding: '10px 14px', border: '1px solid rgba(26, 26, 26, 0.12)', borderRadius: 'var(--radius-md, 10px)', fontSize: '14px', outline: 'none', backgroundColor: '#fff', color: 'var(--charcoal-900)', fontWeight: 500 }}
                                         disabled={loading}
                                     />
-                                    <button 
+                                    <button
                                         onClick={handleSaveNew}
                                         disabled={loading || !saveName.trim()}
-                                        style={{ backgroundColor: 'var(--charcoal-900)', color: 'var(--amber-400)', padding: '0 24px', fontSize: '13px', fontWeight: 900, fontFamily: 'var(--font-sora)', textTransform: 'uppercase', letterSpacing: '0.06em', border: '2px solid var(--charcoal-900)', cursor: (loading || !saveName.trim()) ? 'not-allowed' : 'pointer', opacity: (loading || !saveName.trim()) ? 0.6 : 1, transition: 'transform 0.1s', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                                        onMouseDown={e=>e.currentTarget.style.transform='translate(2px, 2px)'}
-                                        onMouseUp={e=>e.currentTarget.style.transform='translate(0, 0)'}
+                                        className="wa-btn wa-btn-terracotta"
+                                        style={{ padding: '0 20px', fontSize: '13px', cursor: (loading || !saveName.trim()) ? 'not-allowed' : 'pointer', opacity: (loading || !saveName.trim()) ? 0.6 : 1 }}
                                     >
-                                        SAVE
+                                        Save
                                     </button>
                                 </div>
                             </div>
 
-                            <div style={{ height: '3px', backgroundColor: 'var(--charcoal-900)', width: '100%' }}></div>
+                            <div style={{ height: '1px', backgroundColor: 'rgba(26, 26, 26, 0.06)', width: '100%' }}></div>
 
                             {/* Overwrite List */}
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                                <h3 style={{ fontSize: '12px', fontWeight: 900, fontFamily: 'var(--font-sora)', color: 'var(--charcoal-900)', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>TIMPA (OVERWRITE) FILE TERSIMPAN:</h3>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                <h3 style={{ fontSize: '12px', fontWeight: 600, color: 'var(--charcoal-900)', margin: 0 }}>Timpa (overwrite) file tersimpan</h3>
                                 {loading && saves.length === 0 ? (
-                                    <div style={{ textAlign: 'center', padding: '32px 0', fontSize: '13px', color: 'var(--charcoal-900)', fontWeight: 700, fontFamily: 'var(--font-mono)', textTransform: 'uppercase' }}>MENGAMBIL DATA...</div>
+                                    <div style={{ textAlign: 'center', padding: '32px 0', fontSize: '13px', color: 'rgba(26, 26, 26, 0.55)' }}>Mengambil data...</div>
                                 ) : saves.length === 0 ? (
-                                    <div style={{ textAlign: 'center', padding: '32px 0', fontSize: '13px', color: 'var(--charcoal-900)', backgroundColor: '#fff', border: '2px dashed var(--charcoal-900)', fontWeight: 700, fontFamily: 'var(--font-mono)', textTransform: 'uppercase' }}>BELUM ADA DATA TERSIMPAN.</div>
+                                    <div style={{ textAlign: 'center', padding: '32px 0', fontSize: '13px', color: 'rgba(26, 26, 26, 0.55)', backgroundColor: '#fff', border: '1px dashed rgba(26, 26, 26, 0.12)', borderRadius: 'var(--radius-md, 10px)' }}>Belum ada data tersimpan.</div>
                                 ) : (
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                         {saves.map(save => (
-                                            <div key={save.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', border: '2px solid var(--charcoal-900)', backgroundColor: '#ffffff', boxShadow: '4px 4px 0px var(--charcoal-900)' }}>
-                                                <div style={{ minWidth: 0, flex: 1, paddingRight: '16px' }}>
-                                                    <div style={{ fontWeight: 800, fontSize: '14px', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--charcoal-900)' }}>{save.name}</div>
-                                                    <div style={{ fontSize: '11px', color: 'var(--charcoal-600)', marginTop: '6px', display: 'flex', gap: '10px', alignItems: 'center', fontWeight: 600, fontFamily: 'var(--font-mono)', textTransform: 'uppercase' }}>
+                                            <div key={save.id} className="wa-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', gap: '12px' }}>
+                                                <div style={{ minWidth: 0, flex: 1 }}>
+                                                    <div style={{ fontWeight: 600, fontSize: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--charcoal-900)' }}>{save.name}</div>
+                                                    <div style={{ fontSize: '11px', color: 'rgba(26, 26, 26, 0.55)', marginTop: '4px', display: 'flex', gap: '8px', alignItems: 'center', fontWeight: 500 }}>
                                                         <span>{new Date(save.updatedAt).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})} • {new Date(save.updatedAt).toLocaleDateString('id-ID', {day:'2-digit', month:'short'})}</span>
-                                                        <span style={{width: 6, height: 6, background: 'var(--charcoal-900)'}}></span>
+                                                        <span style={{width: 4, height: 4, background: 'rgba(26, 26, 26, 0.4)', borderRadius: '50%'}}></span>
                                                         <span>{save.roomCount} Area</span>
                                                     </div>
                                                 </div>
-                                                <button 
+                                                <button
                                                     onClick={() => handleOverwrite(save)}
                                                     disabled={loading}
-                                                    style={{ flexShrink: 0, fontSize: '11px', fontWeight: 900, fontFamily: 'var(--font-sora)', textTransform: 'uppercase', letterSpacing: '0.06em', padding: '10px 16px', border: '2px solid var(--charcoal-900)', color: 'var(--charcoal-900)', backgroundColor: 'var(--amber-400)', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.5 : 1, transition: 'all 0.1s' }}
-                                                    onMouseOver={e => { e.currentTarget.style.backgroundColor = 'var(--charcoal-900)'; e.currentTarget.style.color = 'var(--amber-400)'}}
-                                                    onMouseOut={e => { e.currentTarget.style.backgroundColor = 'var(--amber-400)'; e.currentTarget.style.color = 'var(--charcoal-900)'}}
+                                                    className="wa-btn"
+                                                    style={{ flexShrink: 0, fontSize: '12px', padding: '8px 14px', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.5 : 1 }}
                                                 >
-                                                    TIMPA
+                                                    Timpa
                                                 </button>
                                             </div>
                                         ))}
@@ -276,58 +274,57 @@ export default function SaveLoadModal({ isOpen, onClose, currentFileName, onSave
                     )}
 
                     {activeTab === 'load' && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                             {loading && saves.length === 0 ? (
-                                <div style={{ textAlign: 'center', padding: '40px 0', fontSize: '13px', color: 'var(--charcoal-900)', fontWeight: 700, fontFamily: 'var(--font-mono)', textTransform: 'uppercase' }}>MEMUAT DATA...</div>
+                                <div style={{ textAlign: 'center', padding: '40px 0', fontSize: '13px', color: 'rgba(26, 26, 26, 0.55)' }}>Memuat data...</div>
                             ) : saves.length === 0 ? (
-                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '48px 24px', color: 'var(--charcoal-900)', backgroundColor: '#fff', border: '2px dashed var(--charcoal-900)', textAlign: 'center' }}>
-                                    <div style={{ width: 56, height: 56, background: 'var(--charcoal-900)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', color: 'var(--amber-400)' }}>
-                                        <Download size={28} strokeWidth={3} />
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', color: 'var(--charcoal-900)', backgroundColor: '#fff', border: '1px dashed rgba(26, 26, 26, 0.12)', borderRadius: 'var(--radius-md, 10px)', textAlign: 'center' }}>
+                                    <div style={{ width: 48, height: 48, background: 'rgba(201, 100, 66, 0.10)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px', color: 'var(--terracotta-500)' }}>
+                                        <Download size={24} strokeWidth={2.5} />
                                     </div>
-                                    <p style={{ margin: 0, fontSize: '16px', fontWeight: 900, fontFamily: 'var(--font-sora)', color: 'var(--charcoal-900)', textTransform: 'uppercase' }}>BELUM ADA DATA</p>
-                                    <p style={{ margin: '8px 0 0 0', fontSize: '12px', lineHeight: 1.6, maxWidth: '240px', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>SIMPAN PROGRES DI TAB "SIMPAN" AGAR TIDAK HILANG.</p>
+                                    <p style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: 'var(--charcoal-900)' }}>Belum ada data</p>
+                                    <p style={{ margin: '6px 0 0 0', fontSize: '12px', lineHeight: 1.6, maxWidth: '240px', color: 'rgba(26, 26, 26, 0.6)' }}>Simpan progres di tab "Simpan" agar tidak hilang.</p>
                                 </div>
                             ) : (
                                 saves.map(save => (
-                                    <div key={save.id} style={{ display: 'flex', alignItems: 'center', padding: '16px', border: '2px solid var(--charcoal-900)', backgroundColor: '#ffffff', gap: '16px', boxShadow: '4px 4px 0px var(--charcoal-900)' }}>
-                                        <div style={{ width: 44, height: 44, background: 'var(--charcoal-900)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--amber-400)', flexShrink: 0 }}>
-                                            <Save size={20} strokeWidth={3} />
+                                    <div key={save.id} className="wa-card" style={{ display: 'flex', alignItems: 'center', padding: '12px 14px', gap: '12px' }}>
+                                        <div style={{ width: 40, height: 40, background: 'rgba(201, 100, 66, 0.10)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--terracotta-500)', flexShrink: 0 }}>
+                                            <Save size={18} strokeWidth={2.5} />
                                         </div>
-                                        
+
                                         <div style={{ minWidth: 0, flex: 1 }}>
-                                            <h4 style={{ margin: 0, fontWeight: 800, fontSize: '14px', fontFamily: 'var(--font-mono)', color: 'var(--charcoal-900)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{save.name}</h4>
-                                            
-                                            <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '12px', fontSize: '11px', color: 'var(--charcoal-600)', marginTop: '8px', fontFamily: 'var(--font-mono)', fontWeight: 600, textTransform: 'uppercase' }}>
+                                            <h4 style={{ margin: 0, fontWeight: 600, fontSize: '14px', color: 'var(--charcoal-900)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{save.name}</h4>
+
+                                            <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', fontSize: '11px', color: 'rgba(26, 26, 26, 0.6)', marginTop: '6px', fontWeight: 500 }}>
                                                 <span>{new Date(save.updatedAt).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'})} • {new Date(save.updatedAt).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})}</span>
                                                 {save.periode && (
-                                                    <span style={{ backgroundColor: 'var(--amber-400)', color: 'var(--charcoal-900)', padding: '2px 8px', border: '1px solid var(--charcoal-900)', fontWeight: 800 }}>{save.periode}</span>
+                                                    <span style={{ backgroundColor: 'rgba(201, 100, 66, 0.10)', color: 'var(--terracotta-500)', padding: '2px 8px', borderRadius: '6px', fontWeight: 600 }}>{save.periode}</span>
                                                 )}
                                             </div>
-                                            
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '11px', color: 'var(--charcoal-700)', marginTop: '6px', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
-                                                <span>R {save.roomCount}</span>
-                                                <span style={{width: 4, height: 4, background: 'var(--charcoal-900)'}}></span>
-                                                <span>A {save.assetCount}</span>
+
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'rgba(26, 26, 26, 0.6)', marginTop: '4px', fontWeight: 600 }}>
+                                                <span>{save.roomCount} R</span>
+                                                <span style={{width: 3, height: 3, background: 'rgba(26, 26, 26, 0.4)', borderRadius: '50%'}}></span>
+                                                <span>{save.assetCount} A</span>
                                             </div>
                                         </div>
-                                        
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flexShrink: 0 }}>
-                                            <button 
+
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flexShrink: 0 }}>
+                                            <button
                                                 onClick={() => handleLoad(save)}
                                                 disabled={loading}
-                                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '12px', fontWeight: 900, fontFamily: 'var(--font-sora)', textTransform: 'uppercase', letterSpacing: '0.06em', padding: '10px 16px', backgroundColor: 'var(--charcoal-900)', color: 'var(--amber-400)', border: '2px solid var(--charcoal-900)', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.5 : 1, transition: 'all 0.1s' }}
-                                                onMouseOver={e=>{e.currentTarget.style.backgroundColor='var(--amber-400)'; e.currentTarget.style.color='var(--charcoal-900)'}}
-                                                onMouseOut={e=>{e.currentTarget.style.backgroundColor='var(--charcoal-900)'; e.currentTarget.style.color='var(--amber-400)'}}
+                                                className="wa-btn wa-btn-terracotta"
+                                                style={{ fontSize: '12px', padding: '6px 12px', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.5 : 1 }}
                                             >
-                                                LOAD
+                                                Load
                                             </button>
-                                            <button 
+                                            <button
                                                 onClick={() => handleDelete(save)}
                                                 disabled={loading}
                                                 title="Hapus permanen"
-                                                style={{ fontSize: '11px', fontWeight: 700, fontFamily: 'var(--font-mono)', padding: '6px', color: 'var(--red-600)', backgroundColor: 'transparent', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.5 : 1, textTransform: 'uppercase' }}
+                                                style={{ fontSize: '11px', fontWeight: 600, padding: '4px', color: 'rgba(220, 38, 38, 0.85)', backgroundColor: 'transparent', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.5 : 1 }}
                                             >
-                                                HAPUS DATA
+                                                Hapus data
                                             </button>
                                         </div>
                                     </div>

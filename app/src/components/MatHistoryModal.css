@@ -5,6 +5,7 @@
     inset: 0;
     background-color: rgba(15, 23, 42, 0.6);
     backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     z-index: 1100;
     display: flex;
     align-items: center;
@@ -19,9 +20,10 @@
 }
 
 .mhm-modal {
-    background: #ffffff;
-    border-radius: 24px;
-    box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.35);
+    background: var(--cream-surface, #FDFCF7);
+    border: 1px solid rgba(26, 26, 26, 0.06);
+    border-radius: var(--radius-xl, 14px);
+    box-shadow: 0 1px 2px rgba(45, 45, 45, 0.03), 0 14px 30px rgba(45, 45, 45, 0.08);
     width: 100%;
     max-width: 620px;
     max-height: 82vh;
@@ -38,7 +40,7 @@
 
 @media (max-width: 640px) {
     .mhm-overlay { align-items: flex-end; padding: 0; }
-    .mhm-modal { border-radius: 24px 24px 0 0; max-height: 88vh; max-width: 100%; }
+    .mhm-modal { border-radius: 16px 16px 0 0; max-height: 88vh; max-width: 100%; }
 }
 
 /* ── Header ───────────────────────────────────────────────── */
@@ -205,13 +207,14 @@
 
 /* ── Card ─────────────────────────────────────────────────── */
 .mhm-card {
-    background: var(--neutral-50, #f8fafc);
-    border: 1.5px solid var(--neutral-200, #e2e8f0);
-    border-radius: 16px;
+    background: var(--cream-surface, #FDFCF7);
+    border: 1px solid rgba(26, 26, 26, 0.06);
+    border-radius: var(--radius-xl, 14px);
     padding: 14px 16px;
     margin-bottom: 16px;
     flex: 1;
     min-width: 0;
+    box-shadow: 0 1px 2px rgba(45, 45, 45, 0.03), 0 8px 20px rgba(45, 45, 45, 0.05);
 }
 
 .mhm-card-header {

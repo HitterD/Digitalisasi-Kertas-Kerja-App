@@ -116,13 +116,13 @@ export default function ServerFileBrowser({ onFileLoaded }) {
     };
 
     return (
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--warm-50)' }}>
-            
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+
             {/* Initial loading folders */}
             {loadingFolders && !folders && (
                 <div className="py-5" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
                     <div className="spinner" style={{ width: 32, height: 32 }}></div>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--charcoal-900)' }}>MENGHUBUNGI SERVER...</p>
+                    <p style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(26, 26, 26, 0.6)' }}>Menghubungi server...</p>
                 </div>
             )}
 
@@ -131,47 +131,46 @@ export default function ServerFileBrowser({ onFileLoaded }) {
                 <div style={{
                     padding: '24px',
                 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                         <label style={{
                             display: 'flex', alignItems: 'center', gap: '8px',
-                            fontFamily: 'var(--font-sora)', fontSize: '12px',
-                            fontWeight: 900, color: 'var(--charcoal-900)',
-                            textTransform: 'uppercase', letterSpacing: '0.05em'
+                            fontSize: '12px',
+                            fontWeight: 600, color: 'var(--charcoal-900)',
                         }}>
-                            <Folder size={16} color="var(--charcoal-900)" strokeWidth={3} />
-                            PILIH DIVISI / LOKASI SERVER
+                            <Folder size={16} color="var(--charcoal-900)" strokeWidth={2.5} />
+                            Pilih divisi / lokasi server
                         </label>
                         <button
                             onClick={handleLoadFolders}
                             title="Refresh daftar folder"
                             disabled={loading || loadingFolders}
                             style={{
-                                background: '#fff', border: '2px solid var(--charcoal-900)',
-                                borderRadius: 0, cursor: 'pointer', padding: '6px',
+                                background: 'transparent', border: '1px solid rgba(26, 26, 26, 0.12)',
+                                borderRadius: '10px', cursor: 'pointer', padding: '6px',
                                 display: 'flex', alignItems: 'center', color: 'var(--charcoal-900)',
                                 transition: 'all 0.15s'
                             }}
-                            onMouseOver={e => { e.currentTarget.style.backgroundColor = 'var(--charcoal-900)'; e.currentTarget.style.color = 'var(--amber-400)'}}
-                            onMouseOut={e => { e.currentTarget.style.backgroundColor = '#fff'; e.currentTarget.style.color = 'var(--charcoal-900)'}}
+                            onMouseOver={e => { e.currentTarget.style.backgroundColor = 'rgba(26,26,26,0.05)'; }}
+                            onMouseOut={e => { e.currentTarget.style.backgroundColor = 'transparent'; }}
                         >
-                            <RefreshCw size={14} strokeWidth={3} className={loadingFolders ? 'animate-spin' : ''} />
+                            <RefreshCw size={14} strokeWidth={2.5} className={loadingFolders ? 'animate-spin' : ''} />
                         </button>
                     </div>
                     <select
                         style={{
-                            width: '100%', padding: '14px 16px',
-                            fontSize: '14px', fontFamily: 'var(--font-mono)',
-                            borderRadius: 0, border: '2px solid var(--charcoal-900)',
+                            width: '100%', padding: '12px 16px',
+                            fontSize: '14px',
+                            borderRadius: '10px', border: '1px solid rgba(26, 26, 26, 0.12)',
                             outline: 'none', background: '#fff',
-                            color: 'var(--charcoal-900)', fontWeight: 700,
-                            boxShadow: '4px 4px 0 var(--charcoal-900)',
+                            color: 'var(--charcoal-900)', fontWeight: 500,
+                            boxShadow: '0 1px 2px rgba(45, 45, 45, 0.04)',
                             cursor: 'pointer', appearance: 'none'
                         }}
                         value={selectedFolder}
                         onChange={handleSelectFolder}
                         disabled={loading}
                     >
-                        <option value="">— SILAKAN PILIH FOLDER —</option>
+                        <option value="">— Silakan pilih folder —</option>
                         {folders.map(f => (
                             <option key={f} value={f}>{f}</option>
                         ))}
@@ -181,127 +180,124 @@ export default function ServerFileBrowser({ onFileLoaded }) {
 
             {/* Empty State when no folder selected */}
             {!selectedFolder && folders && !loadingFolders && (
-                <div style={{ padding: '48px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', borderTop: '3px solid var(--charcoal-900)', backgroundColor: '#fff' }}>
-                    <div style={{ width: 64, height: 64, background: 'var(--charcoal-900)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--amber-400)', marginBottom: '24px' }}>
-                        <FolderOpen size={32} strokeWidth={3} />
+                <div className="wa-card" style={{ margin: '0 24px 24px 24px', padding: '40px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                    <div style={{ width: 56, height: 56, background: 'rgba(201, 100, 66, 0.10)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--terracotta-500)', marginBottom: '16px' }}>
+                        <FolderOpen size={28} strokeWidth={2.5} />
                     </div>
                     <p style={{
-                        fontFamily: 'var(--font-sora)', fontSize: '16px', fontWeight: 900,
-                        textTransform: 'uppercase', letterSpacing: '0.05em',
+                        fontSize: '15px', fontWeight: 700,
                         color: 'var(--charcoal-900)', margin: 0
                     }}>
-                        BELUM ADA FOLDER TERPILIH
+                        Belum ada folder terpilih
                     </p>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', fontWeight: 600, color: 'var(--charcoal-600)', marginTop: '12px' }}>
-                        PILIH FOLDER DI ATAS UNTUK MELIHAT DAFTAR KERTAS KERJA OPNAME.
+                    <p style={{ fontSize: '13px', fontWeight: 500, color: 'rgba(26, 26, 26, 0.6)', marginTop: '8px' }}>
+                        Pilih folder di atas untuk melihat daftar kertas kerja opname.
                     </p>
                 </div>
             )}
 
             {/* Loading Periods state */}
             {loading && (
-                <div style={{ padding: '64px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', borderTop: '3px solid var(--charcoal-900)', backgroundColor: '#fff' }}>
-                    <div className="spinner" style={{ width: 40, height: 40, borderTopColor: 'var(--amber-400)' }}></div>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--charcoal-900)', marginTop: '24px' }}>MENCARI KERTAS KERJA OPNAME...</p>
+                <div style={{ padding: '48px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div className="spinner" style={{ width: 36, height: 36, borderTopColor: 'var(--terracotta-500)' }}></div>
+                    <p style={{ fontSize: '13px', fontWeight: 600, color: 'rgba(26, 26, 26, 0.6)', marginTop: '16px' }}>Mencari kertas kerja opname...</p>
                 </div>
             )}
 
             {/* Flat File list */}
             {selectedFolder && availableFiles && availableFiles.length > 0 && !loading && (
-                <div style={{ borderTop: '3px solid var(--charcoal-900)', backgroundColor: 'var(--warm-50)' }}>
+                <div>
                     <div style={{
-                        padding: '24px 24px 16px',
+                        padding: '20px 24px 12px',
                         display: 'flex', justifyContent: 'space-between', alignItems: 'center'
                     }}>
                         <p style={{
-                            fontFamily: 'var(--font-sora)', fontSize: '13px',
-                            fontWeight: 900, textTransform: 'uppercase',
-                            letterSpacing: '0.05em', color: 'var(--charcoal-900)',
+                            fontSize: '13px',
+                            fontWeight: 600,
+                            color: 'var(--charcoal-900)',
                             margin: 0
                         }}>
-                            File Excel Tersedia:
+                            File Excel Tersedia
                         </p>
-                        <span style={{ 
-                                background: 'var(--charcoal-900)', color: 'var(--amber-400)', 
-                                padding: '4px 8px', fontSize: '11px', fontWeight: 900, fontFamily: 'var(--font-mono)',
-                                border: '2px solid var(--charcoal-900)' 
+                        <span style={{
+                                background: 'rgba(201, 100, 66, 0.10)', color: 'var(--terracotta-500)',
+                                padding: '3px 8px', fontSize: '11px', fontWeight: 600,
+                                borderRadius: '6px',
                         }}>
-                            {availableFiles.length} FILE
+                            {availableFiles.length} file
                         </span>
                     </div>
-                    <div style={{ padding: '0 24px 24px 24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div style={{ padding: '0 24px 24px 24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         {availableFiles.map((file) => {
                             const dlId = `${file.periodName}-${file.filename}`;
                             const isDownloading = downloading === dlId;
-                            
+
                             return (
                                 <button
                                     key={dlId}
                                     onClick={() => handleDownloadFile(file.periodName, file.filename)}
                                     disabled={downloading !== null}
+                                    className="wa-card"
                                     style={{
-                                        display: 'flex', alignItems: 'center', gap: '16px',
+                                        display: 'flex', alignItems: 'center', gap: '12px',
                                         width: '100%', textAlign: 'left',
-                                        padding: '16px',
-                                        background: isDownloading ? 'var(--amber-400)' : '#ffffff',
-                                        border: '2px solid var(--charcoal-900)',
-                                        borderRadius: 0,
-                                        boxShadow: isDownloading ? '0 0 0' : '4px 4px 0 var(--charcoal-900)',
+                                        padding: '12px 14px',
+                                        background: isDownloading ? 'rgba(201, 100, 66, 0.06)' : 'var(--cream-surface, #FDFCF7)',
+                                        border: '1px solid rgba(26, 26, 26, 0.06)',
+                                        borderRadius: '10px',
                                         cursor: downloading !== null ? 'not-allowed' : 'pointer',
                                         opacity: (downloading !== null && !isDownloading) ? 0.5 : 1,
-                                        transition: 'all 0.1s',
+                                        transition: 'all 200ms cubic-bezier(0.2, 0.8, 0.2, 1)',
+                                        fontFamily: 'inherit', fontSize: '12px',
+                                        color: 'var(--charcoal-900)',
                                     }}
-                                    onMouseOver={e => { if(!downloading) e.currentTarget.style.backgroundColor = 'var(--warm-100)'; }}
-                                    onMouseOut={e => { if(!downloading) e.currentTarget.style.backgroundColor = '#ffffff'; }}
-                                    onMouseDown={e => { if(!downloading) { e.currentTarget.style.transform = 'translate(2px, 2px)'; e.currentTarget.style.boxShadow = '2px 2px 0 var(--charcoal-900)'; } }}
-                                    onMouseUp={e => { if(!downloading) { e.currentTarget.style.transform = 'translate(0px, 0px)'; e.currentTarget.style.boxShadow = '4px 4px 0 var(--charcoal-900)'; } }}
+                                    onMouseOver={e => { if(!downloading) { e.currentTarget.style.borderColor = 'var(--terracotta-500)'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
+                                    onMouseOut={e => { if(!downloading) { e.currentTarget.style.borderColor = 'rgba(26, 26, 26, 0.06)'; e.currentTarget.style.transform = 'translateY(0)'; } }}
                                 >
                                     <div style={{
-                                        flexShrink: 0, width: 44, height: 44,
-                                        background: isDownloading ? 'var(--charcoal-900)' : 'var(--charcoal-900)',
+                                        flexShrink: 0, width: 40, height: 40,
+                                        background: 'rgba(201, 100, 66, 0.10)',
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        borderRadius: 0,
+                                        borderRadius: '10px', color: 'var(--terracotta-500)',
                                     }}>
                                         {isDownloading ? (
-                                            <div className="spinner" style={{ width: 20, height: 20, borderTopColor: 'var(--amber-400)' }}></div>
+                                            <div className="spinner" style={{ width: 18, height: 18, borderTopColor: 'var(--terracotta-500)' }}></div>
                                         ) : (
-                                            <FileSpreadsheet size={20} color="var(--amber-400)" strokeWidth={2.5} />
+                                            <FileSpreadsheet size={18} strokeWidth={2.5} />
                                         )}
                                     </div>
                                     <div style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
                                         <span style={{
                                             display: 'block',
-                                            fontFamily: 'var(--font-mono)', fontSize: '13px',
-                                            fontWeight: 800, color: 'var(--charcoal-900)',
+                                            fontSize: '13px',
+                                            fontWeight: 600, color: 'var(--charcoal-900)',
                                             whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
                                         }}>
                                             {file.filename}
                                         </span>
                                         <span style={{
-                                            display: 'inline-flex', alignItems: 'center', gap: '12px',
-                                            fontFamily: 'var(--font-mono)', fontSize: '11px',
-                                            fontWeight: 600, color: 'var(--charcoal-600)', marginTop: '6px',
-                                            textTransform: 'uppercase'
+                                            display: 'inline-flex', alignItems: 'center', gap: '10px',
+                                            fontSize: '11px',
+                                            fontWeight: 500, color: 'rgba(26, 26, 26, 0.6)', marginTop: '4px',
                                         }}>
-                                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'var(--amber-400)', color: 'var(--charcoal-900)', padding: '2px 6px', border: '1px solid var(--charcoal-900)', fontWeight: 800 }}>
-                                                <Calendar size={12} strokeWidth={2.5} />
+                                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'rgba(201, 100, 66, 0.10)', color: 'var(--terracotta-500)', padding: '2px 6px', borderRadius: '5px', fontWeight: 600 }}>
+                                                <Calendar size={11} strokeWidth={2.5} />
                                                 {parsePeriodLabel(file.periodName)}
                                             </span>
                                             {file.modifiedDate && (
-                                                <span>MODIF: {formatDate(file.modifiedDate)}</span>
+                                                <span>Modif: {formatDate(file.modifiedDate)}</span>
                                             )}
                                         </span>
                                     </div>
                                     <div style={{ flexShrink: 0 }}>
                                         {isDownloading ? (
                                             <span style={{
-                                                fontFamily: 'var(--font-sora)', fontSize: '12px', fontWeight: 900,
-                                                textTransform: 'uppercase', letterSpacing: '0.05em',
-                                                color: 'var(--charcoal-900)'
-                                            }}>LOADING...</span>
+                                                fontSize: '11px', fontWeight: 600,
+                                                color: 'var(--terracotta-500)'
+                                            }}>Loading...</span>
                                         ) : (
-                                            <div style={{ width: 36, height: 36, border: '2px solid var(--charcoal-900)', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
-                                                <Download size={18} strokeWidth={3} color="var(--charcoal-900)" />
+                                            <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(26, 26, 26, 0.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--charcoal-900)' }}>
+                                                <Download size={16} strokeWidth={2.5} />
                                             </div>
                                         )}
                                     </div>
@@ -317,21 +313,19 @@ export default function ServerFileBrowser({ onFileLoaded }) {
                 <div style={{ padding: '0 24px 24px 24px' }}>
                     <div style={{
                         display: 'flex', alignItems: 'center', gap: '12px',
-                        padding: '16px',
-                        background: '#FEF2F2',
-                        border: '2px solid #991B1B',
-                        boxShadow: '4px 4px 0 #991B1B',
-                        borderRadius: 0,
+                        padding: '12px 16px',
+                        background: 'rgba(220, 38, 38, 0.06)',
+                        border: '1px solid rgba(220, 38, 38, 0.15)',
+                        borderRadius: '10px',
                     }}>
-                        <AlertCircle size={24} color="#991B1B" strokeWidth={3} style={{ flexShrink: 0 }} />
+                        <AlertCircle size={20} color="#991B1B" strokeWidth={2.5} style={{ flexShrink: 0 }} />
                         <div>
                             <p style={{
-                                fontFamily: 'var(--font-sora)', fontWeight: 900, fontSize: '12px',
-                                textTransform: 'uppercase', letterSpacing: '0.05em',
-                                color: '#991B1B', margin: '0 0 4px 0'
-                            }}>GAGAL MEMUAT DATA SERVER</p>
+                                fontWeight: 700, fontSize: '12px',
+                                color: '#991B1B', margin: '0 0 2px 0'
+                            }}>Gagal memuat data server</p>
                             <p style={{
-                                fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 600,
+                                fontSize: '12px', fontWeight: 500,
                                 color: '#7F1D1D', margin: 0
                             }}>{error}</p>
                         </div>

@@ -129,25 +129,25 @@ const PreviewModal = ({ isOpen, onClose, previewData, onDownload }) => {
     );
 
     const activeTabStyle = {
-        padding: '8px 16px', borderBottom: '2px solid var(--primary-600)', color: 'var(--primary-700)', fontWeight: 600, cursor: 'pointer'
+        padding: '10px 16px', borderBottom: '2px solid var(--terracotta-500)', color: 'var(--charcoal-900)', fontWeight: 600, cursor: 'pointer'
     };
     const inactiveTabStyle = {
-        padding: '8px 16px', color: 'var(--neutral-500)', cursor: 'pointer'
+        padding: '10px 16px', color: 'rgba(26, 26, 26, 0.55)', cursor: 'pointer', borderBottom: '2px solid transparent'
     };
 
     return (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(15,23,42,0.6)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ backgroundColor: '#fff', width: '90%', maxWidth: 1400, height: '85vh', borderRadius: 12, display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
+            <div className="wa-card" style={{ width: '90%', maxWidth: 1400, height: '85vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                 {/* Header */}
-                <div style={{ padding: '16px 24px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ padding: '16px 24px', borderBottom: '1px solid rgba(26, 26, 26, 0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
-                        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Preview Excel - Ruangan {previewData.room}</h2>
-                        <span style={{ fontSize: '0.875rem', color: '#64748b' }}>PIC: {previewData.pic || '-'} | Tgl Opname: {previewData.tglOpname || '-'}</span>
+                        <h2 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, color: 'var(--charcoal-900)' }}>Preview Excel - Ruangan {previewData.room}</h2>
+                        <span style={{ fontSize: '0.875rem', color: 'rgba(26, 26, 26, 0.6)' }}>PIC: {previewData.pic || '-'} | Tgl Opname: {previewData.tglOpname || '-'}</span>
                     </div>
                 </div>
 
                 {/* Body = Tabs + Content */}
-                <div style={{ display: 'flex', borderBottom: '1px solid #e2e8f0', backgroundColor: '#f8fafc', padding: '0 24px' }}>
+                <div style={{ display: 'flex', borderBottom: '1px solid rgba(26, 26, 26, 0.06)', backgroundColor: 'transparent', padding: '0 24px' }}>
                     <div style={activeTab === 'temuan' ? activeTabStyle : inactiveTabStyle} onClick={() => setActiveTab('temuan')}>FORM TEMUAN HASIL OPNAME</div>
                     <div style={activeTab === 'recouncil' ? activeTabStyle : inactiveTabStyle} onClick={() => setActiveTab('recouncil')}>Recouncil</div>
                     <div style={activeTab === 'mat' ? activeTabStyle : inactiveTabStyle} onClick={() => setActiveTab('mat')}>HASIL_MAT</div>
@@ -160,9 +160,9 @@ const PreviewModal = ({ isOpen, onClose, previewData, onDownload }) => {
                 </div>
 
                 {/* Footer Controls */}
-                <div style={{ padding: '16px 24px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'flex-end', gap: 12, backgroundColor: '#f8fafc' }}>
-                    <button className="btn btn--secondary" onClick={onClose}>Tutup Preview</button>
-                    <button className="btn btn--success" onClick={onDownload}>
+                <div style={{ padding: '14px 24px', borderTop: '1px solid rgba(26, 26, 26, 0.06)', display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+                    <button className="wa-btn-ghost" onClick={onClose}>Tutup Preview</button>
+                    <button className="wa-btn wa-btn-terracotta" onClick={onDownload}>
                         <Download size={16} /> Download Excel Form
                     </button>
                 </div>
