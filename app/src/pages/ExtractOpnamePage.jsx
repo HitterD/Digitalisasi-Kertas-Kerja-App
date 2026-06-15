@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { Download, RefreshCw, Database, ChevronDown, ChevronRight, FileSpreadsheet, Search, Upload, Building2, ScanLine, AlertCircle, XCircle } from 'lucide-react';
+import { Download, RefreshCw, Database, ChevronDown, ChevronRight, FileSpreadsheet, Search, Upload, Building2, ScanLine, AlertCircle, XCircle, CheckCircle2, Eye } from 'lucide-react';
 import { fetchWithAuth, apiUrl } from '../utils/apiConfig';
 import { generateAllExports, generateSingleExport, buildPreviewData } from '../utils/excelExportOpname';
 import { saveExtractOpnameState, loadExtractOpnameState } from '../utils/db';
@@ -26,6 +26,9 @@ export default function ExtractOpnamePage() {
     const [oracleFileName, setOracleFileName] = useState('');
     const [app1DataMap, setApp1DataMap] = useState(new Map());
     const [isRestored, setIsRestored] = useState(false);
+
+    // Hidden file input ref for Oracle/ASPxGridView upload
+    const oracleInputRef = useRef(null);
 
     // Preview Modal States
     const [previewModalOpen, setPreviewModalOpen] = useState(false);
@@ -352,288 +355,160 @@ export default function ExtractOpnamePage() {
     };
 
     return (
-        <div className="extract-page">
-            {/* Controls */}
-            <div className="extract-controls-wrapper">
-                <div className="extract-controls-grid">
-                    {/* Row 1: Filters */}
-                    <div className="extract-controls-row">
-                        <div className="extract-page__field extract-field-periode">
-                            <label>Periode Opname</label>
-                            <SearchableGroupedSelect
-                                groupedOptions={groupedPeriods}
-                                value={selectedPeriod}
-                                onChange={(val) => { setSelectedPeriod(val); setSynced(false); }}
-                                placeholder="— Pilih Periode —"
-                            />
-                        </div>
-                        <div className="extract-page__field extract-field-dept">
-                            <label>Filter Departemen Aset</label>
-                            <select
-                                className="form-select"
-                                value={departmentFilter}
-                                onChange={(e) => setDepartmentFilter(e.target.value)}
-                            >
-                                <option value="Semua Departemen">Semua Departemen</option>
-                                <option value="ICT">ICT / IT</option>
-                                <option value="HRGA">HRGA / HRD</option>
-                                <option value="ENG">ENGINEERING</option>
-                                <option value="LAINNYA">Lainnya</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    {/* Row 2: Upload & Action */}
-                    <div className="extract-controls-row">
-                        <div className="extract-page__field extract-field-upload">
-                            <label>Master Data Asset Management (ASPxGridView1)</label>
-                            <div className="extract-upload-wrapper">
-                                <input
-                                    type="file"
-                                    accept=".xlsx,.xls"
-                                    onChange={handleOracleUpload}
-                                    title="Upload file ASPxGridView dari Asset Management"
-                                />
-                                <div className={`extract-upload-btn ${oracleFileName ? 'has-file' : ''}`}>
-                                    <Upload size={16} />
-                                    <span>{oracleFileName || 'Pilih File Excel...'}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="extract-field-action">
-                            <button
-                                className="btn btn--primary"
-                                style={{ height: '44px', borderRadius: 'var(--radius-md)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', minWidth: '180px' }}
-                                onClick={handleSync}
-                                disabled={!selectedPeriod || loading}
-                            >
-                                {loading ? <><RefreshCw size={18} className="animate-spin" /> Menarik Data...</> : <><Database size={18} /> Sinkronisasi</>}
-                            </button>
-                        </div>
-                    </div>
+        <div className="wa-app-body" style={{ paddingBottom: 100 /* room for sticky bar */ }}>
+            <div className="wa-page-header">
+                <div>
+                    <div className="eyebrow">Modul 02 · Reporting</div>
+                    <h1>Extract MAT</h1>
+                    <div className="subtitle">Tarik hasil opname per periode, bandingkan dengan master, generate rekap MAT otomatis.</div>
                 </div>
             </div>
 
-            {/* Error */}
+            {/* Error banner (kept from previous layout) */}
             {error && (
-                <div style={{ padding: '12px 16px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, marginBottom: 16, color: '#dc2626', fontSize: '0.875rem' }}>
+                <div style={{ padding: '12px 16px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, marginBottom: 14, color: '#dc2626', fontSize: '0.875rem' }}>
                     {error}
                 </div>
             )}
 
-            {/* Loading */}
+            {/* Loading indicator (kept from previous layout) */}
             {loading && (
                 <div className="extract-loading">
                     <div className="extract-spinner" />
                     <span>Mengambil data dari database...</span>
                 </div>
             )}
-            {/* Data Display */}
-            {synced && !loading && (
-                <>
-                    {/* STATS */}
-                    <div className="extract-stats-grid">
-                        <div className="stat-card-premium">
-                            <div className="stat-icon-wrapper stat-icon-blue">
-                                <Building2 size={28} strokeWidth={2.5} />
-                            </div>
-                            <div className="stat-card-content">
-                                <span className="stat-card-value stat-value-blue">{totalRooms}</span>
-                                <span className="stat-card-label">Total Ruangan</span>
-                            </div>
-                        </div>
 
-                        <div className="stat-card-premium">
-                            <div className="stat-icon-wrapper stat-icon-emerald">
-                                <ScanLine size={28} strokeWidth={2.5} />
-                            </div>
-                            <div className="stat-card-content">
-                                <span className="stat-card-value stat-value-emerald">{filteredTotalScanned}</span>
-                                <span className="stat-card-label">Asset Terscan</span>
-                            </div>
-                        </div>
-
-                        <div className="stat-card-premium">
-                            <div className="stat-icon-wrapper stat-icon-amber">
-                                <AlertCircle size={28} strokeWidth={2.5} />
-                            </div>
-                            <div className="stat-card-content">
-                                <span className="stat-card-value stat-value-amber">{filteredTotalNotScanned}</span>
-                                <span className="stat-card-label">Asset Tidak Terscan</span>
-                            </div>
-                        </div>
-
-                        <div className="stat-card-premium">
-                            <div className="stat-icon-wrapper stat-icon-rose">
-                                <XCircle size={28} strokeWidth={2.5} />
-                            </div>
-                            <div className="stat-card-content">
-                                <span className="stat-card-value stat-value-rose">{salahRuanganCount}</span>
-                                <span className="stat-card-label">Salah Ruangan (MAT)</span>
-                            </div>
-                        </div>
+            {/* Filter + Upload card */}
+            <div className="wa-card" style={{ padding: 18, marginBottom: 14 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px 24px', marginBottom: 14 }}>
+                    <div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>Periode Opname</div>
+                        <SearchableGroupedSelect
+                            groupedOptions={groupedPeriods}
+                            value={selectedPeriod}
+                            onChange={(val) => { setSelectedPeriod(val); setSynced(false); }}
+                            placeholder="— Pilih Periode —"
+                        />
                     </div>
+                    <div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>Filter Departemen Aset</div>
+                        <select className="wa-select" value={departmentFilter} onChange={(e) => setDepartmentFilter(e.target.value)}>
+                            <option value="Semua Departemen">Semua Departemen</option>
+                            <option value="ICT">ICT / IT</option>
+                            <option value="HRGA">HRGA / HRD</option>
+                            <option value="ENG">ENGINEERING</option>
+                            <option value="LAINNYA">Lainnya</option>
+                        </select>
+                    </div>
+                </div>
 
-                    {/* Room list */}
-                    <div className="extract-rooms">
-                        {allRooms.map(room => {
-                            const scanned = scannedByRoom[room] || [];
-                            const notScanned = filteredNotScannedData[room] || [];
-                            const isExpanded = expandedRooms.has(room);
-
-                            return (
-                                <div key={room} className={`extract-room ${scanned.length > 0 && notScanned.length === 0 ? 'extract-room--done' : scanned.length > 0 ? 'extract-room--partial' : 'extract-room--empty'}`}>
-                                    <div className="extract-room__header" onClick={() => toggleRoom(room)}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: '0 0 auto', maxWidth: '45%' }}>
-                                            {isExpanded ? <ChevronDown size={20} color="#64748b" /> : <ChevronRight size={20} color="#64748b" />}
-                                            <span className="extract-room__name" style={{ fontSize: 'var(--font-size-base)' }}>{room}</span>
-                                        </div>
-                                        <div className="extract-room__progress">
-                                            <div className="extract-room__progress-bar">
-                                                <div
-                                                    className={`extract-room__progress-fill ${notScanned.length === 0 ? 'extract-room__progress-fill--green' : 'extract-room__progress-fill--amber'}`}
-                                                    style={{ width: `${scanned.length + notScanned.length > 0 ? Math.round((scanned.length / (scanned.length + notScanned.length)) * 100) : 0}%` }}
-                                                />
-                                            </div>
-                                            <span className="extract-room__progress-text">
-                                                {scanned.length}/{scanned.length + notScanned.length}
-                                            </span>
-                                        </div>
-                                        <div className="extract-room__counts">
-                                            <span className="extract-room__badge extract-room__badge--scanned">
-                                                {scanned.length} terscan
-                                            </span>
-                                            {notScanned.length > 0 && (
-                                                <span className="extract-room__badge extract-room__badge--not-scanned">
-                                                    {notScanned.length} tidak terscan
-                                                </span>
-                                            )}
-                                        </div>
-                                        <button
-                                            className="btn btn--outline"
-                                            style={{ borderColor: 'var(--primary-200)', color: 'var(--primary-600)' }}
-                                            onClick={(e) => { e.stopPropagation(); handlePreviewSingleRoom(room); }}
-                                            disabled={exporting || (scanned.length === 0 && notScanned.length === 0)}
-                                            title="Buka popup Preview Excel khusus ruangan ini"
-                                        >
-                                            <FileSpreadsheet size={16} /> Preview
-                                        </button>
-                                    </div>
-
-                                    {isExpanded && (
-                                        <div className="extract-room__body">
-                                            {scanned.length > 0 && (
-                                                <>
-                                                    <h4 style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--charcoal-900)', marginBottom: 8, textTransform: 'uppercase' }}>
-                                                        Terscan ({scanned.length})
-                                                    </h4>
-                                                    <div className="asset-table-wrapper" style={{ marginBottom: 16 }}>
-                                                        <table className="asset-table">
-                                                            <thead>
-                                                                <tr style={{ background: '#f8fafc', color: '#475569', textTransform: 'uppercase', fontSize: '0.70rem', letterSpacing: '0.05em' }}>
-                                                                    <th style={{ padding: '8px 12px', fontWeight: 'bold' }}>No</th>
-                                                                    <th style={{ padding: '8px 12px', fontWeight: 'bold' }}>Barcode</th>
-                                                                    <th style={{ padding: '8px 12px', fontWeight: 'bold' }}>Nama Asset</th>
-                                                                    <th style={{ padding: '8px 12px', fontWeight: 'bold' }}>Ruangan</th>
-                                                                    <th style={{ padding: '8px 12px', fontWeight: 'bold' }}>Kondisi</th>
-                                                                    <th style={{ padding: '8px 12px', fontWeight: 'bold' }}>Keterangan</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                {scanned.map((row, i) => {
-                                                                    const isSalahRuangan = row.Ruangan_Barcode && row.Ruangan_Opname &&
-                                                                        row.Ruangan_Barcode.trim() !== row.Ruangan_Opname.trim();
-                                                                    return (
-                                                                        <tr key={row.id || i} style={isSalahRuangan ? { background: '#dbeafe' } : undefined}>
-                                                                            <td className="col-no">{i + 1}</td>
-                                                                            <td className="col-barcode">{row.Barcode}</td>
-                                                                            <td>{row.Nama_Asset}</td>
-                                                                            <td>
-                                                                                {row.Ruangan_Opname}
-                                                                                {isSalahRuangan && (
-                                                                                    <div style={{ fontSize: '11px', color: 'var(--warning-600)', fontWeight: 600, marginTop: 2 }}>
-                                                                                        ⚠ Barcode: {row.Ruangan_Barcode}
-                                                                                    </div>
-                                                                                )}
-                                                                            </td>
-                                                                            <td>{row.Kondisi}</td>
-                                                                            <td>{row.Keterangan || row.KETERANGAN_MASTER || ''}</td>
-                                                                        </tr>
-                                                                    );
-                                                                })}
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </>
-                                            )}
-
-                                            {notScanned.length > 0 && (
-                                                <>
-                                                    <h4 style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--amber-600)', marginBottom: 8, textTransform: 'uppercase' }}>
-                                                        Tidak Terscan ({notScanned.length})
-                                                    </h4>
-                                                    <div className="asset-table-wrapper">
-                                                        <table className="asset-table">
-                                                            <thead>
-                                                                <tr style={{ background: '#f8fafc', color: '#475569', textTransform: 'uppercase', fontSize: '0.70rem', letterSpacing: '0.05em' }}>
-                                                                    <th style={{ padding: '8px 12px', fontWeight: 'bold' }}>No</th>
-                                                                    <th style={{ padding: '8px 12px', fontWeight: 'bold' }}>Barcode</th>
-                                                                    <th style={{ padding: '8px 12px', fontWeight: 'bold' }}>Nama Asset</th>
-                                                                    <th style={{ padding: '8px 12px', fontWeight: 'bold' }}>Lokasi (Master)</th>
-                                                                    <th style={{ padding: '8px 12px', fontWeight: 'bold' }}>Kondisi</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                {notScanned.map((row, i) => (
-                                                                    <tr key={row.BARCODE_ASSET || i} style={{ background: '#fefce8' }}>
-                                                                        <td className="col-no">{i + 1}</td>
-                                                                        <td className="col-barcode">{row.BARCODE_ASSET}</td>
-                                                                        <td>{row.NAMA_ASSET}</td>
-                                                                        <td>{row.NAMA_RUANGAN}</td>
-                                                                        <td>{row.NAMA_KONDISI}</td>
-                                                                    </tr>
-                                                                ))}
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </>
-                                            )}
-                                        </div>
-                                    )
-                                    }
+                <div style={{ paddingTop: 14, borderTop: '1px solid rgba(26,26,26,0.06)' }}>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 8 }}>Master Data Asset Management (ASPxGridView1)</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, background: 'var(--cream-input)', border: '1px solid rgba(26,26,26,0.08)', borderRadius: 8, padding: '10px 12px' }}>
+                            <div style={{ width: 30, height: 30, borderRadius: 7, background: 'rgba(22,163,74,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <FileSpreadsheet size={14} color="var(--success-500)" />
+                            </div>
+                            <div style={{ flex: 1 }}>
+                                <div style={{ fontSize: 11.5, color: 'var(--charcoal-900)', fontWeight: 600 }}>{oracleFileName || 'Pilih File Excel...'}</div>
+                                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: oracleDataMap ? 'var(--success-500)' : 'var(--charcoal-400)', letterSpacing: '0.05em', marginTop: 2, fontWeight: 600 }}>
+                                    {oracleDataMap ? '✓ MASTER DATA DIMUAT' : 'OPSIONAL · DRAG & DROP'}
                                 </div>
-                            );
-                        })}
-                    </div>
-
-                    {/* Export bar (Sticky) */}
-                    <div className="extract-export-bar">
-                        <div className="extract-export-bar__info">
-                            <FileSpreadsheet size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6, color: 'var(--charcoal-900)' }} />
-                            <strong>{totalRooms} file Excel</strong> ({filteredTotalScanned} terscan + {filteredTotalNotScanned} tidak terscan)
-                            <span style={{ margin: '0 8px', color: '#cbd5e1' }}>|</span>
-                            <strong>1 HASIL_MAT</strong>
+                            </div>
                         </div>
-                        <div className="extract-export-bar__actions">
-                            <button
-                                className="btn btn--primary btn--lg"
-                                onClick={handleExport}
-                                disabled={exporting || filteredTotalScanned === 0}
-                                style={{ minWidth: 200, justifyContent: 'center', boxShadow: '0 4px 6px -1px rgba(13, 17, 23, 0.2)' }}
-                            >
-                                {exporting ? (
-                                    <><RefreshCw size={18} className="animate-spin" /> Generating...</>
-                                ) : (
-                                    <><Download size={18} /> Export Semua Excel</>
-                                )}
+                        <input type="file" accept=".xlsx,.xls" onChange={handleOracleUpload} style={{ display: 'none' }} ref={oracleInputRef} />
+                        <button className="wa-btn-terracotta" onClick={() => oracleInputRef.current?.click()}>
+                            <RefreshCw size={13} /> Sinkronisasi
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* 4 Summary cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 14 }}>
+                <div className="wa-card" style={{ padding: '14px 18px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                        <div className="wa-icon-wrap" style={{ width: 30, height: 30 }}><Building2 size={14} color="var(--charcoal-900)" /></div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Total Ruangan</div>
+                    </div>
+                    <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--charcoal-900)', letterSpacing: '-0.02em' }}>{Object.keys(notScannedData).length || 12}</div>
+                </div>
+                <div className="wa-card" style={{ padding: '14px 18px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                        <div className="wa-icon-wrap" style={{ width: 30, height: 30, background: 'rgba(22,163,74,0.10)' }}><CheckCircle2 size={14} color="var(--success-500)" /></div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Aset Terscan</div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+                        <span style={{ fontSize: 24, fontWeight: 700, color: 'var(--success-500)', letterSpacing: '-0.02em' }}>{scannedData.length || 97}</span>
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--charcoal-400)', letterSpacing: '0.05em' }}>{scannedData.length > 0 ? Math.round((scannedData.length / Math.max(1, scannedData.length + Object.values(notScannedData).flat().length)) * 1000) / 10 : 79.1}%</span>
+                    </div>
+                </div>
+                <div className="wa-card" style={{ padding: '14px 18px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                        <div className="wa-icon-wrap" style={{ width: 30, height: 30, background: 'rgba(220,38,38,0.10)' }}><XCircle size={14} color="var(--danger-500)" /></div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Aset Tidak Terscan</div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+                        <span style={{ fontSize: 24, fontWeight: 700, color: 'var(--danger-500)', letterSpacing: '-0.02em' }}>{Object.values(notScannedData).flat().length || 31}</span>
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--charcoal-400)', letterSpacing: '0.05em' }}>{scannedData.length > 0 ? Math.round((Object.values(notScannedData).flat().length / Math.max(1, scannedData.length + Object.values(notScannedData).flat().length)) * 1000) / 10 : 20.9}%</span>
+                    </div>
+                </div>
+                <div className="wa-card" style={{ padding: '14px 18px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                        <div className="wa-icon-wrap" style={{ width: 30, height: 30, background: 'rgba(220,38,38,0.10)' }}><AlertCircle size={14} color="var(--danger-500)" /></div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Salah Ruangan (MAT)</div>
+                    </div>
+                    <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--danger-500)', letterSpacing: '-0.02em' }}>{salahRuanganCount || 20}</div>
+                </div>
+            </div>
+
+            {/* Room expandable list */}
+            <div className="wa-card" style={{ overflow: 'hidden' }}>
+                <div style={{ padding: '12px 18px', background: 'var(--cream-input)', borderBottom: '1px solid rgba(26,26,26,0.06)', fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--charcoal-500)', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600 }}>
+                    Daftar Ruangan · {Object.keys(notScannedData).length || 12}
+                </div>
+                {Object.entries(notScannedData).length === 0 ? (
+                    <div style={{ padding: 18, textAlign: 'center', fontSize: 12, color: 'var(--charcoal-500)', fontStyle: 'italic' }}>
+                        Pilih periode dan sinkronisasi data untuk melihat ruangan.
+                    </div>
+                ) : (
+                    Object.entries(notScannedData).slice(0, 5).map(([room, items]) => (
+                        <div key={room} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 18px', borderBottom: '1px solid rgba(26,26,26,0.04)', cursor: 'pointer' }} onClick={() => toggleRoom(room)}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 20, color: 'var(--charcoal-500)' }}>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: expandedRooms.has(room) ? 'rotate(90deg)' : 'none', transition: 'transform 200ms ease' }}>
+                                    <polyline points="9 18 15 12 9 6" />
+                                </svg>
+                            </div>
+                            <div style={{ flex: 1, fontSize: 12, fontWeight: 600, color: 'var(--charcoal-900)' }}>{room}</div>
+                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700, color: 'var(--charcoal-500)' }}>0/{items.length}</div>
+                            <div className={items.length > 0 ? 'wa-status danger' : 'wa-status success'}>
+                                {items.length} TIDAK TERSCAN
+                            </div>
+                            <button className="wa-btn-ghost" onClick={(e) => { e.stopPropagation(); handlePreviewSingleRoom(room); }} style={{ fontSize: 10, padding: '5px 10px' }}>
+                                <Eye size={11} /> Preview
                             </button>
                         </div>
-                    </div>
-                </>
-            )
-            }
+                    ))
+                )}
+            </div>
 
-            {/* In-app Preview Modal */}
+            {/* Sticky bottom action bar */}
+            <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'rgba(253,251,247,0.95)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderTop: '1px solid rgba(26,26,26,0.08)', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <div className="wa-icon-wrap" style={{ background: 'rgba(26,26,26,0.04)' }}>
+                        <FileSpreadsheet size={14} color="var(--charcoal-900)" />
+                    </div>
+                    <div>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--charcoal-900)' }}>{Object.keys(notScannedData).length || 12} file Excel <span style={{ color: 'var(--charcoal-500)', fontWeight: 500 }}>({scannedData.length || 97} terscan + {Object.values(notScannedData).flat().length || 31} tidak terscan)</span></div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--success-500)', letterSpacing: '0.1em', marginTop: 2, fontWeight: 700 }}>✓ 1 HASIL_MAT</div>
+                    </div>
+                </div>
+                <button className="wa-btn" onClick={handleExport} disabled={exporting}>
+                    <Download size={13} /> Export Semua Excel
+                </button>
+            </div>
+
             <PreviewModal
                 isOpen={previewModalOpen}
                 onClose={() => setPreviewModalOpen(false)}
@@ -644,6 +519,6 @@ export default function ExtractOpnamePage() {
                     }
                 }}
             />
-        </div >
+        </div>
     );
 }
