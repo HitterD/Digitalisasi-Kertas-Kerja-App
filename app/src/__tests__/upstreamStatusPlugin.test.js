@@ -1,8 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const mockGetStatus = vi.fn(() => ({ sql: { state: 'CLOSED' }, smb: { state: 'OPEN' } }));
+const { mockGetStatus, mockInit, mockProbeHandle } = vi.hoisted(() => ({
+  mockGetStatus: vi.fn(() => ({ sql: { state: 'CLOSED' }, smb: { state: 'OPEN' } })),
+  mockInit: vi.fn(),
+  mockProbeHandle: null,
+}));
 vi.mock('../server/utils/upstreamHealth', () => ({
-  registry: { getStatus: () => mockGetStatus() },
+  registry: {
+    getStatus: () => mockGetStatus(),
+    init: () => mockInit(),
+    get probeHandle() { return mockProbeHandle; },
+  },
 }));
 
 import upstreamStatusPlugin from '../server/plugins/upstreamStatusPlugin.js';

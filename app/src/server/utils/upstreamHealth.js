@@ -179,14 +179,20 @@ export class UpstreamRegistry {
 
   init() {
     if (this.probeHandle) return;
-    this.probeHandle = setInterval(() => {
-      this._runProbes().catch((err) => {
-        console.error('[UpstreamHealth] probe loop error:', err.message);
-      });
-    }, this.config.probeIntervalMs);
-    this._runProbes().catch((err) => {
-      console.error('[UpstreamHealth] initial probe error:', err.message);
-    });
+    this.probeLoopInFlight = false;
+    const tick = () => {
+      if (this.probeLoopInFlight) return;
+      this.probeLoopInFlight = true;
+      this._runProbes()
+        .catch((err) => {
+          console.error('[UpstreamHealth] probe loop error:', err.message);
+        })
+        .finally(() => {
+          this.probeLoopInFlight = false;
+        });
+    };
+    this.probeHandle = setInterval(tick, this.config.probeIntervalMs);
+    tick();
   }
 
   stop() {

@@ -14,13 +14,21 @@ function upstreamStatusMiddleware(req, res, next) {
   next();
 }
 
+function startHealthProbe() {
+  // Only start once, idempotent
+  if (registry.probeHandle) return;
+  registry.init();
+}
+
 export default function viteUpstreamStatusPlugin() {
   return {
     name: 'vite-plugin-upstream-status',
     configureServer(server) {
+      startHealthProbe();
       server.middlewares.use(upstreamStatusMiddleware);
     },
     configurePreviewServer(server) {
+      startHealthProbe();
       server.middlewares.use(upstreamStatusMiddleware);
     },
   };

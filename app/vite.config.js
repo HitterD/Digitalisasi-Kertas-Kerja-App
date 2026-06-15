@@ -69,7 +69,8 @@ const config = defineConfig({
   preview: { host: '0.0.0.0', port: APP_PORT },
 });
 
-// Register SQL probe (SMB probe registered inside fileBrowserPlugin.js)
+// Register SQL probe at module load — just a callback, no execution here.
+// Actual probe runs only when registry.init() is called inside viteUpstreamStatusPlugin's configureServer.
 registry.registerProbe('sql', async () => {
   const pool = await sql.connect({
     user: process.env.MSSQL_USER,
@@ -86,8 +87,5 @@ registry.registerProbe('sql', async () => {
     await pool.close();
   }
 });
-
-// Start background health probe loop
-registry.init();
 
 export default config;
