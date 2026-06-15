@@ -89,131 +89,26 @@ function App1Layout() {
   return (
     <OpnameProvider>
       <>
-        <header className="app-header" style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 40,
-          background: 'var(--warm-50)',
-          borderBottom: '2px solid var(--charcoal-900)',
-          boxShadow: '0 2px 0 var(--amber-500)'
-        }}>
-          <div className="app-header__left">
-            {isNativePlatform ? (
-              <button
-                onClick={handleLogout}
-                className="app-header__back"
-                title="Logout Aplikasi"
-                style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }}
-              >
-                <LogOut size={18} color="#ef4444" />
-              </button>
-            ) : (
-              <Link to="/" className="app-header__back" title="Kembali ke Menu">
-                <ArrowLeft size={18} />
-              </Link>
-            )}
-            <div className="header-divider" style={{ width: '1px', height: '24px', background: 'var(--warm-300)', margin: '0 var(--space-3)' }}></div>
-            <Link to="/app1" className="app-header__brand" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-sora)', fontWeight: 700, fontSize: '1.2rem', color: 'var(--charcoal-900)' }}>
-              <div style={{ width: 32, height: 32, background: 'var(--charcoal-900)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <ClipboardList size={18} color="var(--amber-400)" />
+        <header className="wa-app-header">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <button onClick={handleLogout} title={isNativePlatform ? 'Logout Aplikasi' : 'Kembali ke Menu'}
+              style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center', color: 'var(--charcoal-500)' }}>
+              {isNativePlatform ? <LogOut size={18} color="var(--danger-500)" /> : <ArrowLeft size={18} />}
+            </button>
+            <div style={{ width: 1, height: 18, background: 'rgba(26,26,26,0.1)' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ width: 26, height: 26, background: 'var(--charcoal-900)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <ClipboardList size={18} color="var(--terracotta-400)" />
               </div>
-              <span style={{ letterSpacing: '-0.02em' }}>Opname Aset</span>
-            </Link>
-            <div style={{ 
-              display: 'flex', 
-              background: 'var(--warm-100)', 
-              borderRadius: '999px', 
-              padding: '4px', 
-              gap: '4px', 
-              border: '1px solid var(--warm-200)', 
-              marginLeft: 'var(--space-2)' 
-            }}>
-              <Link to="/app1" style={{
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '8px', 
-                padding: '6px 14px',
-                borderRadius: '999px',
-                background: isHome ? '#ffffff' : 'transparent',
-                color: isHome ? 'var(--charcoal-900)' : 'var(--charcoal-500)',
-                fontFamily: 'var(--font-sora)', 
-                fontSize: '12px', 
-                fontWeight: isHome ? 700 : 600, 
-                textTransform: 'uppercase', 
-                letterSpacing: '0.04em',
-                boxShadow: isHome ? '0 2px 8px rgba(0,0,0,0.06)' : 'none',
-                transition: 'all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)',
-                textDecoration: 'none'
-              }}>
-                <Home size={15} style={{ color: isHome ? 'var(--amber-500)' : 'currentColor', transition: 'color 0.2s' }} />
-                <span className="hidden sm:inline">Home</span>
-              </Link>
-              <Link to="/app1/opname" style={{
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '8px', 
-                padding: '6px 14px',
-                borderRadius: '999px',
-                background: location.pathname.includes('/opname') ? '#ffffff' : 'transparent',
-                color: location.pathname.includes('/opname') ? 'var(--charcoal-900)' : 'var(--charcoal-500)',
-                fontFamily: 'var(--font-sora)', 
-                fontSize: '12px', 
-                fontWeight: location.pathname.includes('/opname') ? 700 : 600, 
-                textTransform: 'uppercase', 
-                letterSpacing: '0.04em',
-                boxShadow: location.pathname.includes('/opname') ? '0 2px 8px rgba(0,0,0,0.06)' : 'none',
-                transition: 'all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)',
-                textDecoration: 'none'
-              }}>
-                <ClipboardCheck size={15} style={{ color: location.pathname.includes('/opname') ? 'var(--amber-500)' : 'currentColor', transition: 'color 0.2s' }} />
-                <span className="hidden sm:inline">Kertas Kerja</span>
-              </Link>
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--charcoal-900)', letterSpacing: '-0.01em' }}>Opname Aset</div>
+            </div>
+            <div className="wa-pill" style={{ marginLeft: 8 }}>
+              <Link to="/app1" className={`wa-pill-item ${isHome ? 'active' : ''}`}><Home size={15} style={{ color: isHome ? 'var(--terracotta-500)' : 'var(--charcoal-400)' }} />Home</Link>
+              <Link to="/app1/opname" className={`wa-pill-item ${!isHome ? 'active' : ''}`}><ClipboardCheck size={15} />Kertas Kerja</Link>
             </div>
           </div>
-          <div className="app-header__right">
-            <button 
-              className="header-search-btn" 
-              onClick={() => setIsSearchOpen(true)} 
-              title="Cari master data berdasarkan barcode"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                background: 'var(--charcoal-900)', 
-                color: 'var(--amber-400)', 
-                border: '2px solid var(--charcoal-900)',
-                borderRadius: '8px',
-                padding: '6px 14px',
-                fontFamily: 'var(--font-sora)',
-                fontSize: '12px',
-                fontWeight: 800,
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                cursor: 'pointer',
-                boxShadow: '4px 4px 0px var(--amber-400)',
-                transition: 'all 0.15s ease-out',
-                position: 'relative'
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.transform = 'translate(-2px, -2px)';
-                e.currentTarget.style.boxShadow = '6px 6px 0px var(--amber-400)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.transform = 'translate(0px, 0px)';
-                e.currentTarget.style.boxShadow = '4px 4px 0px var(--amber-400)';
-              }}
-              onMouseDown={(e) => {
-                e.currentTarget.style.transform = 'translate(4px, 4px)';
-                e.currentTarget.style.boxShadow = '0px 0px 0px var(--amber-400)';
-              }}
-              onMouseUp={(e) => {
-                e.currentTarget.style.transform = 'translate(-2px, -2px)';
-                e.currentTarget.style.boxShadow = '6px 6px 0px var(--amber-400)';
-              }}
-            >
-              <Search size={16} strokeWidth={3} />
-              <span className="hidden sm:inline" style={{ marginTop: '1px' }}>BARCODE CHECKER</span>
-            </button>
+          <div className="wa-btn" onClick={() => setIsSearchOpen(true)} style={{ background: 'var(--charcoal-900)', color: 'var(--cream-surface)', cursor: 'pointer' }}>
+            <Search size={16} strokeWidth={3} /> BARCODE CHECKER
           </div>
         </header>
         <BarcodeSearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
@@ -225,26 +120,28 @@ function App1Layout() {
 
 /* ---- App 2 Layout (Extract Hasil Opname) ---- */
 function App2Layout() {
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
   return (
     <>
-      <header className="app-header" style={{
-        background: 'var(--warm-50)',
-        borderBottom: '2px solid var(--charcoal-900)',
-        boxShadow: '0 2px 0 var(--amber-500)'
-      }}>
-        <div className="app-header__left">
-          <Link to="/" className="app-header__back" title="Kembali ke Menu">
+      <header className="wa-app-header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <Link to="/" style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center', color: 'var(--charcoal-500)' }}>
             <ArrowLeft size={18} />
           </Link>
-          <div className="header-divider" style={{ width: '1px', height: '24px', background: 'var(--warm-300)', margin: '0 var(--space-3)' }}></div>
-          <Link to="/app2" className="app-header__brand" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-sora)', fontWeight: 700, fontSize: '1.2rem', color: 'var(--charcoal-900)' }}>
-            <div style={{ width: 32, height: 32, background: 'var(--charcoal-900)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <FileSpreadsheet size={18} color="var(--amber-400)" />
+          <div style={{ width: 1, height: 18, background: 'rgba(26,26,26,0.1)' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ width: 26, height: 26, background: 'var(--charcoal-900)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <FileSpreadsheet size={18} color="var(--terracotta-400)" />
             </div>
-            <span style={{ letterSpacing: '-0.02em' }}>Extract MAT</span>
-          </Link>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--charcoal-900)', letterSpacing: '-0.01em' }}>Extract &amp; MAT</div>
+          </div>
+        </div>
+        <div className="wa-btn" onClick={() => setIsSearchOpen(true)} style={{ background: 'var(--charcoal-900)', color: 'var(--cream-surface)', cursor: 'pointer' }}>
+          <Search size={16} strokeWidth={3} /> BARCODE CHECKER
         </div>
       </header>
+      <BarcodeSearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
       <Outlet />
     </>
   );

@@ -131,49 +131,6 @@ code, pre, .mono-text, .col-barcode, .form-label, .asset-table th {
 }
 
 /* ===== APP LAYOUT ===== */
-.app-header {
-  background: rgba(253, 251, 247, 0.85);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border-bottom: 1px solid rgba(212, 146, 74, 0.15);
-  color: var(--charcoal-900, #0D1117);
-  padding: var(--space-3) var(--space-5);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 4px 20px rgba(13, 17, 23, 0.04);
-  transition: all var(--transition-normal);
-}
-
-.app-header__title {
-  font-size: var(--font-size-lg);
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  letter-spacing: -0.02em;
-  background: linear-gradient(135deg, var(--primary-700), var(--accent-600));
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-}
-
-.app-header__title svg {
-  width: 24px;
-  height: 24px;
-  stroke: url(#header-gradient) var(--primary-600);
-  /* Will apply via svg defs if possible, or fallback */
-}
-
-.app-header__actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
 
 .app-main {
   flex: 1;
@@ -570,74 +527,6 @@ code, pre, .mono-text, .col-barcode, .form-label, .asset-table th {
 }
 
 /* ===== SECONDARY HEADER & NAV ===== */
-.app-header__left,
-.app-header__right {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.app-header__brand {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-weight: 700;
-  font-size: var(--font-size-lg);
-  letter-spacing: -0.01em;
-  text-decoration: none;
-  color: var(--charcoal-900, #0D1117);
-  -webkit-text-fill-color: var(--charcoal-900, #0D1117);
-  background: none;
-}
-
-.app-header__brand svg {
-  color: var(--amber-500, #D4924A);
-}
-
-.app-header__nav-link {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  color: var(--charcoal-600, #475569);
-  font-weight: 500;
-  font-size: var(--font-size-sm);
-  text-decoration: none;
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-md);
-  transition: all var(--transition-fast);
-}
-
-.app-header__nav-link:hover {
-  background: rgba(13, 17, 23, 0.05);
-  color: var(--charcoal-900, #0D1117);
-}
-
-.header-divider {
-  width: 1px;
-  height: 24px;
-  background: rgba(13, 17, 23, 0.15);
-  flex-shrink: 0;
-}
-
-.header-search-btn {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  background: rgba(13, 17, 23, 0.05);
-  color: var(--charcoal-900, #0D1117);
-  border: 1px solid rgba(13, 17, 23, 0.1);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-md);
-  font-weight: 500;
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.header-search-btn:hover {
-  background: rgba(13, 17, 23, 0.1);
-  border-color: rgba(13, 17, 23, 0.2);
-}
 
 /* Utility: hide on small screens */
 .hidden {
@@ -1590,14 +1479,6 @@ code, pre, .mono-text, .col-barcode, .form-label, .asset-table th {
   border-color: var(--primary-200);
 }
 
-/* Header Divider */
-.header-divider {
-  width: 1px;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 0 8px;
-}
-
 /* Room Quick-Nav Badge */
 .room-badge {
   padding: 2px 8px;
@@ -1816,11 +1697,6 @@ body {
     min-height: 38px;
   }
 
-  /* Larger header on tablet */
-  .app-header {
-    padding: var(--space-3) var(--space-5);
-  }
-
   /* Wider app layout */
   .app-main {
     padding: var(--space-5);
@@ -1908,8 +1784,8 @@ html.plt-android body {
   padding-top: max(env(safe-area-inset-top, 0px), 24px);
 }
 
-html.plt-capacitor .app-header,
-html.plt-android .app-header {
+html.plt-capacitor .wa-app-header,
+html.plt-android .wa-app-header {
   /* Account for status bar overlay */
   padding-top: max(env(safe-area-inset-top, 0px), 28px);
 }
@@ -2477,30 +2353,6 @@ html.plt-android .login-submit {
   text-transform: uppercase;
   margin-top: auto;
   border-top: 1px solid var(--warm-200);
-}
-
-/* ===== APP HEADER ADDITIONS ===== */
-.app-header__back {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-sm);
-  color: var(--charcoal-500, #484F58);
-  text-decoration: none;
-  transition: all var(--transition-fast);
-}
-
-.app-header__back:hover {
-  background: rgba(13, 17, 23, 0.05);
-  color: var(--charcoal-900, #0D1117);
-}
-
-/* Darker variant for specific modules like Extract MAT */
-.app-header--primary {
-  background: var(--charcoal-900, #0D1117);
-  border-bottom: 1px solid rgba(212, 146, 74, 0.15);
 }
 
 /* ===== EXTRACT OPNAME PAGE (APP 2) ===== */
