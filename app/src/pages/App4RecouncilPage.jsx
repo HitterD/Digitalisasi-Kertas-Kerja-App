@@ -180,18 +180,18 @@ export default function App4RecouncilPage() {
                 <div className="bento-header" style={{ marginBottom: '16px', flexDirection: 'column', alignItems: 'flex-start', borderBottom: '3px solid var(--charcoal-900)', paddingBottom: '24px' }}>
                     <div style={{
                         display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px',
-                        background: 'var(--charcoal-900)', color: 'var(--amber-400)',
+                        background: 'var(--charcoal-900)', color: 'var(--terracotta-500)',
                         fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 800,
                         textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px'
                     }}>
-                        <Activity size={14} /> Final Evaluation Module
+                        <Activity size={14} color="var(--terracotta-500)" /> Final Evaluation Module
                     </div>
                     <h1 className="bento-title" style={{ fontSize: '32px', marginBottom: '12px' }}>
-                        Recouncil <span style={{ color: 'var(--amber-500)' }}>Intelligence</span>
+                        Recouncil <span style={{ color: 'var(--terracotta-500)' }}>Intelligence</span>
                     </h1>
                     <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--charcoal-500)', maxWidth: '800px', lineHeight: 1.6 }}>
                         Modul mitigasi otomatis menyilangkan (Left-Join) data Lapangan (Opname) dengan Master Data Oracle.
-                        Mengkalkulasi Barcode loss, Perbedaan Ruangan, dan Status Kesesuaian.
+                        Mengkalkulasi <strong style={{ color: 'var(--charcoal-900)' }}>Barcode loss</strong>, <strong style={{ color: 'var(--charcoal-900)' }}>Perbedaan Ruangan</strong>, dan <strong style={{ color: 'var(--charcoal-900)' }}>Status Kesesuaian</strong>.
                     </p>
                 </div>
 
@@ -210,53 +210,67 @@ export default function App4RecouncilPage() {
 
                 {/* Section Upload */}
                 <div>
-                    <div className="editorial-glass-card" style={{ padding: 0, overflow: 'hidden' }}>
-                        <div style={{ padding: '24px', borderBottom: '2px solid var(--charcoal-900)', background: 'rgba(255, 255, 255, 0.4)', display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div className="wa-card" style={{ padding: 0, overflow: 'hidden' }}>
+                        <div style={{ padding: '20px 24px', borderBottom: '1px solid rgba(26,26,26,0.08)', background: 'var(--cream-input)', display: 'flex', alignItems: 'center', gap: '16px' }}>
                             <div style={{
-                                width: '48px', height: '48px', background: 'var(--charcoal-900)', color: '#fff',
+                                width: '40px', height: '40px', background: 'var(--charcoal-900)', color: 'var(--cream-surface)',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-sora)',
-                                fontSize: '20px', fontWeight: 900, border: '2px solid var(--charcoal-900)',
-                                boxShadow: '4px 4px 0px var(--amber-400)'
-                            }}>1</div>
+                                fontSize: '14px', fontWeight: 800, borderRadius: 'var(--radius-sm)'
+                            }}>01</div>
                             <div>
-                                <h2 style={{ fontFamily: 'var(--font-sora)', fontWeight: 900, fontSize: '20px', color: 'var(--charcoal-900)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Cross-Verification Data</h2>
-                                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--charcoal-500)', margin: 0 }}>Masukkan File Hasil Opname (App2) dan Data Master Terbaru (App3).</p>
+                                <h2 style={{ fontFamily: 'var(--font-sora)', fontWeight: 700, fontSize: '16px', color: 'var(--charcoal-900)', margin: 0, letterSpacing: '0.01em' }}>Cross-Verification Data</h2>
+                                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--charcoal-500)', margin: 0 }}>Masukkan File Hasil Opname (App2) dan Data Master Terbaru (App3).</p>
                             </div>
                         </div>
 
-                        <div style={{ padding: '32px' }}>
-                            {/* Row 1: Opname + Master (wajib) */}
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '24px' }}>
+                        <div style={{ padding: '28px' }}>
+                            {/* Row 1: Opname + Master (wajib) - 1.4fr 1fr grid */}
+                            <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '20px', marginBottom: '24px' }}>
                                 <UploadSlot type="opname" multiple={true} icon={UploadCloud} title="Hasil Opname (App2)" subtitle="Drag & drop multiple file Export Opname" />
                                 <UploadSlot type="master" multiple={false} icon={Database} title="Master Data (App3)" subtitle="Drag & drop file Kamus Konsolidasi Master" />
                             </div>
 
-                            {/* Row 2: ASPxGridView1 (opsional) */}
+                            {/* Row 2: ASPxGridView1 (opsional) - full-width horizontal */}
                             <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-                                    <div style={{ flex: 1, height: '2px', background: 'var(--charcoal-900)' }}></div>
-                                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 800, color: 'var(--charcoal-500)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>PENGAYAAN DATA TAMBAHAN</span>
-                                    <div style={{ flex: 1, height: '2px', background: 'var(--charcoal-900)' }}></div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '14px' }}>
+                                    <div style={{ flex: 1, height: '1px', background: 'rgba(26,26,26,0.12)' }}></div>
+                                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', fontWeight: 700, color: 'var(--charcoal-500)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>PENGAYAAN DATA TAMBAHAN</span>
+                                    <div style={{ flex: 1, height: '1px', background: 'rgba(26,26,26,0.12)' }}></div>
                                 </div>
-                                <UploadSlot
-                                    type="aspx"
-                                    multiple={false}
-                                    optional={true}
-                                    icon={Table2}
-                                    title="Master Data Asset Management (ASPxGridView1)"
-                                    subtitle="Drag & drop file ASPxGridView1.xlsx untuk pengayaan Oracle ID & Tahun Perolehan"
-                                />
+                                <div className="wa-zone" style={{ display: 'flex', alignItems: 'center', gap: 18, padding: '20px 24px', flexDirection: 'row' }}>
+                                    <div onClick={() => fileInputRefs.aspx.current.click()} onDragEnter={e => handleDrag(e, 'aspx')} onDragLeave={e => handleDrag(e, 'aspx')} onDragOver={e => handleDrag(e, 'aspx')} onDrop={e => handleDrop(e, 'aspx')} style={{ display: 'flex', alignItems: 'center', gap: 18, flex: 1, cursor: 'pointer' }}>
+                                        <div style={{ width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--cream-input)', borderRadius: 'var(--radius-sm)' }}>
+                                            {files.aspx ? <CheckCircle2 size={22} color="var(--success-600)" /> : <Table2 size={22} color="var(--charcoal-500)" />}
+                                        </div>
+                                        <div style={{ flex: 1 }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+                                                <h3 style={{ fontFamily: 'var(--font-sora)', fontWeight: 700, fontSize: '14px', color: 'var(--charcoal-900)', margin: 0 }}>Master Data Asset Management (ASPxGridView1)</h3>
+                                                <span style={{ display: 'inline-block', fontSize: '9px', fontWeight: 800, fontFamily: 'var(--font-mono)', background: 'var(--terracotta-500)', color: 'var(--cream-surface)', padding: '2px 8px', borderRadius: 9999, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Opsional</span>
+                                            </div>
+                                            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: files.aspx ? 'var(--success-700)' : 'var(--charcoal-500)', margin: 0 }}>
+                                                {files.aspx ? files.aspx.name : 'Drag & drop file ASPxGridView1.xlsx untuk pengayaan Oracle ID & Tahun Perolehan'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <input
+                                        type="file"
+                                        accept=".xlsx, .xls"
+                                        ref={fileInputRefs.aspx}
+                                        style={{ display: 'none' }}
+                                        onChange={(e) => handleFileChange('aspx', e.target.files)}
+                                    />
+                                </div>
                             </div>
                         </div>
 
-                        <div style={{ padding: '0 32px 32px 32px', display: 'flex', justifyContent: 'center' }}>
+                        <div style={{ padding: '0 28px 28px 28px', display: 'flex', justifyContent: 'center' }}>
                             {processing ? (
                                 <div style={{ width: '100%', maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                        <Loader2 size={32} color="var(--amber-500)" className="animate-spin" />
+                                        <Loader2 size={32} color="var(--terracotta-500)" className="animate-spin" />
                                     </div>
-                                    <div style={{ height: '8px', width: '100%', background: 'var(--charcoal-300)', border: '1px solid var(--charcoal-900)' }}>
-                                        <div className="animate-progress origin-left" style={{ height: '100%', background: 'var(--amber-500)', width: '100%' }}></div>
+                                    <div style={{ height: '8px', width: '100%', background: 'rgba(26,26,26,0.08)', borderRadius: 4, overflow: 'hidden' }}>
+                                        <div className="animate-progress origin-left" style={{ height: '100%', background: 'var(--terracotta-500)', width: '100%' }}></div>
                                     </div>
                                     <p className="animate-pulse" style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--charcoal-600)', fontWeight: 700, textTransform: 'uppercase' }}>
                                         Mencocokkan Barcode & Kalkulasi Status...
@@ -266,20 +280,10 @@ export default function App4RecouncilPage() {
                                 <button
                                     onClick={processRecouncil}
                                     disabled={!allFilesReady}
-                                    style={{
-                                        background: 'var(--charcoal-900)', color: 'var(--amber-400)',
-                                        border: '2px solid var(--charcoal-900)', borderRadius: '0',
-                                        padding: '16px 32px', display: 'flex', alignItems: 'center', gap: '12px',
-                                        fontFamily: 'var(--font-sora)', fontWeight: 900, fontSize: '14px',
-                                        textTransform: 'uppercase', letterSpacing: '0.05em', cursor: 'pointer',
-                                        transition: 'all 0.1s',
-                                        boxShadow: !allFilesReady ? 'none' : '6px 6px 0px var(--charcoal-900)',
-                                        opacity: !allFilesReady ? 0.6 : 1
-                                    }}
-                                    onMouseOver={e => { if(allFilesReady && !processing) { e.currentTarget.style.transform = 'translate(2px, 2px)'; e.currentTarget.style.boxShadow = '4px 4px 0px var(--charcoal-900)'; } }}
-                                    onMouseOut={e => { if(allFilesReady && !processing) { e.currentTarget.style.transform = 'translate(0px, 0px)'; e.currentTarget.style.boxShadow = '6px 6px 0px var(--charcoal-900)'; } }}
+                                    className="wa-btn-terracotta"
+                                    style={{ padding: '16px 36px', fontSize: 13, fontWeight: 700 }}
                                 >
-                                    <Sparkles size={20} strokeWidth={2.5} /> PROSES RECOUNCIL SEKARANG
+                                    <Sparkles size={20} strokeWidth={2.5} /> Proses Recouncil Sekarang →
                                 </button>
                             )}
                         </div>
