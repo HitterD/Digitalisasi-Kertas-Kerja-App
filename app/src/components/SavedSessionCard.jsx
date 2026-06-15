@@ -19,23 +19,23 @@ export default function SavedSessionCard() {
     if (state.rooms.length === 0) return null;
 
     return (
-        <div className="card mb-3">
-            <div className="card__header">
-                <div className="card__title">
-                    <Package size={20} />
-                    Opname Tersimpan
+        <div className="wa-card" style={{ padding: 22 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
+                <div className="wa-icon-wrap" style={{ background: 'rgba(26,26,26,0.06)' }}>
+                    <Package size={20} color="var(--charcoal-900)" />
                 </div>
-                <span className="badge badge--info">{state.rooms.length} ruangan</span>
+                <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--charcoal-900)' }}>Opname Tersimpan</div>
+                    <div style={{ fontSize: 11.5, color: 'var(--charcoal-500)', marginTop: 3 }}>Lanjutkan sesi opname sebelumnya dari lokal.</div>
+                </div>
+                <div className="wa-status">{state.rooms.length} RUANGAN</div>
             </div>
-            <p className="text-sm text-secondary mb-3">
+            <p style={{ fontSize: 12, color: 'var(--charcoal-600)', marginBottom: 14, marginTop: 0 }}>
                 File: <strong>{state.fileName}</strong> — Data opname sebelumnya masih tersimpan.
             </p>
-            <div className="flex-row--gap-sm" style={{ display: 'flex' }}>
-                <button className="btn btn--outline btn--lg" onClick={handleContinue}>
-                    <ArrowRight size={18} />
-                    Lanjutkan Opname
-                </button>
-            </div>
+            <button className="wa-btn" onClick={handleContinue} style={{ width: '100%' }}>
+                <ArrowRight size={14} /> Lanjutkan Opname
+            </button>
         </div>
     );
 }

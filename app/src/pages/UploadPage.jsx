@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOpname } from '../store/OpnameContext';
 import { parseExcelFile, splitExcelBySheets } from '../utils/excelParser';
-import { FileSpreadsheet, Scissors, ChevronRight } from 'lucide-react';
+import { FileSpreadsheet, Scissors, ChevronRight, Save, Server, Layers, RefreshCw, Upload } from 'lucide-react';
 import { saveAs } from 'file-saver';
 
 import SavedSessionCard from '../components/SavedSessionCard';
@@ -129,67 +129,56 @@ export default function UploadPage() {
     //  MAIN DASHBOARD VIEW (BENTO ASYMMETRICAL LAYOUT)
     // ═══════════════════════════════════════════
     return (
-        <div className="app-main theme-clean-glass">
-            <div className="upload-dashboard-bento">
-                <div className="bento-header">
-                    <h1 className="bento-title">
-                        <FileSpreadsheet className="bento-title-icon" size={32} />
-                        KERTAS KERJA OPNAME
-                    </h1>
-                    <div style={{ display: 'flex', gap: '16px' }}>
-                        <button 
-                            onClick={() => setIsSaveModalOpen(true)} 
-                            style={{ 
-                                background: 'transparent', color: 'var(--charcoal-900)', 
-                                border: '2px solid var(--charcoal-900)', borderRadius: '0',
-                                padding: '12px 24px', display: 'flex', alignItems: 'center', gap: '10px',
-                                fontFamily: 'var(--font-sora)', fontWeight: 900, fontSize: '12px',
-                                textTransform: 'uppercase', letterSpacing: '0.05em', cursor: 'pointer',
-                                transition: 'all 0.1s',
-                                boxShadow: '4px 4px 0px var(--charcoal-900)'
-                            }}
-                            onMouseOver={e => { e.currentTarget.style.transform = 'translate(2px, 2px)'; e.currentTarget.style.boxShadow = '2px 2px 0px var(--charcoal-900)'; }}
-                            onMouseOut={e => { e.currentTarget.style.transform = 'translate(0px, 0px)'; e.currentTarget.style.boxShadow = '4px 4px 0px var(--charcoal-900)'; }}
-                        >
-                            <FileSpreadsheet size={18} strokeWidth={2.5} />
-                            <span>LANJUTKAN DARI LOKAL (SAVE)</span>
-                        </button>
-                        <button 
-                            onClick={() => setIsServerModalOpen(true)}
-                            style={{ 
-                                background: 'var(--charcoal-900)', color: 'var(--amber-400)', 
-                                border: '2px solid var(--charcoal-900)', borderRadius: '0',
-                                padding: '12px 24px', display: 'flex', alignItems: 'center', gap: '10px',
-                                fontFamily: 'var(--font-sora)', fontWeight: 900, fontSize: '12px',
-                                textTransform: 'uppercase', letterSpacing: '0.05em', cursor: 'pointer',
-                                transition: 'all 0.1s',
-                                boxShadow: '4px 4px 0px var(--charcoal-900)'
-                            }}
-                            onMouseOver={e => { e.currentTarget.style.background = 'var(--amber-400)'; e.currentTarget.style.color = 'var(--charcoal-900)'; e.currentTarget.style.transform = 'translate(2px, 2px)'; e.currentTarget.style.boxShadow = '2px 2px 0px var(--charcoal-900)'; }}
-                            onMouseOut={e => { e.currentTarget.style.background = 'var(--charcoal-900)'; e.currentTarget.style.color = 'var(--amber-400)'; e.currentTarget.style.transform = 'translate(0px, 0px)'; e.currentTarget.style.boxShadow = '4px 4px 0px var(--charcoal-900)'; }}
-                        >
-                            <FileSpreadsheet size={18} strokeWidth={2.5} />
-                            <span>AMBIL DATA SERVER (BARU)</span>
-                        </button>
+        <div className="wa-app-body">
+            <div className="wa-page-header">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <div className="wa-icon-wrap" style={{ background: 'rgba(26,26,26,0.06)' }}>
+                        <FileSpreadsheet size={20} color="var(--charcoal-900)" />
+                    </div>
+                    <div>
+                        <div className="eyebrow">Modul 01 · Operasional</div>
+                        <h1>Kertas Kerja Opname</h1>
+                        <div className="subtitle">Mulai opname baru, lanjutkan sesi sebelumnya, atau sinkronkan data dari jaringan.</div>
                     </div>
                 </div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                    <button className="wa-btn" onClick={() => setIsSaveModalOpen(true)}>
+                        <Save size={13} /> Lanjutkan dari Lokal (Save)
+                    </button>
+                    <button className="wa-btn-terracotta" onClick={() => setIsServerModalOpen(true)}>
+                        <Server size={13} /> Ambil Data Server (Baru)
+                    </button>
+                </div>
+            </div>
 
-                <div className="bento-grid-modern">
-                    {/* ─── BARIS ATAS ─── */}
-                    {/* Blok Kiri: Session (Lebar 6) */}
-                    <div className="editorial-glass-card bento-col-half">
-                        <SavedSessionCard />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                {/* Card 1: Saved Session */}
+                <SavedSessionCard />
+                {/* Card 2: Network Sync Hub */}
+                <NetworkSyncHub />
+                {/* Card 3: Sumber Data Aset (full-width) */}
+                <div className="wa-card" style={{ gridColumn: 'span 2', padding: 22 }}>
+                    <DatabaseUploadGrid />
+                </div>
+                {/* Card 4: Database Master Aset (full-width) */}
+                <div className="wa-card" style={{ gridColumn: 'span 2', padding: 22 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
+                        <div className="wa-icon-wrap" style={{ background: 'rgba(22,163,74,0.10)' }}>
+                            <Layers size={20} color="var(--success-500)" />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--charcoal-900)' }}>Database Master Aset</div>
+                            <div style={{ fontSize: 11.5, color: 'var(--charcoal-500)', marginTop: 3 }}>Kamus utama barcode &amp; metadata aset perusahaan.</div>
+                        </div>
+                        <div className="wa-status success">✓ 98,837 ASET</div>
                     </div>
-
-                    {/* Blok Kanan: Sync (Lebar 6) */}
-                    <div className="editorial-glass-card bento-col-half">
-                        <NetworkSyncHub />
+                    <div style={{ padding: 14, background: 'rgba(22,163,74,0.05)', border: '1px solid rgba(22,163,74,0.2)', borderRadius: 10 }}>
+                        <div style={{ fontSize: 12, color: 'var(--success-500)', fontWeight: 600 }}>SQL Server (98837 aset) — 98,837 barcode dimuat</div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--charcoal-400)', marginTop: 6 }}>⏱ Terakhir sync: 15 Jun 2026, 11:45</div>
                     </div>
-
-                    {/* ─── BARIS BAWAH ─── */}
-                    {/* Blok Full: Database (Lebar 12) */}
-                    <div className="editorial-glass-card bento-col-wide" style={{ gridColumn: 'span 12' }}>
-                        <DatabaseUploadGrid />
+                    <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
+                        <button className="wa-btn-ghost"><RefreshCw size={12} /> Sinkron Ulang</button>
+                        <button className="wa-btn-ghost"><Upload size={12} /> Upload File</button>
                     </div>
                 </div>
             </div>
@@ -224,7 +213,7 @@ export default function UploadPage() {
                 onSaveState={async () => state}
                 onLoadState={async (loadedState) => {
                     importData(loadedState);
-                    navigate('/app1/opname'); // langsung jump ke Opname setelah load
+                    navigate('/app1/opname');
                 }}
             />
         </div>

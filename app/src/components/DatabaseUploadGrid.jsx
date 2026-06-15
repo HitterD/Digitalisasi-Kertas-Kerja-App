@@ -158,7 +158,7 @@ export default function DatabaseUploadGrid() {
     const isSyncing = masterSyncing || historySyncing;
 
     return (
-        <div className="card mb-3">
+        <div className="wa-card">
             {/* Header */}
             <div className="card__header">
                 <div className="card__title">
@@ -180,7 +180,7 @@ export default function DatabaseUploadGrid() {
             {/* Sync All Button — always visible */}
             <div style={{ padding: '0 var(--space-5) var(--space-4)', borderBottom: '1px solid var(--neutral-200)' }}>
                 <button
-                    className="btn btn--primary"
+                    className="wa-btn-terracotta"
                     onClick={handleSyncAll}
                     disabled={isSyncing}
                     style={{ width: '100%' }}
@@ -271,7 +271,7 @@ export default function DatabaseUploadGrid() {
                                 )}
                             </button>
                             <div
-                                className="upload-zone--dashed"
+                                className="wa-zone"
                                 onClick={() => document.getElementById('db-upload').click()}
                                 style={{ padding: 'var(--space-4)' }}
                             >
@@ -363,7 +363,7 @@ export default function DatabaseUploadGrid() {
                                 )}
                             </button>
                             <div
-                                className="upload-zone--dashed"
+                                className="wa-zone"
                                 onClick={() => document.getElementById('history-db-upload').click()}
                                 style={{ padding: 'var(--space-4)' }}
                             >

@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOpname } from '../store/OpnameContext';
-import { Wifi, MonitorUp, SmartphoneNfc, DownloadCloud, Settings } from 'lucide-react';
+import { Wifi, MonitorUp, SmartphoneNfc, DownloadCloud, Settings, ArrowRight } from 'lucide-react';
 import { apiUrl, getServerUrl, setServerUrl, fetchWithAuth } from '../utils/apiConfig';
 import { Capacitor } from '@capacitor/core';
 
@@ -86,161 +86,153 @@ export default function NetworkSyncHub() {
     }, [importData, navigate]);
 
     return (
-        <div 
-            className="card card--sync mb-3" 
-            style={{ 
-                borderRadius: '4px', 
-                border: '1px solid var(--charcoal-900)', 
-                boxShadow: '4px 4px 0px rgba(24, 24, 27, 0.1)', // subtle hard shadow 
-                background: '#ffffff'
-            }}
-        >
-            <div className="card__header" style={{ borderBottom: '1px solid var(--charcoal-200)', paddingBottom: '12px', marginBottom: '16px' }}>
-                <div className="card__title" style={{ color: 'var(--charcoal-900)', fontFamily: 'var(--font-sora)', fontWeight: 700, letterSpacing: '-0.02em', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Wifi size={20} />
-                    Hub Sinkronisasi Jaringan
+        <div className="wa-card" style={{ padding: 22 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
+                <div className="wa-icon-wrap" style={{ background: 'rgba(26,26,26,0.06)' }}>
+                    <Wifi size={20} color="var(--charcoal-900)" />
+                </div>
+                <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--charcoal-900)' }}>Hub Sinkronisasi Jaringan</div>
+                    <div style={{ fontSize: 11.5, color: 'var(--charcoal-500)', marginTop: 3 }}>Sinkron 2 arah antara PC &amp; Tablet via WiFi.</div>
                 </div>
             </div>
-            
+
             <div className="flex-col">
-                <p className="text-sm" style={{ margin: 0, color: 'var(--charcoal-600)', lineHeight: 1.5 }}>
+                <p className="text-sm" style={{ margin: '0 0 12px', color: 'var(--charcoal-600)', lineHeight: 1.5 }}>
                     Lakukan Sinkronisasi Jaringan Lokal 2 Arah antara <strong style={{color: 'var(--charcoal-900)'}}>PC</strong> dan <strong style={{color: 'var(--charcoal-900)'}}>Tablet Android</strong>.
                 </p>
 
-                <div style={{ display: 'grid', gap: '16px', marginTop: '16px' }}>
+                <div style={{ display: 'grid', gap: 8 }}>
                     {!isNativePlatform && (
                         <button
-                            className="btn"
+                            className="wa-btn-ghost"
                             onClick={handlePushSession}
                             disabled={isSyncing || (!masterDb && !historyDb && state.rooms.length === 0)}
-                            style={{ 
-                                height: 'auto', 
-                                padding: '12px 16px', 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                justifyContent: 'flex-start', 
-                                gap: '16px', 
-                                border: '1px solid var(--charcoal-300)', 
-                                borderRadius: '0', 
-                                background: 'transparent',
-                                transition: 'all 0.2s ease',
+                            style={{
+                                width: '100%',
+                                height: 'auto',
+                                padding: '10px 14px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                gap: 16,
                                 opacity: (isSyncing || (!masterDb && !historyDb && state.rooms.length === 0)) ? 0.5 : 1
                             }}
                         >
-                            <div style={{ background: 'var(--charcoal-900)', padding: '12px', borderRadius: '0', color: 'var(--amber-400)' }}>
-                                <MonitorUp size={24} />
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                <MonitorUp size={18} color="var(--charcoal-700)" />
+                                <div style={{ textAlign: 'left' }}>
+                                    <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--charcoal-900)' }}>Bagikan Sesi</div>
+                                    <div style={{ fontSize: 10, color: 'var(--charcoal-500)', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: 2 }}>PC &rarr; JARINGAN LOKAL</div>
+                                </div>
                             </div>
-                            <div style={{ textAlign: 'left' }}>
-                                <div style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--charcoal-900)', fontFamily: 'var(--font-sora)' }}>Bagikan Sesi</div>
-                                <div style={{ fontSize: '0.7rem', color: 'var(--charcoal-500)', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '2px' }}>PC &rarr; Jaringan Lokal</div>
-                            </div>
+                            <ArrowRight size={14} color="var(--charcoal-500)" />
                         </button>
                     )}
 
                     {isNativePlatform && (
                         <button
-                            className="btn"
-                            style={{ 
-                                height: 'auto', 
-                                padding: '12px 16px', 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                justifyContent: 'flex-start', 
-                                gap: '16px', 
-                                border: '1px solid var(--charcoal-300)', 
-                                borderRadius: '0',
-                                background: 'transparent',
+                            className="wa-btn-ghost"
+                            style={{
+                                width: '100%',
+                                height: 'auto',
+                                padding: '10px 14px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                gap: 16,
                                 opacity: isSyncing ? 0.5 : 1
                             }}
                             onClick={handlePullSession}
                             disabled={isSyncing}
                         >
-                            <div style={{ background: 'var(--charcoal-900)', padding: '12px', borderRadius: '0', color: 'var(--amber-400)' }}>
-                                <SmartphoneNfc size={24} />
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                <SmartphoneNfc size={18} color="var(--charcoal-700)" />
+                                <div style={{ textAlign: 'left' }}>
+                                    <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--charcoal-900)' }}>Tarik Sesi</div>
+                                    <div style={{ fontSize: 10, color: 'var(--charcoal-500)', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: 2 }}>JARINGAN LOKAL &rarr; TABLET</div>
+                                </div>
                             </div>
-                            <div style={{ textAlign: 'left' }}>
-                                <div style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--charcoal-900)', fontFamily: 'var(--font-sora)' }}>Tarik Sesi</div>
-                                <div style={{ fontSize: '0.7rem', color: 'var(--charcoal-500)', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '2px' }}>Jaringan Lokal &rarr; Tablet</div>
-                            </div>
+                            <ArrowRight size={14} color="var(--charcoal-500)" />
                         </button>
                     )}
 
                     {!isNativePlatform && (
                         <button
-                            className="btn"
+                            className="wa-btn-ghost"
                             onClick={handlePullResult}
                             disabled={isSyncing}
-                            style={{ 
-                                height: 'auto', 
-                                padding: '12px 16px', 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                justifyContent: 'flex-start', 
-                                gap: '16px', 
-                                borderRadius: '0',
-                                background: 'var(--charcoal-900)',
-                                color: 'var(--amber-400)',
-                                border: '1px solid var(--charcoal-900)',
+                            style={{
+                                width: '100%',
+                                height: 'auto',
+                                padding: '10px 14px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                gap: 16,
                                 opacity: isSyncing ? 0.5 : 1
                             }}
                         >
-                            <div style={{ background: 'rgba(255,255,255,0.1)', padding: '12px', borderRadius: '0', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                <DownloadCloud size={24} color="var(--amber-400)" />
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                <DownloadCloud size={18} color="var(--charcoal-700)" />
+                                <div style={{ textAlign: 'left' }}>
+                                    <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--charcoal-900)' }}>Tarik Hasil Opname</div>
+                                    <div style={{ fontSize: 10, color: 'var(--charcoal-500)', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: 2 }}>TABLET &rarr; PC</div>
+                                </div>
                             </div>
-                            <div style={{ textAlign: 'left' }}>
-                                <div style={{ fontWeight: 700, fontSize: '1rem', fontFamily: 'var(--font-sora)' }}>Tarik Hasil Opname</div>
-                                <div style={{ fontSize: '0.7rem', opacity: 0.8, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '2px' }}>Tablet &rarr; PC</div>
-                            </div>
+                            <ArrowRight size={14} color="var(--charcoal-500)" />
                         </button>
                     )}
 
                     {isNativePlatform && (
-                        <div style={{ marginTop: '8px', width: '100%' }}>
+                        <div style={{ marginTop: 4, width: '100%' }}>
                             <button
                                 type="button"
                                 onClick={() => { setTempUrl(getServerUrl()); setShowConfig(!showConfig); }}
-                                className="btn btn--ghost"
-                                style={{ 
-                                    fontSize: '0.75rem', 
-                                    color: 'var(--charcoal-500)', 
+                                className="wa-btn-ghost"
+                                style={{
+                                    width: '100%',
+                                    fontSize: 11,
+                                    color: 'var(--charcoal-500)',
                                     fontFamily: 'var(--font-mono)',
-                                    display: 'inline-flex', 
-                                    alignItems: 'center', 
-                                    gap: '6px', 
-                                    padding: '4px 0',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    gap: 8,
+                                    padding: '8px 14px',
                                     textTransform: 'uppercase',
                                     letterSpacing: '0.05em'
                                 }}
                             >
-                                <Settings size={14} /> [ Konfigurasi IP PC ]
+                                <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                    <Settings size={12} /> Konfigurasi IP PC
+                                </span>
                             </button>
                         </div>
                     )}
 
                     {showConfig && isNativePlatform && (
-                        <div style={{ 
-                            background: 'var(--warm-50)', 
-                            padding: '16px', 
-                            borderRadius: '0', 
-                            borderLeft: '3px solid var(--charcoal-900)', 
+                        <div style={{
+                            background: 'var(--warm-50)',
+                            padding: 14,
+                            borderRadius: 8,
                             border: '1px solid var(--charcoal-200)',
-                            borderLeftWidth: '3px',
-                            borderLeftColor: 'var(--charcoal-900)',
-                            marginTop: '4px' 
+                            borderLeft: '3px solid var(--charcoal-900)',
+                            marginTop: 4
                         }}>
-                            <p style={{ fontSize: '12px', color: 'var(--charcoal-600)', fontFamily: 'var(--font-mono)', marginBottom: '12px', marginTop: 0 }}>&gt; Masukkan IP Wi-Fi PC untuk Sinkronisasi</p>
-                            <div style={{ display: 'flex', gap: '8px' }}>
+                            <p style={{ fontSize: 11, color: 'var(--charcoal-600)', fontFamily: 'var(--font-mono)', marginBottom: 10, marginTop: 0 }}>Masukkan IP Wi-Fi PC untuk Sinkronisasi</p>
+                            <div style={{ display: 'flex', gap: 8 }}>
                                 <input
                                     type="text"
                                     value={tempUrl}
                                     onChange={e => setTempUrl(e.target.value)}
                                     className="form-input"
-                                    style={{ 
-                                        flex: 1, 
-                                        padding: '10px 12px', 
-                                        fontSize: '13px',
+                                    style={{
+                                        flex: 1,
+                                        padding: '8px 10px',
+                                        fontSize: 12,
                                         fontFamily: 'var(--font-mono)',
-                                        borderRadius: '0',
+                                        borderRadius: 6,
                                         border: '1px solid var(--charcoal-300)',
                                         background: '#fff'
                                     }}
@@ -248,7 +240,7 @@ export default function NetworkSyncHub() {
                                 />
                                 <button
                                     type="button"
-                                    className="btn"
+                                    className="wa-btn"
                                     onClick={() => {
                                         const trimmed = tempUrl.trim();
                                         if (!isValidUrl(trimmed)) {
@@ -260,27 +252,21 @@ export default function NetworkSyncHub() {
                                         setSyncError('');
                                         setSyncSuccess('IP Disimpan! Silakan coba Tarik Sesi kembali.');
                                     }}
-                                    style={{ 
-                                        padding: '10px 20px', 
-                                        fontSize: '13px', 
-                                        borderRadius: '0',
-                                        fontFamily: 'var(--font-mono)',
-                                        fontWeight: 'bold',
-                                        background: 'var(--charcoal-900)',
-                                        color: '#fff',
-                                        border: '1px solid var(--charcoal-900)'
+                                    style={{
+                                        padding: '8px 16px',
+                                        fontSize: 12
                                     }}
                                 >
                                     SAVE
                                 </button>
                             </div>
-                            <p style={{ fontSize: '11px', color: 'var(--charcoal-400)', fontFamily: 'var(--font-mono)', marginTop: '12px', marginBottom: 0 }}>* Standar USB: http://localhost:5181</p>
+                            <p style={{ fontSize: 10, color: 'var(--charcoal-400)', fontFamily: 'var(--font-mono)', marginTop: 8, marginBottom: 0 }}>* Standar USB: http://localhost:5181</p>
                         </div>
                     )}
                 </div>
 
-                {syncError && <div className="alert alert--danger" style={{ marginTop: '16px', borderRadius: '0', borderLeft: '4px solid var(--red-600)', fontFamily: 'var(--font-mono)', fontSize: '12px' }}>{syncError}</div>}
-                {syncSuccess && <div className="alert alert--success" style={{ marginTop: '16px', borderRadius: '0', borderLeft: '4px solid #059669', background: '#ecfdf5', color: '#065f46', fontFamily: 'var(--font-mono)', fontSize: '12px' }}>{syncSuccess}</div>}
+                {syncError && <div className="alert alert--danger" style={{ marginTop: 12, borderRadius: 8, borderLeft: '4px solid var(--red-600)', fontFamily: 'var(--font-mono)', fontSize: 11 }}>{syncError}</div>}
+                {syncSuccess && <div className="alert alert--success" style={{ marginTop: 12, borderRadius: 8, borderLeft: '4px solid #059669', background: '#ecfdf5', color: '#065f46', fontFamily: 'var(--font-mono)', fontSize: 11 }}>{syncSuccess}</div>}
             </div>
         </div>
     );
