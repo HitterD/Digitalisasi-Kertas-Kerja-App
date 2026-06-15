@@ -153,238 +153,93 @@ export default function OpnamePage() {
     return (
         <div className="app-main" style={{ width: '100%', maxWidth: '100%', padding: '0 var(--space-4)' }}>
             {/* Room Navigation */}
-            <div className="room-nav">
-                <button className="btn btn--ghost btn--icon" onClick={handlePrevRoom} disabled={roomIdx === 0}>
-                    <ChevronLeft size={20} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 18px', background: 'var(--cream-surface)', borderBottom: '1px solid rgba(26,26,26,0.06)' }}>
+              {/* Prev/Next + select */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
+                <button onClick={handlePrevRoom} disabled={roomIdx === 0} style={{ width: 30, height: 30, background: 'transparent', border: '1px solid rgba(26,26,26,0.1)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--charcoal-900)', cursor: roomIdx === 0 ? 'not-allowed' : 'pointer', opacity: roomIdx === 0 ? 0.25 : 1 }}>
+                  <ChevronLeft size={14} />
                 </button>
-
-                <select
-                    className="form-select room-nav__select"
-                    value={roomIdx}
-                    onChange={(e) => setRoomIndex(Number(e.target.value))}
-                    style={{ maxWidth: '300px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}
-                >
-                    {state.rooms.map((r, i) => {
-                        const op = overallProgress[i];
-                        const pctStr = op ? ` (${op.checked}/${op.total})` : '';
-                        return (
-                            <option key={i} value={i}>
-                                {i + 1}. {r.meta.roomName || r.sheetName}{pctStr}
-                            </option>
-                        );
-                    })}
+                <select className="wa-select" value={roomIdx} onChange={(e) => setRoomIndex(Number(e.target.value))} style={{ minWidth: 240, fontSize: 12, fontWeight: 600 }}>
+                  {state.rooms.map((r, i) => {
+                    const op = overallProgress[i];
+                    const pctStr = op ? ` (${op.checked}/${op.total})` : '';
+                    return <option key={i} value={i}>{i + 1}. {r.meta.roomName || r.sheetName}{pctStr}</option>;
+                  })}
                 </select>
-
-                <button className="btn btn--ghost btn--icon" onClick={handleNextRoom} disabled={roomIdx === state.rooms.length - 1}>
-                    <ChevronRight size={20} />
+                <button onClick={handleNextRoom} disabled={roomIdx === state.rooms.length - 1} style={{ width: 30, height: 30, background: 'transparent', border: '1px solid rgba(26,26,26,0.1)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--charcoal-900)', cursor: roomIdx === state.rooms.length - 1 ? 'not-allowed' : 'pointer', opacity: roomIdx === state.rooms.length - 1 ? 0.25 : 1 }}>
+                  <ChevronRight size={14} />
                 </button>
+              </div>
 
-                <div className="room-nav__progress">
-                    <div className="room-nav__progress-bar" style={{ background: 'var(--warm-200)', height: 6, borderRadius: 0, overflow: 'hidden' }}>
-                        <div className="room-nav__progress-fill" style={{ width: `${progress.pct}%`, background: 'var(--amber-500)', height: '100%', borderRadius: 0, transition: 'width 0.4s cubic-bezier(0.25, 1, 0.5, 1)' }}></div>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px', marginTop: '4px' }}>
-                        <span style={{ fontWeight: 800, fontFamily: 'var(--font-sora)', fontSize: '1.2rem', color: progress.pct === 100 ? 'var(--amber-600)' : 'var(--charcoal-900)', lineHeight: 1 }}>{progress.pct}%</span>
-                        <span style={{ fontSize: '10px', fontFamily: 'var(--font-mono)', color: 'var(--charcoal-400)', whiteSpace: 'nowrap', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{progress.checked} / {progress.total} DIPROSES</span>
-                    </div>
-                </div>
+              <div style={{ width: 1, height: 24, background: 'rgba(26,26,26,0.08)' }} />
 
-                {/* --- STATS WIDGET --- */}
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '24px',
-                    marginLeft: 'auto',
-                    background: '#ffffff',
-                    padding: '8px 24px',
-                    borderRadius: '12px',
-                    border: '1px solid var(--warm-200)',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
-                }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', minWidth: '80px' }}>
-                        <span style={{ fontSize: '10px', fontFamily: 'var(--font-mono)', color: 'var(--charcoal-400)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Sisa Aset</span>
-                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', marginTop: '2px' }}>
-                            <span style={{ fontSize: '18px', fontFamily: 'var(--font-sora)', fontWeight: 800, color: 'var(--charcoal-900)', lineHeight: 1 }}>
-                                {progress.total - progress.checked}
-                            </span>
-                            <span style={{ fontSize: '10px', fontWeight: 600, color: 'var(--charcoal-400)', textTransform: 'uppercase' }}>item</span>
-                        </div>
-                    </div>
-                    
-                    <div style={{ width: '1px', height: '32px', background: 'var(--warm-200)' }}></div>
-                    
-                    <div style={{ display: 'flex', flexDirection: 'column', minWidth: '100px' }}>
-                        <span style={{ fontSize: '10px', fontFamily: 'var(--font-mono)', color: 'var(--charcoal-400)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Status Area</span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
-                            <div style={{ 
-                                width: '10px', height: '10px', borderRadius: '50%', 
-                                background: progress.pct === 100 ? 'var(--success-500)' : progress.pct > 0 ? 'var(--amber-500)' : 'var(--neutral-300)',
-                                boxShadow: progress.pct === 100 ? '0 0 8px rgba(34, 197, 94, 0.4)' : progress.pct > 0 ? '0 0 8px rgba(245, 158, 11, 0.4)' : 'none'
-                            }}></div>
-                            <span style={{ fontSize: '13px', fontFamily: 'var(--font-sora)', fontWeight: 700, color: progress.pct === 100 ? 'var(--success-700)' : progress.pct > 0 ? 'var(--amber-700)' : 'var(--charcoal-500)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                                {progress.pct === 100 ? 'Selesai' : progress.pct > 0 ? 'Proses' : 'Menunggu'}
-                            </span>
-                        </div>
-                    </div>
+              {/* Progress ring + count */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+                <div style={{ position: 'relative', width: 36, height: 36 }}>
+                  <svg width="36" height="36" viewBox="0 0 36 36" style={{ transform: 'rotate(-90deg)' }}>
+                    <circle cx="18" cy="18" r="14" fill="none" stroke="rgba(26,26,26,0.08)" strokeWidth="3" />
+                    <circle cx="18" cy="18" r="14" fill="none" stroke="var(--terracotta-500)" strokeWidth="3" strokeDasharray="87.96" strokeDashoffset={87.96 - (87.96 * progress.pct / 100)} strokeLinecap="round" style={{ transition: 'stroke-dashoffset 400ms cubic-bezier(0.25,1,0.5,1)' }} />
+                  </svg>
+                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono)', fontSize: 8.5, fontWeight: 700, color: 'var(--charcoal-900)' }}>{progress.pct}%</div>
                 </div>
+                <div>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: 'var(--charcoal-400)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{progress.checked}/{progress.total}</div>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: 'var(--charcoal-400)', letterSpacing: '0.08em' }}>{progress.total - progress.checked} SISA</div>
+                </div>
+              </div>
+
+              <div style={{ width: 1, height: 24, background: 'rgba(26,26,26,0.08)' }} />
+
+              {/* Dot grid (horizontal scroll) */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 3, overflowX: 'auto', flex: 1, minWidth: 0, paddingRight: 8 }}>
+                {state.rooms.map((r, i) => {
+                  const op = overallProgress[i];
+                  const isActive = i === roomIdx;
+                  const isDone = op && op.checked === op.total;
+                  const isProcess = op && op.checked > 0 && op.checked < op.total;
+                  return (
+                    <div key={i} title={`Ruang ${i + 1}`} style={{
+                      width: 12, height: 12, borderRadius: '50%', flexShrink: 0, cursor: 'pointer',
+                      background: isActive ? 'var(--cream-surface)' : (isDone ? 'var(--charcoal-900)' : (isProcess ? 'var(--terracotta-500)' : 'var(--cream-surface)')),
+                      border: isActive ? '2px solid var(--terracotta-500)' : '1.5px solid var(--charcoal-300)',
+                    }} onClick={() => setRoomIndex(i)} />
+                  );
+                })}
+              </div>
             </div>
 
             {/* Room Meta Info */}
-            <div className="meta-info" style={{ background: 'var(--warm-50)', border: '1px solid var(--warm-200)', borderRadius: '4px', padding: '12px 16px', marginBottom: '16px' }}>
-                <div className="meta-info__item">
-                    <span className="meta-info__label" style={{ fontFamily: 'var(--font-mono)', color: 'var(--charcoal-500)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Ruangan</span>
-                    <span className="meta-info__value" style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, color: 'var(--charcoal-900)' }}>{room.meta.roomName}</span>
+            <div className="wa-card" style={{ padding: 18, marginBottom: 14 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0 }}>
+                <div style={{ paddingRight: 18, borderRight: '1px solid rgba(26,26,26,0.06)' }}>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--terracotta-500)', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 4 }}>Ruangan</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--charcoal-900)', lineHeight: 1.3 }}>{room.meta.roomName}</div>
                 </div>
-                <div className="meta-info__item">
-                    <span className="meta-info__label" style={{ fontFamily: 'var(--font-mono)', color: 'var(--charcoal-500)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>PIC Ruangan</span>
-                    <span className="meta-info__value" style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, color: 'var(--charcoal-900)' }}>{room.meta.picName || '-'}</span>
+                <div style={{ padding: '0 18px', borderRight: '1px solid rgba(26,26,26,0.06)' }}>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--terracotta-500)', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 4 }}>PIC Ruangan</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--charcoal-900)', lineHeight: 1.3 }}>{room.meta.picName || '-'}</div>
                 </div>
-                <div className="meta-info__item">
-                    <span className="meta-info__label" style={{ fontFamily: 'var(--font-mono)', color: 'var(--charcoal-500)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Periode</span>
-                    <span className="meta-info__value" style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, color: 'var(--charcoal-900)' }}>{room.meta.period}</span>
+                <div style={{ padding: '0 18px', borderRight: '1px solid rgba(26,26,26,0.06)' }}>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--terracotta-500)', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 4 }}>Periode</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--charcoal-900)', lineHeight: 1.3 }}>{room.meta.period}</div>
                 </div>
-                <div className="meta-info__item">
-                    <span className="meta-info__label" style={{ fontFamily: 'var(--font-mono)', color: 'var(--charcoal-500)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Tanggal</span>
-                    <span className="meta-info__value" style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, color: 'var(--charcoal-900)' }}>{room.meta.date || '-'}</span>
+                <div style={{ paddingLeft: 18 }}>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--terracotta-500)', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 4 }}>Tanggal</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--charcoal-900)', lineHeight: 1.3 }}>{room.meta.date || '-'}</div>
                 </div>
+              </div>
             </div>
 
             {/* Actions Bar */}
-            <div className="actions-bar" style={{ position: 'relative', zIndex: 100, display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '16px', background: 'var(--warm-100)', padding: '8px', borderRadius: '4px', border: '1px solid var(--warm-200)' }}>
-                {/* COMBO PDF DROPDOWN */}
-                <div style={{ position: 'relative', zIndex: 110 }} className="hide-on-mobile group">
-                    <button 
-                        className="btn btn--outline" 
-                        disabled={generating || isSyncing}
-                        style={{ background: 'var(--charcoal-900)', borderColor: 'var(--charcoal-900)', color: '#fff', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: '6px' }}
-                    >
-                        <FileDown size={14} />
-                        {generating ? 'Memproses...' : 'Export PDF'}
-                        <ChevronDown size={14} style={{ marginLeft: '4px' }} />
-                    </button>
-                    {/* Dropdown Menu Wrapper (Padding Bridge) */}
-                    <div 
-                        className="dropdown-wrapper"
-                        style={{ 
-                            position: 'absolute', top: '100%', left: 0, 
-                            paddingTop: '8px', /* Provides a seamless bridge to catch hover */
-                            minWidth: '200px', display: 'none', 
-                            zIndex: 120
-                        }}
-                    >
-                        {/* Actual Dropdown Box */}
-                        <div style={{ background: '#fff', border: '1px solid var(--warm-200)', borderRadius: '8px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                            <button 
-                                onClick={handleGenerateCurrentPDF} 
-                                disabled={generating || isSyncing}
-                                style={{ padding: '12px 16px', textAlign: 'left', background: 'transparent', border: 'none', borderBottom: '1px solid var(--warm-100)', fontSize: '13px', fontFamily: 'var(--font-sora)', fontWeight: 600, color: 'var(--charcoal-900)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                                onMouseOver={(e) => e.currentTarget.style.background = 'var(--warm-50)'}
-                                onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
-                            >
-                                <FileDown size={16} style={{ color: 'var(--amber-600)' }} />
-                                Cetak PDF Ruangan Ini
-                            </button>
-                            <button 
-                                onClick={handleGenerateAllPDFs} 
-                                disabled={generating || isSyncing}
-                                style={{ padding: '12px 16px', textAlign: 'left', background: 'transparent', border: 'none', fontSize: '13px', fontFamily: 'var(--font-sora)', fontWeight: 600, color: 'var(--charcoal-900)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                                onMouseOver={(e) => e.currentTarget.style.background = 'var(--warm-50)'}
-                                onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
-                            >
-                                <FilePlus size={16} style={{ color: 'var(--amber-600)' }} />
-                                Cetak PDF Semua Ruangan
-                            </button>
-                        </div>
-                     </div>
-                     {/* Use explicit style fallback */}
-                     <style>{`
-                         .group:hover .dropdown-wrapper { display: block !important; }
-                         @media (max-width: 768px) {
-                             .hide-on-mobile { display: none !important; }
-                         }
-                     `}</style>
-                </div>
-
-                <button 
-                  className="btn btn--outline" 
-                  onClick={() => setIsCustomModalOpen(true)} 
-                  style={{ background: 'var(--blue-50)', borderColor: 'var(--blue-200)', color: 'var(--blue-700)', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}
-                  title="Tambah ruangan manual jika ada yang terlewat dari Excel"
-                >
-                    <Plus size={14} />
-                    Ruang Custom
-                </button>
-
-                {/* SAVE BUTTON - Hidden on Android/Mobile, shown on SM+ */}
-                <button
-                    className="btn btn--outline hide-on-mobile"
-                    title="Simpan sementara atau Load hasil opname tersimpan"
-                    onClick={() => setIsSaveModalOpen(true)}
-                    style={{ background: 'var(--warm-50)', borderColor: 'var(--warm-300)', color: 'var(--charcoal-900)', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}
-                >
-                    <Save size={14} />
-                    <span>Save / Load</span>
-                </button>
-
-                {/* UPGRADED NETWORK BUTTON */}
-                <button
-                    className="btn btn--primary"
-                    onClick={handleNetworkSync}
-                    disabled={isSyncing || generating}
-                    title="Upload hasil opname langsung ke PC melalui jaringan WiFi"
-                    style={{ 
-                        background: 'linear-gradient(135deg, var(--charcoal-800) 0%, var(--charcoal-900) 100%)', 
-                        color: 'var(--amber-400)', 
-                        borderColor: 'transparent', 
-                        fontFamily: 'var(--font-sora)', 
-                        fontSize: '12px', 
-                        fontWeight: 800,
-                        textTransform: 'uppercase', 
-                        letterSpacing: '0.06em', 
-                        marginLeft: 'auto',
-                        boxShadow: '0 4px 14px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        padding: '8px 16px',
-                        transition: 'all 0.2s',
-                        borderRadius: '6px'
-                    }}
-                    onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
-                    onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-                >
-                    <UploadCloud size={16} style={{ filter: 'drop-shadow(0 2px 4px rgba(245, 158, 11, 0.4))' }} />
-                    {isSyncing ? 'MENGIRIM...' : 'SYNC SERVER'}
-                </button>
-
-                {/* Room quick-nav badges */}
-                <div className="ml-auto flex-row flex-row--gap-sm hidden sm:flex" style={{ flexWrap: 'wrap' }}>
-                    {overallProgress.map((op, i) => {
-                        const done = op.total > 0 && op.checked === op.total;
-                        const started = op.checked > 0;
-                        return (
-                            <button
-                                key={i}
-                                className="btn btn--ghost btn--sm"
-                                style={{
-                                    padding: '2px 8px',
-                                    minHeight: 28,
-                                    borderRadius: '4px',
-                                    fontFamily: 'var(--font-mono)',
-                                    background: i === roomIdx ? 'var(--charcoal-900)' : 'transparent',
-                                    color: i === roomIdx ? 'var(--amber-400)' : done ? 'var(--amber-600)' : started ? 'var(--charcoal-500)' : 'var(--warm-300)',
-                                    border: `1px solid ${i === roomIdx ? 'var(--charcoal-900)' : 'transparent'}`,
-                                    fontWeight: i === roomIdx ? 700 : 500,
-                                }}
-                                onClick={() => setRoomIndex(i)}
-                                title={state.rooms[i].meta.roomName}
-                            >
-                                {done ? <CheckCircle2 size={12} /> : <Circle size={12} />}
-                                {i + 1}
-                            </button>
-                        );
-                    })}
-                </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 12 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--charcoal-900)' }}>Daftar Aset</div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--charcoal-500)' }}>{room.assets.length} ITEM</div>
+              <button className="wa-btn" style={{ background: 'rgba(201,100,66,0.10)', color: 'var(--terracotta-500)', boxShadow: 'none' }}>◉ TEROPNAME</button>
+              <div style={{ flex: 1 }} />
+              <button className="wa-btn-ghost" onClick={() => setIsCustomModalOpen(true)}>+ Custom</button>
+              <button className="wa-btn-ghost" onClick={() => setIsSaveModalOpen(true)}>Save / Load</button>
+              <button className="wa-btn" onClick={handleGenerateCurrentPDF}>↓ PDF</button>
+              <button className="wa-btn-terracotta" onClick={handleNetworkSync}>↻ Sync</button>
             </div>
 
             {/* Main Asset Table */}
