@@ -33,10 +33,16 @@ describe('UpstreamTimeoutError', () => {
 });
 
 describe('CircuitBreaker', () => {
+  let currentTime;
   let now;
   beforeEach(() => {
-    now = vi.fn(() => 1000);
+    currentTime = 1000;
+    now = vi.fn(() => currentTime);
   });
+
+  function advanceTime(delta) {
+    currentTime += delta;
+  }
 
   function newBreaker(opts = {}) {
     return new CircuitBreaker({ now, failureThreshold: 3, openDurationMs: 30000, ...opts });
@@ -88,7 +94,7 @@ describe('CircuitBreaker', () => {
       cb.recordFailure(new Error('b'));
       cb.recordFailure(new Error('c'));
       expect(cb.getState()).toBe('OPEN');
-      now = vi.fn(() => 1000 + 30001);
+      advanceTime(30001);
       expect(cb.getState()).toBe('HALF_OPEN');
     });
 
@@ -97,7 +103,7 @@ describe('CircuitBreaker', () => {
       cb.recordFailure(new Error('a'));
       cb.recordFailure(new Error('b'));
       cb.recordFailure(new Error('c'));
-      now = vi.fn(() => 1000 + 29999);
+      advanceTime(29999);
       expect(cb.getState()).toBe('OPEN');
     });
   });
@@ -108,7 +114,7 @@ describe('CircuitBreaker', () => {
       cb.recordFailure(new Error('a'));
       cb.recordFailure(new Error('b'));
       cb.recordFailure(new Error('c'));
-      now = vi.fn(() => 1000 + 30001);
+      advanceTime(30001);
       expect(cb.getState()).toBe('HALF_OPEN');
       cb.recordSuccess();
       expect(cb.getState()).toBe('CLOSED');
@@ -123,9 +129,9 @@ describe('CircuitBreaker', () => {
       cb.recordFailure(new Error('a'));
       cb.recordFailure(new Error('b'));
       cb.recordFailure(new Error('c'));
-      now = vi.fn(() => 1000 + 30001);
+      advanceTime(30001);
       expect(cb.getState()).toBe('HALF_OPEN');
-      now = vi.fn(() => 1000 + 30002);
+      advanceTime(1);
       cb.recordFailure(new Error('d'));
       expect(cb.getState()).toBe('OPEN');
       expect(cb.openedAt).toBe(1000 + 30002);
@@ -252,6 +258,7 @@ describe('UpstreamRegistry', () => {
 describe('UpstreamRegistry — background probe', () => {
   beforeEach(() => {
     vi.useFakeTimers();
+    vi.setSystemTime(new Date(1000));
   });
   afterEach(() => {
     vi.useRealTimers();
@@ -282,7 +289,7 @@ describe('UpstreamRegistry — background probe', () => {
   it('probe success after failure transitions circuit to CLOSED', async () => {
     let fail = true;
     const probe = vi.fn().mockImplementation(() => fail ? Promise.reject(new Error('down')) : Promise.resolve('ok'));
-    const reg = new UpstreamRegistry({ probeIntervalMs: 1000, failureThreshold: 1 });
+    const reg = new UpstreamRegistry({ probeIntervalMs: 1000, failureThreshold: 1, openDurationMs: 500 });
     reg.registerProbe('sql', probe);
     reg.init();
     await vi.advanceTimersByTimeAsync(0);

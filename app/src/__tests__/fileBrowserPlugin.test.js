@@ -1,13 +1,22 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const mockSmb2Client = {
-  readdir: vi.fn(),
-  exists: vi.fn(),
-  stat: vi.fn(),
-  createReadStream: vi.fn(),
-};
+vi.hoisted(() => {
+  process.env.SHARE_ACCESS_MODE = 'smb';
+  process.env.SHARE_BASE_PATH = '\\\\test-host\\test-share';
+  process.env.SHARE_USER = 'test-user';
+  process.env.SHARE_PASSWORD = 'test-pass';
+});
+
+const { mockSmb2Client } = vi.hoisted(() => ({
+  mockSmb2Client: {
+    readdir: vi.fn(),
+    exists: vi.fn(),
+    stat: vi.fn(),
+    createReadStream: vi.fn(),
+  },
+}));
 vi.mock('@marsaud/smb2', () => ({
-  default: vi.fn(() => mockSmb2Client),
+  default: function SMB2() { return mockSmb2Client; },
 }));
 
 vi.mock('fs', () => ({
@@ -19,9 +28,19 @@ vi.mock('fs', () => ({
   },
 }));
 
-const mockGuard = vi.fn();
+const { mockGuard, mockRegisterProbe, mockInit, mockStop } = vi.hoisted(() => ({
+  mockGuard: vi.fn(),
+  mockRegisterProbe: vi.fn(),
+  mockInit: vi.fn(),
+  mockStop: vi.fn(),
+}));
 vi.mock('../server/utils/upstreamHealth', () => ({
-  registry: { guard: (...args) => mockGuard(...args) },
+  registry: {
+    guard: (...args) => mockGuard(...args),
+    registerProbe: (...args) => mockRegisterProbe(...args),
+    init: () => mockInit(),
+    stop: () => mockStop(),
+  },
   UpstreamOpenError: class extends Error {
     constructor(n, ra) { super(`Upstream ${n} tidak tersedia`); this.code = 'UPSTREAM_OPEN'; this.retryAfter = ra; }
   },
@@ -64,10 +83,6 @@ function extractMiddleware(plugin) {
 describe('fileBrowserPlugin — /api/files/folders', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    process.env.SHARE_ACCESS_MODE = 'smb';
-    process.env.SHARE_BASE_PATH = '\\\\test-host\\test-share';
-    process.env.SHARE_USER = 'test-user';
-    process.env.SHARE_PASSWORD = 'test-pass';
   });
 
   it('returns 200 with folder list on success', async () => {
