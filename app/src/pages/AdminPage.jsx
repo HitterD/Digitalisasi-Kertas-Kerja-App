@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-    Users, UserPlus, ShieldPlus, Trash2, ArrowLeft, KeySquare, 
-    Activity, Database, HardDrive, Download, UploadCloud, 
-    Server, Clock, Search as SearchIcon, ChevronLeft, ChevronRight, 
-    X, Filter, Save, FileText 
+import {
+    Users, UserPlus, ShieldPlus, Trash2, ArrowLeft, KeySquare,
+    Activity, Database, HardDrive, Download, UploadCloud,
+    Server, Clock, Search as SearchIcon, ChevronLeft, ChevronRight,
+    X, Filter, Save, FileText, Settings2
 } from 'lucide-react';
 import { fetchWithAuth } from '../utils/apiConfig';
 import '../index.css';
@@ -280,133 +280,232 @@ export default function AdminPage() {
     };
 
     // ==========================================
-    // RENDER HELPERS
+    // DERIVED AUTH
     // ==========================================
-    const renderTabs = () => (
-        <div className="admin-tabs">
-            <button className={`admin-tab ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>
-                <Users size={18} /> Manajemen Akses
-            </button>
-            <button className={`admin-tab ${activeTab === 'audit' ? 'active' : ''}`} onClick={() => setActiveTab('audit')}>
-                <Activity size={18} /> Audit Trail
-            </button>
-            <button className={`admin-tab ${activeTab === 'backup' ? 'active' : ''}`} onClick={() => setActiveTab('backup')}>
-                <Database size={18} /> Backup & Recovery
-            </button>
-            <button className={`admin-tab ${activeTab === 'system' ? 'active' : ''}`} onClick={() => setActiveTab('system')}>
-                <Server size={18} /> System Info
-            </button>
-        </div>
-    );
+    const getCurrentUser = () => {
+        try {
+            const authStr = sessionStorage.getItem('auth') || localStorage.getItem('auth');
+            if (authStr) return JSON.parse(authStr).username || 'UNKNOWN';
+        } catch (e) { /* ignore */ }
+        return 'UNKNOWN';
+    };
+    const currentUser = getCurrentUser();
 
+    // Toggle a single app access for an existing user
+    const toggleUserAccess = async (app, user) => {
+        const current = Array.isArray(user.access) ? user.access : [];
+        const newAccess = current.includes(app)
+            ? current.filter(a => a !== app)
+            : [...current, app];
+        try {
+            const response = await fetchWithAuth(`/api/users/${user.username}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'x-user': currentUser },
+                body: JSON.stringify({
+                    username: user.username,
+                    role: user.role,
+                    access: newAccess
+                })
+            });
+            const data = await response.json();
+            if (data.success) {
+                showSuccess(`Akses ${app} ${newAccess.includes(app) ? 'ditambahkan' : 'dicabut'} untuk ${user.username}.`);
+                fetchUsers();
+            } else showError(data.error);
+        } catch (err) {
+            showError('Gagal memperbarui akses.');
+        }
+    };
+
+    // ==========================================
+    // RENDER
+    // ==========================================
     return (
         <div className="admin-page admin-page-bg">
-            <header className="app-header">
-                <div className="app-header__left" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Link to="/" className="app-header__back" title="Kembali ke Menu"><ArrowLeft size={18} /></Link>
-                    <div className="header-divider"></div>
-                    <div className="app-header__brand" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <ShieldPlus size={22} className="text-primary-300" />
-                        <span>Administrator Platform</span>
+            {/* Slim header */}
+            <header className="wa-app-header">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <Link to="/" style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center', color: 'var(--charcoal-500)' }}>
+                        <ArrowLeft size={18} />
+                    </Link>
+                    <div style={{ width: 1, height: 18, background: 'rgba(26,26,26,0.1)' }} />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <div style={{ width: 26, height: 26, background: 'var(--charcoal-900)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Settings2 size={14} color="var(--terracotta-400)" />
+                        </div>
+                        <div>
+                            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--charcoal-900)', letterSpacing: '-0.01em' }}>System Configuration</div>
+                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Admin · PT Santos Jaya Abadi</div>
+                        </div>
                     </div>
+                </div>
+                <div className="wa-status success" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <div style={{ width: 6, height: 6, background: 'var(--success-500)', borderRadius: '50%' }}></div>
+                    ADMINISTRATOR · {currentUser}
                 </div>
             </header>
 
-            <main className="admin-container">
+            {/* Tab strip */}
+            <div className="wa-tabs">
+                <div className={`wa-tab ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>
+                    <Users size={14} /> Users
+                </div>
+                <div className={`wa-tab ${activeTab === 'audit' ? 'active' : ''}`} onClick={() => setActiveTab('audit')}>
+                    <Activity size={14} /> Audit Trail
+                </div>
+                <div className={`wa-tab ${activeTab === 'backup' ? 'active' : ''}`} onClick={() => setActiveTab('backup')}>
+                    <HardDrive size={14} /> Backup
+                </div>
+                <div className={`wa-tab ${activeTab === 'system' ? 'active' : ''}`} onClick={() => setActiveTab('system')}>
+                    <Server size={14} /> System Info
+                </div>
+            </div>
+
+            <main className="admin-container" style={{ paddingTop: 18 }}>
                 {error && <div className="admin-alert admin-alert--error"><ShieldPlus size={20} />{error}</div>}
                 {success && <div className="admin-alert admin-alert--success"><ShieldPlus size={20} />{success}</div>}
 
-                {/* Tabs Navigation */}
-                {renderTabs()}
+                {/* Page header */}
+                <div className="wa-page-header" style={{ marginTop: 18 }}>
+                    <div>
+                        <div className="eyebrow">System · Administrator</div>
+                        <h1>Konfigurasi Sistem</h1>
+                        <div className="subtitle">Kelola user, audit log, backup, dan informasi sistem. Akses terbatas untuk role admin.</div>
+                    </div>
+                </div>
 
                 {/* ========================================================== */}
                 {/* TAB 1: USERS */}
                 {/* ========================================================== */}
                 {activeTab === 'users' && (
-                    <div className="admin-layout-sidebar">
-                        <div className="admin-card">
-                            <h2 className="admin-card__title">
-                                {isEditing ? <KeySquare size={20} /> : <UserPlus size={20} />}
-                                {isEditing ? 'Edit User' : 'Tambah User Baru'}
-                            </h2>
-                            <form onSubmit={handleUserSubmit}>
-                                <div className="admin-form-group">
-                                    <label className="admin-form-label">Username</label>
-                                    <input type="text" required disabled={isEditing} className="admin-form-input"
-                                        value={formData.username} onChange={e => setFormData({ ...formData, username: e.target.value })} />
+                    <>
+                        {/* Tambah User form */}
+                        <div className="wa-card" style={{ padding: 18, marginBottom: 14 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                                <div className="wa-icon-wrap" style={{ background: 'rgba(201,100,66,0.10)', color: 'var(--terracotta-500)' }}>
+                                    <UserPlus size={18} />
                                 </div>
-                                <div className="admin-form-group">
-                                    <label className="admin-form-label">Password {isEditing && <span style={{ fontWeight: 'normal', color: 'var(--neutral-400)' }}>(Kosongkan jika tidak diubah)</span>}</label>
-                                    <input type="password" required={!isEditing} className="admin-form-input"
-                                        value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })} />
+                                <div>
+                                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--charcoal-900)' }}>Tambah User Baru</div>
+                                    <div style={{ fontSize: 11, color: 'var(--charcoal-500)', marginTop: 1 }}>Buat akun dan atur hak akses per modul.</div>
                                 </div>
-                                <div className="admin-form-group">
-                                    <label className="admin-form-label">Role Sistem</label>
-                                    <select className="admin-form-select" value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })}>
-                                        <option value="user">User Standar</option>
-                                        <option value="admin">Administrator</option>
+                            </div>
+                            <form onSubmit={handleUserSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: 12, alignItems: 'end' }}>
+                                <div>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>Username</div>
+                                    <input className="wa-input" required disabled={isEditing} placeholder="nama.user" value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} />
+                                </div>
+                                <div>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>Password{isEditing && ' (kosongkan jika tidak diubah)'}</div>
+                                    <input className="wa-input" type="password" required={!isEditing} placeholder="••••••••" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
+                                </div>
+                                <div>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>Role</div>
+                                    <select className="wa-select" value={formData.role} onChange={(e) => setFormData({ ...formData, role: e.target.value })}>
+                                        <option value="user">user</option>
+                                        <option value="admin">admin</option>
                                     </select>
                                 </div>
-                                <div className="admin-form-group">
-                                    <label className="admin-form-label" style={{ marginBottom: '8px' }}>Hak Akses Aplikasi</label>
-                                    <div>
-                                        {['app1', 'app2', 'app3'].map(app => (
-                                            <label key={app} className="admin-checkbox-card">
-                                                <input type="checkbox" name={app} checked={formData.access[app]} onChange={handleAccessChange} />
-                                                <span style={{ fontWeight: 500, color: 'var(--neutral-700)' }}>
-                                                    App {app.replace('app', '')} - {app === 'app1' ? 'Opname Aset' : app === 'app2' ? 'Extract Hasil' : 'Dashboard Analytics'}
-                                                </span>
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className="admin-form-actions">
+                                <div style={{ display: 'flex', gap: 6 }}>
                                     {isEditing && (
-                                        <button type="button" onClick={() => { setIsEditing(false); setFormData({ username: '', password: '', role: 'user', access: { app1: false, app2: false, app3: false } }); }} className="btn btn--outline">Batal</button>
+                                        <button type="button" onClick={() => { setIsEditing(false); setFormData({ username: '', password: '', role: 'user', access: { app1: false, app2: false, app3: false } }); }} className="wa-btn-ghost" style={{ height: 36, padding: '0 16px' }}>Batal</button>
                                     )}
-                                    <button type="submit" className="btn btn--primary">{isEditing ? 'Simpan Perubahan' : 'Tambah User'}</button>
+                                    <button type="submit" className="wa-btn-terracotta" style={{ height: 36, padding: '0 16px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                                        <UserPlus size={13} /> {isEditing ? 'Simpan' : 'Tambah'}
+                                    </button>
                                 </div>
                             </form>
                         </div>
 
-                        <div className="admin-card">
-                            <h2 className="admin-card__title"><Users size={20} /> Daftar Pengguna Sistem</h2>
-                            {loading ? <div className="admin-loading">Memuat...</div> : (
-                                <div className="admin-table-wrapper">
-                                    <table className="admin-table">
-                                        <thead><tr><th>Username</th><th>Role</th><th>Akses</th><th style={{ textAlign: 'right' }}>Aksi</th></tr></thead>
-                                        <tbody>
-                                            {users.map(user => (
-                                                <tr key={user.username}>
-                                                    <td style={{ fontWeight: 600 }}>{user.username}</td>
-                                                    <td><span className={`admin-badge ${user.role === 'admin' ? 'admin-badge--role-admin' : 'admin-badge--role-user'}`}>{user.role}</span></td>
-                                                    <td>
-                                                        <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-                                                            {user.access.map(app => <span key={app} className={`admin-badge admin-badge--${app}`}>{app}</span>)}
-                                                        </div>
-                                                    </td>
-                                                    <td style={{ textAlign: 'right' }}>
-                                                        <button onClick={() => handleEdit(user)} className="btn btn--outline" style={{ padding: '4px 10px', fontSize: '10px', marginRight: '4px' }}>EDIT</button>
-                                                        {user.username !== 'ICT_SJA1' && <button onClick={() => handleDeleteUser(user.username)} className="btn btn--danger" style={{ padding: '4px 10px', fontSize: '10px' }}>HAPUS</button>}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                        {/* Users table */}
+                        <div className="wa-card" style={{ overflow: 'hidden' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 18px', background: 'var(--cream-input)', borderBottom: '1px solid rgba(26,26,26,0.06)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--charcoal-900)' }}>Daftar User</div>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--charcoal-500)' }}>{users.length} USER · {users.filter(u => u.role === 'admin').length} ADMIN</div>
                                 </div>
-                            )}
+                                <div className="wa-search" style={{ maxWidth: 220 }}>
+                                    <SearchIcon size={13} />
+                                    <input placeholder="Cari user…" />
+                                </div>
+                            </div>
+                            <table className="wa-table">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th style={{ textAlign: 'center' }}>Role</th>
+                                        <th style={{ textAlign: 'center' }}>App1</th>
+                                        <th style={{ textAlign: 'center' }}>App2</th>
+                                        <th style={{ textAlign: 'center' }}>App3</th>
+                                        <th style={{ textAlign: 'center' }}>Status</th>
+                                        <th style={{ textAlign: 'right' }}>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {users.map((u) => {
+                                        const initials = (u.username || '?').slice(0, 2).toUpperCase();
+                                        const accessList = Array.isArray(u.access) ? u.access : [];
+                                        return (
+                                            <tr key={u.username}>
+                                                <td>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                                        <div style={{ width: 30, height: 30, background: u.role === 'admin' ? 'var(--charcoal-900)' : 'rgba(26,26,26,0.08)', color: u.role === 'admin' ? 'var(--terracotta-500)' : 'var(--charcoal-500)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700 }}>{initials}</div>
+                                                        <div>
+                                                            <div style={{ fontSize: 12, fontWeight: 600 }}>{u.username}</div>
+                                                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)' }}>AKUN SISTEM</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td style={{ textAlign: 'center' }}>
+                                                    <span className={u.role === 'admin' ? 'wa-role-pill admin' : 'wa-role-pill user'}>● {u.role.toUpperCase()}</span>
+                                                </td>
+                                                <td style={{ textAlign: 'center' }}>
+                                                    <div className={accessList.includes('app1') ? 'wa-toggle-switch on' : 'wa-toggle-switch'} onClick={() => toggleUserAccess('app1', u)}></div>
+                                                </td>
+                                                <td style={{ textAlign: 'center' }}>
+                                                    <div className={accessList.includes('app2') ? 'wa-toggle-switch on' : 'wa-toggle-switch'} onClick={() => toggleUserAccess('app2', u)}></div>
+                                                </td>
+                                                <td style={{ textAlign: 'center' }}>
+                                                    <div className={accessList.includes('app3') ? 'wa-toggle-switch on' : 'wa-toggle-switch'} onClick={() => toggleUserAccess('app3', u)}></div>
+                                                </td>
+                                                <td style={{ textAlign: 'center' }}>
+                                                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--success-500)' }}>
+                                                        <div style={{ width: 6, height: 6, background: 'var(--success-500)', borderRadius: '50%' }}></div>AKTIF
+                                                    </div>
+                                                </td>
+                                                <td style={{ textAlign: 'right' }}>
+                                                    <button className="wa-btn-ghost" onClick={() => handleEdit(u)} style={{ fontSize: 10, padding: '5px 10px', marginRight: 4 }}>Edit</button>
+                                                    {u.username !== 'ICT_SJA1' && (
+                                                        <button className="wa-btn-ghost" onClick={() => handleDeleteUser(u.username)} style={{ fontSize: 10, padding: '5px 10px', color: 'var(--danger-500)', borderColor: 'var(--danger-500)' }}>Hapus</button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
+                    </>
                 )}
 
                 {/* ========================================================== */}
                 {/* TAB 2: AUDIT TRAIL */}
                 {/* ========================================================== */}
                 {activeTab === 'audit' && (
-                    <div className="admin-card f-w-full">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
-                            <h2 className="admin-card__title" style={{ marginBottom: 0 }}><Activity size={20} /> Audit Trail Log Lengkap</h2>
-                            <button onClick={exportAuditCSV} className="btn btn--outline" style={{ padding: '8px 16px' }}><Download size={16} style={{marginRight: '6px'}}/> Export CSV</button>
+                    <div className="wa-card" style={{ padding: 18, marginBottom: 14 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                <div className="wa-icon-wrap" style={{ background: 'rgba(201,100,66,0.10)', color: 'var(--terracotta-500)' }}>
+                                    <Activity size={18} />
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--charcoal-900)' }}>Audit Trail Log Lengkap</div>
+                                    <div style={{ fontSize: 11, color: 'var(--charcoal-500)', marginTop: 1 }}>Riwayat aktivitas seluruh user di sistem.</div>
+                                </div>
+                            </div>
+                            <button onClick={exportAuditCSV} className="wa-btn-ghost" style={{ height: 32, padding: '0 14px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11 }}>
+                                <Download size={13} /> Export CSV
+                            </button>
                         </div>
 
                         {/* Stats Row */}
@@ -446,7 +545,7 @@ export default function AdminPage() {
                                     <option value="APP3_CONSOLIDATE">APP3 CONSOLIDATE</option>
                                 </select>
                             </div>
-                            <button type="submit" className="btn btn--primary" style={{ padding: '0 20px', borderRadius: 0 }}>Cari</button>
+                            <button type="submit" className="wa-btn" style={{ padding: '0 20px', borderRadius: 6 }}>Cari</button>
                         </form>
 
                         {/* Table */}
@@ -496,9 +595,9 @@ export default function AdminPage() {
                                     </table>
                                 </div>
                                 <div className="admin-pagination">
-                                    <button disabled={auditFilters.page <= 1} onClick={() => setAuditFilters(p => ({...p, page: p.page - 1}))} className="btn-page"><ChevronLeft size={16} /> Prev</button>
+                                    <button disabled={auditFilters.page <= 1} onClick={() => setAuditFilters(p => ({...p, page: p.page - 1}))} className="wa-btn-ghost" style={{ height: 30, padding: '0 12px', display: 'flex', alignItems: 'center', gap: 4, fontSize: 11 }}><ChevronLeft size={14} /> Prev</button>
                                     <span>Halaman {auditPagination.page} dari {auditPagination.pages || 1} (Total {auditPagination.total})</span>
-                                    <button disabled={auditFilters.page >= auditPagination.pages} onClick={() => setAuditFilters(p => ({...p, page: p.page + 1}))} className="btn-page">Next <ChevronRight size={16} /></button>
+                                    <button disabled={auditFilters.page >= auditPagination.pages} onClick={() => setAuditFilters(p => ({...p, page: p.page + 1}))} className="wa-btn-ghost" style={{ height: 30, padding: '0 12px', display: 'flex', alignItems: 'center', gap: 4, fontSize: 11 }}>Next <ChevronRight size={14} /></button>
                                 </div>
                             </>
                         )}
@@ -509,41 +608,61 @@ export default function AdminPage() {
                 {/* TAB 3: BACKUP & RESTORE */}
                 {/* ========================================================== */}
                 {activeTab === 'backup' && (
-                    <div className="admin-layout-sidebar">
-                        <div className="admin-card">
-                            <h2 className="admin-card__title"><Database size={20} /> Buat Backup Sistem</h2>
-                            <p style={{fontFamily: 'var(--font-mono)', fontSize: '13px', lineHeight: 1.6, marginBottom: '20px'}}>
-                                Backup akan mengarsipkan seluruh file database SQLite beserta JSON konfigurasi ke dalam folder <br/><code>/data/backups/</code>.
+                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 360px) 1fr', gap: 14 }}>
+                        <div className="wa-card" style={{ padding: 18 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                                <div className="wa-icon-wrap" style={{ background: 'rgba(201,100,66,0.10)', color: 'var(--terracotta-500)' }}>
+                                    <Database size={18} />
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--charcoal-900)' }}>Buat Backup Sistem</div>
+                                    <div style={{ fontSize: 11, color: 'var(--charcoal-500)', marginTop: 1 }}>Arsipkan database + JSON konfigurasi.</div>
+                                </div>
+                            </div>
+                            <p style={{fontFamily: 'var(--font-mono)', fontSize: '12px', lineHeight: 1.6, marginBottom: 14, color: 'var(--charcoal-500)'}}>
+                                Backup akan diarsipkan ke folder <code style={{ background: 'var(--cream-input)', padding: '1px 5px', borderRadius: 3 }}>/data/backups/</code>.
                             </p>
                             <div className="admin-callout admin-callout--info">
-                                Pastikan tidak ada aktivitas besar (seperti Sync atau Extract) yang sedang berlangsung saat membuat backup untuk menghindari data korup.
+                                Pastikan tidak ada aktivitas besar (seperti Sync atau Extract) yang sedang berlangsung saat membuat backup.
                             </div>
-                            <button onClick={handleCreateBackup} disabled={loading} className="btn btn--primary" style={{marginTop: '20px', width: '100%', padding: '16px'}}>
-                                <Save size={18} style={{marginRight: '8px'}} /> {loading ? 'Memproses...' : 'BUAT BACKUP SEKARANG'}
+                            <button onClick={handleCreateBackup} disabled={loading} className="wa-btn-terracotta" style={{ marginTop: 16, width: '100%', height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                                <Save size={15} /> {loading ? 'Memproses...' : 'BUAT BACKUP SEKARANG'}
                             </button>
                         </div>
-                        
-                        <div className="admin-card">
-                            <h2 className="admin-card__title"><HardDrive size={20} /> Daftar File Backup</h2>
-                            {loading ? <div className="admin-loading">Memuat...</div> : (
-                                <div className="admin-table-wrapper">
-                                    <table className="admin-table">
-                                        <thead><tr><th>Nama Backup</th><th>Waktu</th><th>Ukuran</th><th style={{ textAlign: 'right' }}>Aksi</th></tr></thead>
-                                        <tbody>
-                                            {backups.length ? backups.map(b => (
-                                                <tr key={b.name}>
-                                                    <td style={{ fontWeight: 600, fontSize: '12px' }}>{b.name}</td>
-                                                    <td style={{ fontSize: '12px' }}>{new Date(b.createdAt).toLocaleString('id-ID')}</td>
-                                                    <td style={{ fontSize: '12px' }}>{b.isDirectory ? 'Directory' : formatBytes(b.size)}</td>
-                                                    <td style={{ textAlign: 'right' }}>
-                                                        <button onClick={() => handleRestore(b.name)} className="btn btn--outline" style={{ padding: '4px 10px', fontSize: '10px', marginRight: '4px', borderColor: 'var(--amber-500)', color: 'var(--amber-600)' }}>RESTORE</button>
-                                                        <button onClick={() => handleDeleteBackup(b.name)} className="btn btn--danger" style={{ padding: '4px 10px', fontSize: '10px' }}>HAPUS</button>
-                                                    </td>
-                                                </tr>
-                                            )) : <tr><td colSpan="4" style={{textAlign: 'center'}}>Belum ada backup.</td></tr>}
-                                        </tbody>
-                                    </table>
+
+                        <div className="wa-card" style={{ overflow: 'hidden' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 18px', background: 'var(--cream-input)', borderBottom: '1px solid rgba(26,26,26,0.06)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--charcoal-900)' }}>Daftar File Backup</div>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--charcoal-500)' }}>{backups.length} FILE</div>
                                 </div>
+                            </div>
+                            {loading ? <div className="admin-loading" style={{ padding: 20 }}>Memuat...</div> : (
+                                <table className="wa-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Nama Backup</th>
+                                            <th>Waktu</th>
+                                            <th>Ukuran</th>
+                                            <th style={{ textAlign: 'right' }}>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {backups.length ? backups.map(b => (
+                                            <tr key={b.name}>
+                                                <td style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600, color: 'var(--charcoal-900)' }}>{b.name}</td>
+                                                <td style={{ fontSize: 12, color: 'var(--charcoal-500)' }}>{new Date(b.createdAt).toLocaleString('id-ID')}</td>
+                                                <td style={{ fontSize: 12, fontFamily: 'var(--font-mono)' }}>{b.isDirectory ? 'Directory' : formatBytes(b.size)}</td>
+                                                <td style={{ textAlign: 'right' }}>
+                                                    <button onClick={() => handleRestore(b.name)} className="wa-btn-ghost" style={{ padding: '5px 10px', fontSize: 10, marginRight: 4, color: 'var(--amber-600)', borderColor: 'var(--amber-500)' }}>Restore</button>
+                                                    <button onClick={() => handleDeleteBackup(b.name)} className="wa-btn-ghost" style={{ padding: '5px 10px', fontSize: 10, color: 'var(--danger-500)', borderColor: 'var(--danger-500)' }}>Hapus</button>
+                                                </td>
+                                            </tr>
+                                        )) : (
+                                            <tr><td colSpan="4" style={{ textAlign: 'center', padding: '30px', color: 'var(--charcoal-400)' }}>Belum ada backup.</td></tr>
+                                        )}
+                                    </tbody>
+                                </table>
                             )}
                         </div>
                     </div>
@@ -553,10 +672,18 @@ export default function AdminPage() {
                 {/* TAB 4: SYSTEM INFO */}
                 {/* ========================================================== */}
                 {activeTab === 'system' && (
-                    <div className="admin-card f-w-full">
-                        <h2 className="admin-card__title"><Server size={20} /> Informasi & Utilitas Sistem</h2>
-                        
-                        {loading && !systemInfo ? <div className="admin-loading">Memuat...</div> : systemInfo ? (
+                    <div className="wa-card" style={{ padding: 18 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                            <div className="wa-icon-wrap" style={{ background: 'rgba(201,100,66,0.10)', color: 'var(--terracotta-500)' }}>
+                                <Server size={18} />
+                            </div>
+                            <div>
+                                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--charcoal-900)' }}>Informasi & Utilitas Sistem</div>
+                                <div style={{ fontSize: 11, color: 'var(--charcoal-500)', marginTop: 1 }}>Status server, resource, dan konfigurasi runtime.</div>
+                            </div>
+                        </div>
+
+                        {loading && !systemInfo ? <div className="admin-loading" style={{ padding: 20 }}>Memuat...</div> : systemInfo ? (
                             <div className="system-grid">
                                 <div className="sys-panel sys-panel--dark">
                                     <Clock className="sys-icon" />
@@ -598,7 +725,7 @@ export default function AdminPage() {
             {/* LOG DETAIL MODAL */}
             {selectedLog && (
                 <div className="admin-modal-overlay">
-                    <div className="admin-card admin-modal-content">
+                    <div className="wa-card admin-modal-content" style={{ padding: 22 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
                             <h2 className="admin-card__title" style={{ marginBottom: 0 }}>Detail Audit Log</h2>
                             <button onClick={() => setSelectedLog(null)} className="admin-icon-btn"><X size={20}/></button>
