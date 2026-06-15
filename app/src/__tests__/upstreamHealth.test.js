@@ -248,3 +248,71 @@ describe('UpstreamRegistry', () => {
     });
   });
 });
+
+describe('UpstreamRegistry — background probe', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('runs registered probe immediately on init()', async () => {
+    const probe = vi.fn().mockResolvedValue('ok');
+    const reg = new UpstreamRegistry({ probeIntervalMs: 1000 });
+    reg.registerProbe('sql', probe);
+    reg.init();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(probe).toHaveBeenCalledTimes(1);
+    reg.stop();
+  });
+
+  it('runs probe at configured interval', async () => {
+    const probe = vi.fn().mockResolvedValue('ok');
+    const reg = new UpstreamRegistry({ probeIntervalMs: 1000 });
+    reg.registerProbe('sql', probe);
+    reg.init();
+    await vi.advanceTimersByTimeAsync(0);
+    await vi.advanceTimersByTimeAsync(1000);
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(probe).toHaveBeenCalledTimes(3);
+    reg.stop();
+  });
+
+  it('probe success after failure transitions circuit to CLOSED', async () => {
+    let fail = true;
+    const probe = vi.fn().mockImplementation(() => fail ? Promise.reject(new Error('down')) : Promise.resolve('ok'));
+    const reg = new UpstreamRegistry({ probeIntervalMs: 1000, failureThreshold: 1 });
+    reg.registerProbe('sql', probe);
+    reg.init();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(reg.getBreaker('sql').getState()).toBe('OPEN');
+    fail = false;
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(reg.getBreaker('sql').getState()).toBe('CLOSED');
+    reg.stop();
+  });
+
+  it('stop() halts the probe loop', async () => {
+    const probe = vi.fn().mockResolvedValue('ok');
+    const reg = new UpstreamRegistry({ probeIntervalMs: 1000 });
+    reg.registerProbe('sql', probe);
+    reg.init();
+    await vi.advanceTimersByTimeAsync(0);
+    reg.stop();
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(probe).toHaveBeenCalledTimes(1);
+  });
+
+  it('init() is idempotent (does not start duplicate intervals)', async () => {
+    const probe = vi.fn().mockResolvedValue('ok');
+    const reg = new UpstreamRegistry({ probeIntervalMs: 1000 });
+    reg.registerProbe('sql', probe);
+    reg.init();
+    reg.init();
+    reg.init();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(probe).toHaveBeenCalledTimes(1);
+    reg.stop();
+  });
+});

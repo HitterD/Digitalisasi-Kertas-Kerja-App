@@ -122,6 +122,8 @@ export class UpstreamRegistry {
   constructor(overrides = {}) {
     this.config = readConfig(overrides);
     this.breakers = new Map();
+    this.probes = new Map();
+    this.probeHandle = null;
   }
 
   getBreaker(name) {
@@ -168,6 +170,40 @@ export class UpstreamRegistry {
       throw err;
     } finally {
       if (timeoutHandle) clearTimeout(timeoutHandle);
+    }
+  }
+
+  registerProbe(name, fn) {
+    this.probes.set(name, fn);
+  }
+
+  init() {
+    if (this.probeHandle) return;
+    this.probeHandle = setInterval(() => {
+      this._runProbes().catch((err) => {
+        console.error('[UpstreamHealth] probe loop error:', err.message);
+      });
+    }, this.config.probeIntervalMs);
+    this._runProbes().catch((err) => {
+      console.error('[UpstreamHealth] initial probe error:', err.message);
+    });
+  }
+
+  stop() {
+    if (this.probeHandle) {
+      clearInterval(this.probeHandle);
+      this.probeHandle = null;
+    }
+  }
+
+  async _runProbes() {
+    for (const [name, fn] of this.probes.entries()) {
+      try {
+        await this.guard(name, fn, { timeoutMs: this.config.probeTimeoutMs });
+        console.log(`[UpstreamHealth] ${name} probe OK`);
+      } catch (err) {
+        console.log(`[UpstreamHealth] ${name} probe FAIL: ${err.message}`);
+      }
     }
   }
 
