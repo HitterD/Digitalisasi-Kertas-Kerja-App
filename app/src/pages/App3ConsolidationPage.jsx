@@ -2,8 +2,12 @@ import React, { useState, useRef } from 'react';
 import { UploadCloud, CheckCircle2, FileSpreadsheet, Loader2, ArrowRight, Download, Filter, FileWarning, Database, LayoutTemplate, Box, Sparkles } from 'lucide-react';
 import '../index.css';
 
+const SLOT_TYPES = ['master', 'exa', 'add', 'inv'];
+const VALID_EXT = /\.(xlsx|xls)$/i;
+
 export default function App3ConsolidationPage() {
     const [files, setFiles] = useState({ master: null, exa: null, add: null, inv: null });
+    const [dragSlots, setDragSlots] = useState({ master: false, exa: false, add: false, inv: false });
     const [bats, setBats] = useState([]);
     const [selectedBats, setSelectedBats] = useState([]);
     const [loadingBats, setLoadingBats] = useState(false);
@@ -11,31 +15,56 @@ export default function App3ConsolidationPage() {
     const [step, setStep] = useState(1);
     const [errorMsg, setErrorMsg] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
-    const [dragActive, setDragActive] = useState(false);
 
     const fileInputRefs = {
         master: useRef(null), exa: useRef(null), add: useRef(null), inv: useRef(null)
     };
+    const dragCounters = useRef({ master: 0, exa: 0, add: 0, inv: 0 });
 
     const handleFileChange = (type, file) => {
-        if (file) {
-            setFiles(prev => ({ ...prev, [type]: file }));
-            setErrorMsg('');
+        if (!file) return;
+        if (!VALID_EXT.test(file.name)) {
+            setErrorMsg(`File ${file.name} harus berformat .xlsx atau .xls`);
+            return;
+        }
+        setFiles(prev => ({ ...prev, [type]: file }));
+        setErrorMsg('');
+    };
+
+    const handlePickerChange = (type, e) => {
+        const file = e.target.files && e.target.files[0];
+        handleFileChange(type, file);
+        // Reset so picking the same file again still fires onChange
+        e.target.value = '';
+    };
+
+    const handleDragEnter = (e, type) => {
+        e.preventDefault(); e.stopPropagation();
+        dragCounters.current[type] += 1;
+        if (dragCounters.current[type] === 1) {
+            setDragSlots(prev => (prev[type] ? prev : { ...prev, [type]: true }));
         }
     };
 
-    const handleDrag = (e) => {
+    const handleDragLeave = (e, type) => {
         e.preventDefault(); e.stopPropagation();
-        if (e.type === "dragenter" || e.type === "dragover") setDragActive(true);
-        else if (e.type === "dragleave") setDragActive(false);
+        dragCounters.current[type] = Math.max(0, dragCounters.current[type] - 1);
+        if (dragCounters.current[type] === 0) {
+            setDragSlots(prev => (!prev[type] ? prev : { ...prev, [type]: false }));
+        }
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault(); e.stopPropagation();
+        if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
     };
 
     const handleDrop = (e, type) => {
         e.preventDefault(); e.stopPropagation();
-        setDragActive(false);
-        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-            handleFileChange(type, e.dataTransfer.files[0]);
-        }
+        dragCounters.current[type] = 0;
+        setDragSlots(prev => (!prev[type] ? prev : { ...prev, [type]: false }));
+        const file = e.dataTransfer.files && e.dataTransfer.files[0];
+        if (file) handleFileChange(type, file);
     };
 
     const extractBats = async () => {
@@ -59,11 +88,12 @@ export default function App3ConsolidationPage() {
     const toggleBat = (b) => setSelectedBats(prev => prev.includes(b) ? prev.filter(x => x !== b) : [...prev, b]);
 
     const processConsolidation = async () => {
-        if (selectedBats.length === 0) { setErrorMsg('Harap pilih minimal satu filter target.'); return; }
+        const effectiveBats = getEffectiveBats();
+        if (effectiveBats.length === 0) { setErrorMsg('Harap pilih minimal satu filter target.'); return; }
         setProcessing(true); setErrorMsg('');
         const formData = new FormData();
         Object.entries(files).forEach(([k, v]) => { if (v) formData.append(k, v) });
-        formData.append('selected_bats', JSON.stringify(selectedBats));
+        formData.append('selected_bats', JSON.stringify(effectiveBats));
 
         try {
             const token = sessionStorage.getItem('jwt') || localStorage.getItem('jwt');
@@ -76,6 +106,7 @@ export default function App3ConsolidationPage() {
                 document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); a.remove();
                 setSuccessMsg('Konsolidasi selesai. File otomatis terunduh.');
                 setErrorMsg('');
+                setStep(3);
                 setTimeout(() => setStep(1), 5000);
             } else {
                 const data = await res.json(); setErrorMsg(data.error || 'Konsolidasi gagal.');
@@ -86,23 +117,27 @@ export default function App3ConsolidationPage() {
 
     const UploadSlot = ({ type, title, subtitle, icon: Icon }) => {
         const isSet = !!files[type];
+        const isDrag = !!dragSlots[type];
         return (
             <div
-                onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={e => handleDrop(e, type)}
+                onDragEnter={e => handleDragEnter(e, type)}
+                onDragLeave={e => handleDragLeave(e, type)}
+                onDragOver={handleDragOver}
+                onDrop={e => handleDrop(e, type)}
                 onClick={() => fileInputRefs[type].current.click()}
                 style={{
-                    border: isSet ? '2px solid var(--success-600)' : '2px dashed var(--charcoal-900)',
-                    background: isSet ? 'var(--success-50)' : dragActive ? 'var(--warm-200)' : 'rgba(255, 255, 255, 0.5)',
+                    border: isSet ? '2px solid var(--success-600)' : isDrag ? '2px dashed var(--amber-500)' : '2px dashed var(--charcoal-900)',
+                    background: isSet ? 'var(--success-50)' : isDrag ? 'var(--warm-200)' : 'rgba(255, 255, 255, 0.5)',
                     padding: '24px',
                     textAlign: 'center',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease-out',
                     position: 'relative',
-                    boxShadow: isSet ? '4px 4px 0px var(--success-600)' : '4px 4px 0px var(--charcoal-900)',
-                    transform: dragActive ? 'scale(1.02)' : 'none'
+                    boxShadow: isSet ? '4px 4px 0px var(--success-600)' : isDrag ? '4px 4px 0px var(--amber-500)' : '4px 4px 0px var(--charcoal-900)',
+                    transform: isDrag ? 'scale(1.02)' : 'none'
                 }}
             >
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
                     <div style={{ marginBottom: '12px' }}>
                         {isSet ? <CheckCircle2 size={32} color="var(--success-600)" /> : <Icon size={32} color="var(--charcoal-500)" />}
                     </div>
@@ -111,14 +146,79 @@ export default function App3ConsolidationPage() {
                         {isSet ? files[type].name : subtitle}
                     </p>
                 </div>
-                <input type="file" accept=".xlsx, .xls" ref={fileInputRefs[type]} className="hidden" onChange={(e) => handleFileChange(type, e.target.files[0])} style={{ display: 'none' }} />
+                <input
+                    type="file"
+                    accept=".xlsx,.xls"
+                    ref={fileInputRefs[type]}
+                    className="hidden"
+                    onChange={e => handlePickerChange(type, e)}
+                />
             </div>
         );
+    };
+
+    const FILTER_CATEGORIES = ['ICT', 'ENG', 'BAT', 'HRGA', 'Kosong'];
+
+    const classifyBat = (b) => {
+        if (!b || String(b).trim() === '' || String(b).toLowerCase() === 'nan' || String(b).toLowerCase() === 'none') return 'Kosong';
+        const upper = String(b).toUpperCase();
+        if (upper.startsWith('ICT')) return 'ICT';
+        if (upper.startsWith('ENG')) return 'ENG';
+        if (upper.startsWith('HRGA')) return 'HRGA';
+        if (upper.startsWith('BAT')) return 'BAT';
+        return 'BAT';
+    };
+
+    const countByCat = bats.reduce((acc, b) => {
+        const cat = classifyBat(b);
+        acc[cat] = (acc[cat] || 0) + 1;
+        return acc;
+    }, {});
+
+    const selectedBatsForCategory = (cat) => bats.filter(b => classifyBat(b) === cat);
+
+    const toggleCategory = (cat) => {
+        setSelectedBats(prev => {
+            if (prev.includes(cat)) return prev.filter(x => x !== cat);
+            return [...prev, cat];
+        });
+    };
+
+    const getEffectiveBats = () => {
+        if (selectedBats.length === 0) return [];
+        return selectedBats.flatMap(cat => selectedBatsForCategory(cat));
     };
 
     return (
         <div style={{ padding: '32px', maxWidth: '1400px', margin: '0 auto' }}>
             <div className="upload-dashboard-bento" style={{ gap: '24px' }}>
+
+                {/* 3-Step Stepper */}
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 18 }}>
+                    <div className="wa-step" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <div className={`wa-step-num ${step > 1 ? 'wa-step done' : ''}`} style={step === 1 ? { background: 'var(--charcoal-900)', color: 'var(--cream-surface)' } : step > 1 ? { background: 'var(--success-500)', color: 'var(--cream-surface)' } : {}}>{step > 1 ? '✓' : '1'}</div>
+                        <div>
+                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: 'var(--charcoal-400)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Step 1</div>
+                            <div style={{ fontSize: 11, fontWeight: 600 }}>Upload 4 File</div>
+                        </div>
+                    </div>
+                    <div className="wa-step-line" style={{ width: 60, height: 2, background: step >= 2 ? 'var(--success-500)' : 'rgba(26,26,26,0.08)', margin: '0 8px', transition: 'background 400ms ease' }} />
+                    <div className="wa-step" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <div className={`wa-step-num ${step === 2 ? 'active' : ''}`} style={step === 2 ? { background: 'var(--charcoal-900)', color: 'var(--cream-surface)' } : {}}>{step > 2 ? '✓' : '2'}</div>
+                        <div>
+                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: step === 2 ? 'var(--terracotta-500)' : 'var(--charcoal-400)', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 700 }}>Step 2 {step === 2 ? '· Aktif' : ''}</div>
+                            <div style={{ fontSize: 11, fontWeight: 600 }}>Pilih Filter</div>
+                        </div>
+                    </div>
+                    <div className="wa-step-line" style={{ width: 60, height: 2, background: 'rgba(26,26,26,0.08)', margin: '0 8px' }} />
+                    <div className="wa-step" style={{ display: 'flex', alignItems: 'center', gap: 10, opacity: 0.55 }}>
+                        <div className="wa-step-num" style={{}}>3</div>
+                        <div>
+                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: 'var(--charcoal-400)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Step 3</div>
+                            <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--charcoal-400)' }}>Generate Excel</div>
+                        </div>
+                    </div>
+                </div>
 
                 {/* Hero Header */}
                 <div className="bento-header" style={{ marginBottom: '16px', flexDirection: 'column', alignItems: 'flex-start', borderBottom: '3px solid var(--charcoal-900)', paddingBottom: '24px' }}>
@@ -227,39 +327,58 @@ export default function App3ConsolidationPage() {
                             </div>
 
                             <div style={{ padding: '32px' }}>
-                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '32px' }}>
-                                    {bats.map(b => (
-                                        <button
-                                            key={b}
-                                            onClick={() => toggleBat(b)}
-                                            style={{
-                                                background: selectedBats.includes(b) ? 'var(--charcoal-900)' : '#fff',
-                                                color: selectedBats.includes(b) ? 'var(--amber-400)' : 'var(--charcoal-900)',
-                                                border: '2px solid var(--charcoal-900)',
-                                                padding: '8px 16px',
-                                                fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '12px',
-                                                boxShadow: selectedBats.includes(b) ? '2px 2px 0px var(--amber-400)' : '4px 4px 0px var(--charcoal-900)',
-                                                transform: selectedBats.includes(b) ? 'translate(2px, 2px)' : 'none',
-                                                cursor: 'pointer',
-                                                transition: 'all 0.1s'
-                                            }}
-                                        >
-                                            {b}
-                                        </button>
-                                    ))}
-                                    {bats.length === 0 && <span style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--charcoal-400)', fontStyle: 'italic' }}>Tidak ada referensi BAT di source file.</span>}
+                                <div className="wa-card" style={{ padding: '20px', marginBottom: '24px' }}>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 700, color: 'var(--charcoal-400)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 14 }}>Pilih Kategori Filter</div>
+                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12 }}>
+                                        {FILTER_CATEGORIES.map(cat => {
+                                            const isSelected = selectedBats.includes(cat);
+                                            const count = countByCat[cat] || 0;
+                                            return (
+                                                <div
+                                                    key={cat}
+                                                    onClick={() => toggleCategory(cat)}
+                                                    className={isSelected ? 'wa-card selected' : 'wa-card'}
+                                                    style={{
+                                                        background: isSelected ? 'var(--charcoal-900)' : 'var(--cream-surface)',
+                                                        border: isSelected ? '1.5px solid var(--charcoal-900)' : '1.5px solid rgba(26,26,26,0.12)',
+                                                        borderRadius: 10,
+                                                        padding: '14px 12px',
+                                                        textAlign: 'center',
+                                                        cursor: 'pointer',
+                                                        color: isSelected ? 'var(--cream-surface)' : 'var(--charcoal-900)',
+                                                        boxShadow: isSelected ? '0 4px 12px rgba(0,0,0,0.15)' : 'var(--shadow-md)',
+                                                        transition: 'all 200ms cubic-bezier(0.2, 0.8, 0.2, 1)',
+                                                    }}
+                                                >
+                                                    <div style={{ fontSize: 14, fontWeight: 600, letterSpacing: '-0.01em' }}>{cat}</div>
+                                                    <div style={{ display: 'inline-block', marginTop: 6, padding: '2px 8px', background: isSelected ? 'var(--terracotta-500)' : 'rgba(26,26,26,0.06)', color: isSelected ? 'var(--cream-surface)' : 'var(--charcoal-500)', borderRadius: 9999, fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 700, letterSpacing: '0.05em' }}>{count}</div>
+                                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: isSelected ? 'rgba(255,255,255,0.6)' : 'var(--charcoal-400)', letterSpacing: '0.08em', marginTop: 6, textTransform: 'uppercase' }}>RECORD</div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                {bats.length === 0 && (
+                                    <div style={{ marginBottom: '24px', padding: '14px 18px', background: 'var(--cream-input)', border: '1px solid rgba(26,26,26,0.08)', borderRadius: 8, fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--charcoal-500)', fontStyle: 'italic' }}>
+                                        Tidak ada referensi BAT di source file.
+                                    </div>
+                                )}
+
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '14px 18px', background: 'var(--cream-input)', border: '1px solid rgba(26,26,26,0.08)', borderRadius: 8, marginBottom: '24px', flexWrap: 'wrap' }}>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 700, color: 'var(--charcoal-400)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Live Summary</div>
+                                    <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+                                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--charcoal-500)' }}>Total BAT: <strong style={{ color: 'var(--charcoal-900)' }}>{bats.length}</strong></span>
+                                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--charcoal-500)' }}>Selected: <strong style={{ color: 'var(--terracotta-500)' }}>{selectedBats.length}</strong></span>
+                                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--charcoal-500)' }}>Effective records: <strong style={{ color: 'var(--charcoal-900)' }}>{getEffectiveBats().length}</strong></span>
+                                    </div>
                                 </div>
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
                                     <button
                                         onClick={() => setStep(1)}
                                         disabled={processing}
-                                        style={{
-                                            background: 'transparent', color: 'var(--charcoal-900)',
-                                            border: 'none', textDecoration: 'underline',
-                                            fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '13px',
-                                            cursor: processing ? 'not-allowed' : 'pointer'
-                                        }}
+                                        className="wa-btn-ghost"
                                     >
                                         ← KEMBALI KE INGESTION
                                     </button>
@@ -267,26 +386,16 @@ export default function App3ConsolidationPage() {
                                     <button
                                         onClick={processConsolidation}
                                         disabled={processing || selectedBats.length === 0}
-                                        style={{
-                                            background: 'var(--amber-400)', color: 'var(--charcoal-900)',
-                                            border: '2px solid var(--charcoal-900)', borderRadius: '0',
-                                            padding: '16px 32px', display: 'flex', alignItems: 'center', gap: '12px',
-                                            fontFamily: 'var(--font-sora)', fontWeight: 900, fontSize: '14px',
-                                            textTransform: 'uppercase', letterSpacing: '0.05em', cursor: 'pointer',
-                                            transition: 'all 0.1s',
-                                            boxShadow: (selectedBats.length === 0) ? 'none' : '6px 6px 0px var(--charcoal-900)',
-                                            opacity: (selectedBats.length === 0) ? 0.6 : 1
-                                        }}
-                                        onMouseOver={e => { if(!processing && selectedBats.length > 0) { e.currentTarget.style.transform = 'translate(2px, 2px)'; e.currentTarget.style.boxShadow = '4px 4px 0px var(--charcoal-900)'; } }}
-                                        onMouseOut={e => { if(!processing && selectedBats.length > 0) { e.currentTarget.style.transform = 'translate(0px, 0px)'; e.currentTarget.style.boxShadow = '6px 6px 0px var(--charcoal-900)'; } }}
+                                        className="wa-btn-terracotta"
+                                        style={{ padding: '14px 28px', fontSize: 12 }}
                                     >
                                         {processing ? (
                                             <>
-                                                <Loader2 size={20} className="animate-spin" />
+                                                <Loader2 size={18} className="animate-spin" />
                                                 <span>MENYUSUN DATA MASTER...</span>
                                             </>
                                         ) : (
-                                            <><Download size={20} strokeWidth={2.5} /> FORMAT & UNDUH SEKARANG</>
+                                            <><Download size={18} strokeWidth={2.5} /> FORMAT & UNDUH SEKARANG</>
                                         )}
                                     </button>
                                 </div>
