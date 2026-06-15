@@ -35,14 +35,22 @@ import { UpstreamOpenError, UpstreamTimeoutError } from '../server/utils/upstrea
 
 function makeReqRes(url, method = 'GET') {
   const headersOut = {};
-  let status = null;
   let body = null;
-  const sendJson = (s, b) => { status = s; body = b; };
+  const res = {
+    setHeader: (k, v) => { headersOut[k.toLowerCase()] = v; },
+    statusCode: 0,
+    end: (data) => {
+      if (data) {
+        try { body = JSON.parse(data); } catch { body = data; }
+      }
+    },
+  };
   return {
     req: { url, method, headers: { host: 'localhost' } },
-    res: { setHeader: (k, v) => { headersOut[k.toLowerCase()] = v; }, statusCode: 0, end: () => {} },
-    headersOut, sendJson,
-    getStatus: () => status,
+    res,
+    sendJson: (s, b) => { res.statusCode = s; body = b; },
+    headersOut,
+    getStatus: () => res.statusCode,
     getBody: () => body,
   };
 }
@@ -69,31 +77,31 @@ describe('fileBrowserPlugin — /api/files/folders', () => {
       { name: 'SJA2', isDirectory: true, mtime: new Date(), size: 0 },
     ]);
     const mw = extractMiddleware(fileBrowserPlugin());
-    const { req, res, sendJson } = makeReqRes('/api/files/folders');
+    const { req, res, getStatus, getBody } = makeReqRes('/api/files/folders');
     mw(req, res, () => {});
     await new Promise((r) => setImmediate(r));
-    expect(sendJson.status).toBe(200);
-    expect(sendJson.body.folders).toEqual(['SJA1', 'SJA2']);
+    expect(getStatus()).toBe(200);
+    expect(getBody().folders).toEqual(['SJA1', 'SJA2']);
   });
 
   it('returns 503 with Retry-After when guard throws UpstreamOpenError', async () => {
     mockGuard.mockRejectedValue(new UpstreamOpenError('smb', 25));
     const mw = extractMiddleware(fileBrowserPlugin());
-    const { req, res, sendJson, headersOut } = makeReqRes('/api/files/folders');
+    const { req, res, getStatus, getBody, headersOut } = makeReqRes('/api/files/folders');
     mw(req, res, () => {});
     await new Promise((r) => setImmediate(r));
-    expect(sendJson.status).toBe(503);
+    expect(getStatus()).toBe(503);
     expect(headersOut['retry-after']).toBe('25');
-    expect(sendJson.body).toMatchObject({ success: false, code: 'UPSTREAM_OPEN' });
+    expect(getBody()).toMatchObject({ success: false, code: 'UPSTREAM_OPEN' });
   });
 
   it('returns 504 when guard throws UpstreamTimeoutError', async () => {
     mockGuard.mockRejectedValue(new UpstreamTimeoutError('smb', 20000));
     const mw = extractMiddleware(fileBrowserPlugin());
-    const { req, res, sendJson } = makeReqRes('/api/files/folders');
+    const { req, res, getStatus, getBody } = makeReqRes('/api/files/folders');
     mw(req, res, () => {});
     await new Promise((r) => setImmediate(r));
-    expect(sendJson.status).toBe(504);
-    expect(sendJson.body).toMatchObject({ success: false, code: 'UPSTREAM_TIMEOUT' });
+    expect(getStatus()).toBe(504);
+    expect(getBody()).toMatchObject({ success: false, code: 'UPSTREAM_TIMEOUT' });
   });
 });

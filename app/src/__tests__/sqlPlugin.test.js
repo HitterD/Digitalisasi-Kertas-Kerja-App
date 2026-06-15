@@ -24,14 +24,22 @@ import { UpstreamOpenError, UpstreamTimeoutError } from '../server/utils/upstrea
 
 function makeReqRes(url, method = 'GET') {
   const headersOut = {};
-  let status = null;
   let body = null;
-  const sendJson = (s, b) => { status = s; body = b; };
+  const res = {
+    setHeader: (k, v) => { headersOut[k.toLowerCase()] = v; },
+    statusCode: 0,
+    end: (data) => {
+      if (data) {
+        try { body = JSON.parse(data); } catch { body = data; }
+      }
+    },
+  };
   return {
     req: { url, method, headers: { host: 'localhost' } },
-    res: { setHeader: (k, v) => { headersOut[k.toLowerCase()] = v; }, statusCode: 0, end: () => {} },
-    headersOut, sendJson,
-    getStatus: () => status,
+    res,
+    sendJson: (s, b) => { res.statusCode = s; body = b; },
+    headersOut,
+    getStatus: () => res.statusCode,
     getBody: () => body,
   };
 }
@@ -48,7 +56,7 @@ describe('sqlPlugin — /api/db/status', () => {
   it('returns 200 with connected=true when guard returns ok', async () => {
     mockGuard.mockResolvedValue({ connected: true, server: '192.168.2.111' });
     const mw = extractMiddleware(sqlPlugin());
-    const { req, res, sendJson, getStatus, getBody } = makeReqRes('/api/db/status');
+    const { req, res, getStatus, getBody } = makeReqRes('/api/db/status');
     mw(req, res, () => {});
     await new Promise((r) => setImmediate(r));
     expect(getStatus()).toBe(200);
@@ -58,7 +66,7 @@ describe('sqlPlugin — /api/db/status', () => {
   it('returns 503 with Retry-After when guard throws UpstreamOpenError', async () => {
     mockGuard.mockRejectedValue(new UpstreamOpenError('sql', 28));
     const mw = extractMiddleware(sqlPlugin());
-    const { req, res, sendJson, getStatus, getBody, headersOut } = makeReqRes('/api/db/status');
+    const { req, res, getStatus, getBody, headersOut } = makeReqRes('/api/db/status');
     mw(req, res, () => {});
     await new Promise((r) => setImmediate(r));
     expect(getStatus()).toBe(503);
@@ -69,7 +77,7 @@ describe('sqlPlugin — /api/db/status', () => {
   it('returns 504 when guard throws UpstreamTimeoutError', async () => {
     mockGuard.mockRejectedValue(new UpstreamTimeoutError('sql', 15000));
     const mw = extractMiddleware(sqlPlugin());
-    const { req, res, sendJson, getStatus, getBody } = makeReqRes('/api/db/status');
+    const { req, res, getStatus, getBody } = makeReqRes('/api/db/status');
     mw(req, res, () => {});
     await new Promise((r) => setImmediate(r));
     expect(getStatus()).toBe(504);
