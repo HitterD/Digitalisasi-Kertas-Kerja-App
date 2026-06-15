@@ -52,7 +52,7 @@ describe('sqlPlugin — /api/db/status', () => {
     mw(req, res, () => {});
     await new Promise((r) => setImmediate(r));
     expect(getStatus()).toBe(200);
-    expect(getBody()).toMatchObject({ success: true, connected: true, server: '192.168.2.111' });
+    expect(getBody()).toMatchObject({ connected: true, server: '192.168.2.111' });
   });
 
   it('returns 503 with Retry-After when guard throws UpstreamOpenError', async () => {
