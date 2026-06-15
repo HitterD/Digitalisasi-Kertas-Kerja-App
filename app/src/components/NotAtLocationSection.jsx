@@ -2,22 +2,33 @@ import { MapPin, Plus } from 'lucide-react';
 import { EditableAssetTable } from './AssetTable';
 
 export default function NotAtLocationSection({ room, roomIdx, addNotAtLocationAsset, updateNotAtLocationAsset, removeNotAtLocationAsset, masterDb, onCrossRoomCheck }) {
+    const count = room.notAtLocationAssets.length;
     return (
-        <>
-            <div className="section-header" style={{ borderBottom: '1px solid var(--neutral-200)', paddingBottom: 'var(--space-2)' }}>
-                <div className="section-header__title" style={{ color: 'var(--neutral-700)' }}>
-                    <MapPin size={18} className="text-danger-500" />
-                    Asset Tidak Ada di Lokasi (Salah Ruangan)
-                    {room.notAtLocationAssets.length > 0 && (
-                        <span className="badge badge--danger ml-2">{room.notAtLocationAssets.length}</span>
-                    )}
+        <div className="wa-section">
+            <div className="wa-section-header">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <div className="wa-icon-wrap">
+                        <MapPin size={18} color="var(--danger-500)" />
+                    </div>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--charcoal-900)' }}>
+                        Aset Tidak Ada di Lokasi (Salah Ruangan)
+                    </div>
+                    <span style={{
+                        fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
+                        padding: '2px 8px', borderRadius: 999, background: 'rgba(220,38,38,0.12)', color: 'var(--danger-500)'
+                    }}>
+                        {count} ITEM
+                    </span>
                 </div>
-                <button className="btn btn--outline btn--sm text-danger-600" style={{ borderColor: 'var(--danger-200)' }} onClick={() => addNotAtLocationAsset(roomIdx, room.meta.roomName)}>
-                    <Plus size={14} />
-                    Tambah
+                <button
+                    className="wa-btn"
+                    style={{ background: 'rgba(220,38,38,0.10)', color: 'var(--danger-500)', boxShadow: 'none' }}
+                    onClick={() => addNotAtLocationAsset(roomIdx, room.meta.roomName)}
+                >
+                    <Plus size={14} /> Tambah
                 </button>
             </div>
-            <div className="card card--no-hover p-3">
+            <div style={{ padding: '0 12px 12px' }}>
                 <EditableAssetTable
                     assets={room.notAtLocationAssets}
                     roomIndex={roomIdx}
@@ -28,6 +39,6 @@ export default function NotAtLocationSection({ room, roomIdx, addNotAtLocationAs
                     onCrossRoomCheck={onCrossRoomCheck}
                 />
             </div>
-        </>
+        </div>
     );
 }

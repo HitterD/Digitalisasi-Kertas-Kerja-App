@@ -256,83 +256,9 @@ export default function OpnamePage() {
                         </div>
                     </div>
 
-                    <div className="relative w-full" style={{ maxWidth: '500px' }}>
-                        <div 
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                background: '#ffffff',
-                                borderRadius: '999px',
-                                border: '2px solid var(--charcoal-900)',
-                                padding: '4px 6px',
-                                boxShadow: '4px 4px 0px var(--charcoal-900)',
-                                transition: 'all 0.15s ease-out',
-                            }}
-                            onFocus={(e) => {
-                                e.currentTarget.style.transform = 'translate(2px, 2px)';
-                                e.currentTarget.style.boxShadow = '2px 2px 0px var(--charcoal-900)';
-                            }}
-                            onBlur={(e) => {
-                                e.currentTarget.style.transform = 'translate(0, 0)';
-                                e.currentTarget.style.boxShadow = '4px 4px 0px var(--charcoal-900)';
-                            }}
-                        >
-                            <div style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: '40px',
-                                height: '40px',
-                                background: 'var(--amber-400)',
-                                borderRadius: '50%',
-                                flexShrink: 0,
-                                border: '1px solid var(--charcoal-900)'
-                            }}>
-                                <Search size={20} color="var(--charcoal-900)" strokeWidth={2.5} />
-                            </div>
-                            <input
-                                type="search"
-                                inputMode="numeric"
-                                pattern="[0-9]*"
-                                placeholder="KETIK BARCODE ASET..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                style={{
-                                    flex: 1,
-                                    background: 'transparent',
-                                    border: 'none',
-                                    padding: '0 16px',
-                                    color: 'var(--charcoal-900)',
-                                    fontFamily: 'var(--font-sora)',
-                                    fontSize: '0.95rem',
-                                    fontWeight: 600,
-                                    outline: 'none',
-                                }}
-                            />
-                            {searchQuery && (
-                                <button 
-                                    onClick={() => setSearchQuery('')}
-                                    style={{
-                                        marginRight: '8px',
-                                        background: 'var(--warm-200)',
-                                        border: 'none',
-                                        borderRadius: '50%',
-                                        width: '24px',
-                                        height: '24px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        cursor: 'pointer',
-                                        color: 'var(--charcoal-600)',
-                                        transition: 'background 0.2s',
-                                    }}
-                                    onMouseOver={(e) => e.currentTarget.style.background = 'var(--warm-300)'}
-                                    onMouseOut={(e) => e.currentTarget.style.background = 'var(--warm-200)'}
-                                >
-                                    ✕
-                                </button>
-                            )}
-                        </div>
+                    <div className="wa-search" style={{ marginBottom: 12, maxWidth: 380 }}>
+                      <Search size={13} />
+                      <input placeholder="Scan atau ketik barcode aset…" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                     </div>
                 </div>
 

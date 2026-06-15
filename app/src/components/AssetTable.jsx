@@ -255,19 +255,19 @@ export default function AssetTable({ assets, roomIndex, onToggleCheck, onUpdateF
 
     return (
         <div className="asset-table-wrapper">
-            <table className="asset-table">
+            <table className="wa-table">
                 <thead>
                     <tr>
-                        <th className="col-check" style={{ color: '#ffffff' }}>✓</th>
-                        <th className="col-no" style={{ color: '#ffffff' }}>NO</th>
-                        <th className="col-barcode" style={{ minWidth: 140, color: '#ffffff' }}>BARCODE</th>
-                        <th className="col-nama" style={{ minWidth: 140, color: '#ffffff' }}>NAMA ASET</th>
-                        <th className="col-po" style={{ minWidth: 70, color: '#ffffff' }}>NO. PO</th>
-                        <th className="col-tipe" style={{ minWidth: 50, color: '#ffffff' }}>TIPE</th>
-                        <th className="col-bulan" style={{ minWidth: 54, color: '#ffffff' }}>PRL</th>
-                        <th className="col-input" style={{ minWidth: 90, color: '#ffffff' }}>ADA/TDK</th>
-                        <th className="col-input" style={{ minWidth: 100, color: '#ffffff' }}>KONDISI</th>
-                        <th className="col-input" style={{ minWidth: 120, color: '#ffffff' }}>KETERANGAN</th>
+                        <th className="col-check">✓</th>
+                        <th className="col-no">NO</th>
+                        <th className="col-barcode" style={{ minWidth: 140 }}>BARCODE</th>
+                        <th className="col-nama" style={{ minWidth: 140 }}>NAMA ASET</th>
+                        <th className="col-po" style={{ minWidth: 70 }}>NO. PO</th>
+                        <th className="col-tipe" style={{ minWidth: 50 }}>TIPE</th>
+                        <th className="col-bulan" style={{ minWidth: 54 }}>PRL</th>
+                        <th className="col-input" style={{ minWidth: 90 }}>ADA/TDK</th>
+                        <th className="col-input" style={{ minWidth: 100 }}>KONDISI</th>
+                        <th className="col-input" style={{ minWidth: 120 }}>KETERANGAN</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -349,19 +349,19 @@ export function EditableAssetTable({
 
     return (
         <div className="asset-table-wrapper">
-            <table className="asset-table">
+            <table className="wa-table">
                 <thead>
                     <tr>
-                        <th style={{ width: 34, minWidth: 34, color: '#ffffff' }}>#</th>
-                        <th className="col-barcode" style={{ minWidth: 140, width: 140, color: '#ffffff' }}>BARCODE</th>
-                        <th className="col-nama" style={{ minWidth: 150, color: '#ffffff' }}>NAMA ASET *</th>
-                        <th className="col-po" style={{ minWidth: 70, color: '#ffffff' }}>NO. PO</th>
-                        <th className="col-tipe" style={{ minWidth: 50, color: '#ffffff' }}>TIPE</th>
-                        <th style={{ minWidth: 54, color: '#ffffff' }}>PRL</th>
-                        <th className="col-input" style={{ minWidth: 90, color: '#ffffff' }}>ADA/TDK</th>
-                        <th className="col-input" style={{ minWidth: 180, color: '#ffffff' }}>KONDISI</th>
-                        <th className="col-input" style={{ minWidth: 140, color: '#ffffff' }}>KETERANGAN</th>
-                        <th style={{ width: 34, minWidth: 34, color: '#ffffff' }}></th>
+                        <th style={{ width: 34, minWidth: 34 }}>#</th>
+                        <th className="col-barcode" style={{ minWidth: 140, width: 140 }}>BARCODE</th>
+                        <th className="col-nama" style={{ minWidth: 150 }}>NAMA ASET *</th>
+                        <th className="col-po" style={{ minWidth: 70 }}>NO. PO</th>
+                        <th className="col-tipe" style={{ minWidth: 50 }}>TIPE</th>
+                        <th style={{ minWidth: 54 }}>PRL</th>
+                        <th className="col-input" style={{ minWidth: 90 }}>ADA/TDK</th>
+                        <th className="col-input" style={{ minWidth: 180 }}>KONDISI</th>
+                        <th className="col-input" style={{ minWidth: 140 }}>KETERANGAN</th>
+                        <th style={{ width: 34, minWidth: 34 }}></th>
                     </tr>
                 </thead>
                 <tbody>
