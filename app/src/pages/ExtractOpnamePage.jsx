@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { Download, RefreshCw, Database, ChevronDown, ChevronRight, FileSpreadsheet, Search, Upload, Building2, ScanLine, AlertCircle, XCircle, CheckCircle2, Eye } from 'lucide-react';
+import { Download, RefreshCw, Database, ChevronDown, ChevronRight, FileSpreadsheet, Search, Upload, Building2, ScanLine, AlertCircle, XCircle, CheckCircle2, Eye, Loader2 } from 'lucide-react';
 import { fetchWithAuth, apiUrl } from '../utils/apiConfig';
 import { generateAllExports, generateSingleExport, buildPreviewData } from '../utils/excelExportOpname';
 import { saveExtractOpnameState, loadExtractOpnameState } from '../utils/db';
@@ -186,7 +186,6 @@ export default function ExtractOpnamePage() {
         setSynced(false);
 
         try {
-            // Fetch scanned data + not-scanned data + app1 local data in parallel
             const [scannedRes, notScannedRes, app1Res] = await Promise.all([
                 fetchWithAuth(apiUrl(`/api/db/opname-data/${encodeURIComponent(selectedPeriod)}`)),
                 fetchWithAuth(apiUrl(`/api/db/opname-not-scanned/${encodeURIComponent(selectedPeriod)}`)),
@@ -197,24 +196,45 @@ export default function ExtractOpnamePage() {
             const notScannedJson = await notScannedRes.json();
             const app1Json = await app1Res.json();
 
-            if (!scannedJson.success) throw new Error(scannedJson.error || 'Failed to fetch scanned data');
-            if (!notScannedJson.success) throw new Error(notScannedJson.error || 'Failed to fetch not-scanned data');
+            // Aggregate per-endpoint errors instead of all-or-nothing
+            const errors = [];
+            let successCount = 0;
 
-            // Build App 1 Data Map (Barcode -> Full Asset Data)
-            const newApp1Map = new Map();
+            if (scannedJson.success) {
+                setScannedData(scannedJson.data);
+                successCount++;
+            } else {
+                errors.push(`Data terscan: ${scannedJson.error || 'gagal'}`);
+            }
+
+            if (notScannedJson.success) {
+                setNotScannedData(notScannedJson.data);
+                successCount++;
+            } else {
+                errors.push(`Data tidak terscan: ${notScannedJson.error || 'gagal'}`);
+            }
+
             if (app1Json.success && Array.isArray(app1Json.data)) {
+                const newApp1Map = new Map();
                 app1Json.data.forEach(item => {
                     const barcode = item.barcode || item.BARCODE_ASSET;
                     if (barcode) {
                         newApp1Map.set(String(barcode).trim().toUpperCase(), item);
                     }
                 });
+                setApp1DataMap(newApp1Map);
+                successCount++;
             }
-            setApp1DataMap(newApp1Map);
 
-            setScannedData(scannedJson.data);
-            setNotScannedData(notScannedJson.data);
-            setSynced(true);
+            if (successCount > 0) {
+                setSynced(true);
+            }
+
+            if (errors.length > 0) {
+                setError(`Sinkronisasi partial (${successCount}/3 endpoint berhasil): ${errors.join('; ')}`);
+            } else {
+                setError('');
+            }
         } catch (err) {
             setError(err.message);
             console.error('Sync failed:', err);
@@ -364,10 +384,17 @@ export default function ExtractOpnamePage() {
                 </div>
             </div>
 
-            {/* Error banner (kept from previous layout) */}
+            {/* Error banner */}
             {error && (
-                <div style={{ padding: '12px 16px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, marginBottom: 14, color: '#dc2626', fontSize: '0.875rem' }}>
-                    {error}
+                <div className="wa-alert wa-alert--danger">
+                    <AlertCircle size={14} style={{ flexShrink: 0, marginTop: 1 }} />
+                    <div>
+                        <div className="wa-alert__title">Sinkronisasi gagal</div>
+                        <div>{error}</div>
+                        <div className="wa-alert__hint">
+                            Cek koneksi SQL Server (192.168.2.111) atau pilih periode lain.
+                        </div>
+                    </div>
                 </div>
             )}
 
@@ -418,9 +445,25 @@ export default function ExtractOpnamePage() {
                             </div>
                         </div>
                         <input type="file" accept=".xlsx,.xls" onChange={handleOracleUpload} style={{ display: 'none' }} ref={oracleInputRef} />
-                        <button className="wa-btn-terracotta" onClick={() => oracleInputRef.current?.click()}>
-                            <RefreshCw size={13} /> Sinkronisasi
-                        </button>
+                        <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                            <button
+                                className="wa-btn-ghost"
+                                onClick={() => oracleInputRef.current?.click()}
+                                title="Pilih file Excel master data"
+                            >
+                                <Upload size={13} /> Pilih File
+                            </button>
+                            <button
+                                className="wa-btn-terracotta"
+                                onClick={handleSync}
+                                disabled={!selectedPeriod || loading}
+                                title={!selectedPeriod ? 'Pilih periode dulu' : 'Tarik data opname dari server'}
+                            >
+                                {loading
+                                    ? <><Loader2 size={13} className="wa-spin" /> Menyinkronkan...</>
+                                    : <><RefreshCw size={13} /> Sinkron Data Opname</>}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
