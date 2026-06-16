@@ -47,7 +47,7 @@
   --cream-surface: var(--bg-surface);
   --cream-input: var(--bg-input);
   --charcoal-900: var(--text-primary);
-  --charcoal-700: #2D2D2B;
+  --charcoal-700: #2D2D2D;
   --charcoal-500: var(--text-secondary);
   --charcoal-400: var(--text-tertiary);
   --charcoal-300: var(--border);
@@ -102,6 +102,8 @@
 }
 
 /* === Legacy LOGIN / BentoMenu palette (preserved unchanged) === */
+/* @deprecated: Used by App3/4/Login/BentoMenu. Migrate to new tokens. */
+/* Remove this block once all consumers migrated to --accent/--success/--warning/--danger. */
 :root {
   --amber-50:  #FDF8EE;
   --amber-100: #FAEED3;
@@ -120,13 +122,12 @@
   --warm-300: #D9CFC1;
   --warm-400: #B8A99A;
   --warm-500: #8C7B6B;
-
-  --font-sora: 'Sora', 'Outfit', -apple-system, sans-serif;
 }
 
 /* === Non-color tokens (unchanged) === */
 :root {
   /* === Typography === */
+  --font-sora: 'Sora', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'DM Mono', 'Courier New', monospace;
   --fs-xs: 0.75rem;
   --fs-sm: 0.8125rem;
