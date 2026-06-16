@@ -2,40 +2,131 @@
    tokens.css — Design tokens (CSS custom properties)
    --------------------------------------------------------------------------
    All :root blocks from the original index.css are consolidated here.
-   Two separate :root declarations existed in the source; the cascade
-   merges them. Order is preserved: primary tokens (cream / charcoal /
-   terracotta / status / typography / spacing / radius / shadows / easing)
-   first, then the LOGIN redesign palette overrides.
+   Multiple :root declarations coexist; the cascade merges them in order.
+   Color tokens use the Claude.ai palette (light + dark) with backward-
+   compatible aliases for v1 Warm Atelier (cream / charcoal / terracotta).
+   Legacy LOGIN / BentoMenu palette (amber / warm-50-500 / extra charcoals)
+   is preserved unchanged to avoid breaking existing components.
    ========================================================================== */
 
-/* ===== CSS DESIGN SYSTEM ===== */
+/* === COLOR TOKENS (Claude.ai palette) === */
+:root,
+:root[data-theme="light"] {
+  /* Surfaces */
+  --bg-primary: #FAF9F5;
+  --bg-surface: #FFFFFF;
+  --bg-input: #F5F4EF;
+
+  /* Text */
+  --text-primary: #262624;
+  --text-secondary: #595755;
+  --text-tertiary: #8B8580;
+  --text-muted: #BCB8B1;
+
+  /* Borders */
+  --border: #E8E5DE;
+  --border-strong: #D4D0C8;
+
+  /* Accent (Claude orange) */
+  --accent: #D97757;
+  --accent-hover: #C26A4D;
+  --accent-soft: rgba(217, 119, 87, 0.10);
+  --accent-glow: rgba(217, 119, 87, 0.20);
+  --accent-ring: rgba(217, 119, 87, 0.12);
+
+  /* Status */
+  --success-500: #3D8C5F;
+  --success-50: rgba(61, 140, 95, 0.10);
+  --warning-500: #C28B1A;
+  --warning-50: rgba(194, 139, 26, 0.10);
+  --danger-500: #C44545;
+  --danger-50: rgba(196, 69, 69, 0.10);
+
+  /* Backward-compat aliases (v1 Warm Atelier) */
+  --cream-bg: var(--bg-primary);
+  --cream-surface: var(--bg-surface);
+  --cream-input: var(--bg-input);
+  --charcoal-900: var(--text-primary);
+  --charcoal-700: #2D2D2B;
+  --charcoal-500: var(--text-secondary);
+  --charcoal-400: var(--text-tertiary);
+  --charcoal-300: var(--border);
+  --terracotta-500: var(--accent);
+  --terracotta-400: #E58A6A;
+  --terracotta-600: var(--accent-hover);
+}
+
+:root[data-theme="dark"] {
+  /* Surfaces */
+  --bg-primary: #262624;
+  --bg-surface: #2D2D2B;
+  --bg-input: #1F1F1D;
+
+  /* Text */
+  --text-primary: #F5F4EF;
+  --text-secondary: #BCB8B1;
+  --text-tertiary: #8B8580;
+  --text-muted: #595755;
+
+  /* Borders */
+  --border: #3D3D3B;
+  --border-strong: #4A4A48;
+
+  /* Accent (same orange works on both) */
+  --accent: #D97757;
+  --accent-hover: #E58A6A;
+  --accent-soft: rgba(217, 119, 87, 0.15);
+  --accent-glow: rgba(217, 119, 87, 0.30);
+  --accent-ring: rgba(217, 119, 87, 0.20);
+
+  /* Status */
+  --success-500: #3D8C5F;
+  --success-50: rgba(61, 140, 95, 0.15);
+  --warning-500: #C28B1A;
+  --warning-50: rgba(194, 139, 26, 0.15);
+  --danger-500: #C44545;
+  --danger-50: rgba(196, 69, 69, 0.15);
+
+  /* Backward-compat aliases (v1 Warm Atelier → dark) */
+  --cream-bg: var(--bg-primary);
+  --cream-surface: var(--bg-surface);
+  --cream-input: var(--bg-input);
+  --charcoal-900: var(--text-primary);
+  --charcoal-700: #F5F4EF;
+  --charcoal-500: var(--text-secondary);
+  --charcoal-400: var(--text-tertiary);
+  --charcoal-300: var(--border);
+  --terracotta-500: var(--accent);
+  --terracotta-400: #E58A6A;
+  --terracotta-600: var(--accent-hover);
+}
+
+/* === Legacy LOGIN / BentoMenu palette (preserved unchanged) === */
 :root {
-  /* === Cream surface === */
-  --cream-bg: #F5EFE6;
-  --cream-surface: #FDFCF7;
-  --cream-input: #FAF6EF;
+  --amber-50:  #FDF8EE;
+  --amber-100: #FAEED3;
+  --amber-300: #F4C47A;
+  --amber-400: #E8A94A;
+  --amber-500: #D4924A;
+  --amber-600: #B8742A;
+  --amber-700: #965C1A;
 
-  /* === Charcoal text === */
-  --charcoal-900: #1A1A1A;
-  --charcoal-700: #2D2D2D;
-  --charcoal-500: #6B6660;
-  --charcoal-400: #8B8580;
-  --charcoal-300: #C9C2B5;
+  --charcoal-800: #161B22;
+  --charcoal-600: #30363D;
 
-  /* === Terracotta accent (use sparingly) === */
-  --terracotta-500: #C96442;
-  --terracotta-400: #D88865;
-  --terracotta-600: #D87554;
+  --warm-50:  #FDFBF7;
+  --warm-100: #F5F1EB;
+  --warm-200: #EBE4D9;
+  --warm-300: #D9CFC1;
+  --warm-400: #B8A99A;
+  --warm-500: #8C7B6B;
 
-  /* === Status === */
-  --success-500: #16a34a;
-  --success-50: rgba(22, 163, 74, 0.10);
-  --warning-500: #f59e0b;
-  --danger-500: #dc2626;
-  --danger-50: rgba(220, 38, 38, 0.10);
+  --font-sora: 'Sora', 'Outfit', -apple-system, sans-serif;
+}
 
+/* === Non-color tokens (unchanged) === */
+:root {
   /* === Typography === */
-  --font-sora: 'Sora', -apple-system, sans-serif;
   --font-mono: 'DM Mono', 'Courier New', monospace;
   --fs-xs: 0.75rem;
   --fs-sm: 0.8125rem;
@@ -75,30 +166,4 @@
   --t-fast: 180ms;
   --t-base: 220ms;
   --t-slow: 400ms;
-}
-
-/* --- Design Tokens (LOGIN / BentoMenu redesign palette overrides) --- */
-:root {
-  --amber-300: #F4C47A;
-  --amber-400: #E8A94A;
-  --amber-500: #D4924A;
-  --amber-600: #B8742A;
-  --amber-700: #965C1A;
-
-  --charcoal-900: #0D1117;
-  --charcoal-800: #161B22;
-  --charcoal-700: #21262D;
-  --charcoal-600: #30363D;
-  --charcoal-500: #484F58;
-  --charcoal-400: #6E7681;
-
-  --warm-50:  #FDFBF7;
-  --warm-100: #F5F1EB;
-  --warm-200: #EBE4D9;
-  --warm-300: #D9CFC1;
-  --warm-400: #B8A99A;
-  --warm-500: #8C7B6B;
-
-  --font-sora: 'Sora', 'Outfit', sans-serif;
-  --font-mono: 'DM Mono', 'Courier New', monospace;
 }
