@@ -469,7 +469,7 @@ export default function ExtractOpnamePage() {
             </div>
 
             {/* 4 Summary cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 14 }}>
+            <div className="summary-grid">
                 <div className="wa-card" style={{ padding: '14px 18px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
                         <div className="wa-icon-wrap" style={{ width: 30, height: 30 }}><Building2 size={14} color="var(--charcoal-900)" /></div>
