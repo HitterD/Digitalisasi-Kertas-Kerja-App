@@ -6,6 +6,8 @@
 **Project:** "Kertas Kerja Digital" — PT Santos Jaya Abadi
 **Supersedes:** §11 (file list) of `2026-06-15-ui-ux-iteration-v2-design.md`. Carries over v2 §1-§10 with new bug fix + broader page/component polish.
 
+**Scope stats:** 32 modified + 6 new = 38 files. 8 halaman + 17 components polished. 1 critical bug fixed (App2 sync).
+
 ---
 
 ## 1. Context
