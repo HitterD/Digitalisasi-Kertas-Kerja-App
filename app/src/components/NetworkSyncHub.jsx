@@ -213,7 +213,7 @@ export default function NetworkSyncHub() {
 
                     {showConfig && isNativePlatform && (
                         <div style={{
-                            background: 'var(--warm-50)',
+                            background: 'var(--bg-input)',
                             padding: 14,
                             borderRadius: 8,
                             border: '1px solid var(--charcoal-200)',
