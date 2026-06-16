@@ -696,6 +696,46 @@
 }
 .wa-card:active { transform: translateY(0) scale(0.985); transition-duration: 80ms; }
 
+/* ===== WA-ALERT (warm atelier alert v2 — Claude palette) ===== */
+.wa-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  border: 1px solid;
+  margin-bottom: 14px;
+}
+.wa-alert--warning {
+  background: var(--warning-50);
+  border-color: var(--warning-500);
+  color: var(--warning-500);
+}
+.wa-alert--warning svg { color: var(--warning-500); flex-shrink: 0; margin-top: 1px; }
+.wa-alert--danger {
+  background: var(--danger-50);
+  border-color: var(--danger-500);
+  color: var(--danger-500);
+}
+.wa-alert--danger svg { color: var(--danger-500); flex-shrink: 0; margin-top: 1px; }
+.wa-alert--success {
+  background: var(--success-50);
+  border-color: var(--success-500);
+  color: var(--success-500);
+}
+.wa-alert--success svg { color: var(--success-500); flex-shrink: 0; margin-top: 1px; }
+.wa-alert__title {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.wa-alert__hint {
+  font-size: 11px;
+  opacity: 0.85;
+  margin-top: 4px;
+}
+
 .wa-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   padding: 9px 16px;
@@ -800,24 +840,63 @@
   box-shadow: 0 0 0 3px rgba(201, 100, 66, 0.12);
 }
 
+/* ===== WA-CHECK v2 (touch-friendly, Claude palette) ===== */
 .wa-check {
-  width: 18px; height: 18px;
-  border: 1.5px solid var(--charcoal-300);
-  border-radius: 4px;
-  display: inline-block; position: relative;
-  transition: all 160ms ease;
-  background: var(--cream-surface);
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-surface);
   cursor: pointer;
+  position: relative;
   flex-shrink: 0;
+  margin: 0;
+  transition: border-color 160ms var(--ease-out),
+              background 160ms var(--ease-out),
+              transform 80ms var(--ease-out);
 }
-.wa-check:hover { border-color: var(--terracotta-500); }
-.wa-check.on { background: var(--terracotta-500); border-color: var(--terracotta-500); }
-.wa-check.on::after {
-  content: ''; position: absolute; left: 5px; top: 1px;
-  width: 5px; height: 10px;
-  border: solid var(--cream-surface);
-  border-width: 0 1.5px 1.5px 0;
-  transform: rotate(45deg);
+.wa-check:hover { border-color: var(--accent); background: var(--accent-soft); }
+.wa-check:active { transform: scale(0.92); }
+.wa-check:focus-visible { box-shadow: 0 0 0 3px var(--accent-ring); outline: none; }
+.wa-check:disabled { opacity: 0.4; cursor: not-allowed; }
+.wa-check:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+  animation: wa-check-pop 220ms var(--ease-bounce);
+}
+.wa-check:checked::after {
+  content: '';
+  position: absolute; left: 6px; top: 2px;
+  width: 7px; height: 12px;
+  border: solid var(--bg-surface);
+  border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg) scale(0);
+  animation: wa-check-draw 180ms 40ms var(--ease-out) forwards;
+}
+.wa-check:indeterminate { background: var(--accent); border-color: var(--accent); }
+.wa-check:indeterminate::after {
+  content: '';
+  position: absolute; left: 4px; top: 9px;
+  width: 12px; height: 2px;
+  background: var(--bg-surface);
+}
+@keyframes wa-check-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+@keyframes wa-check-draw {
+  to { transform: rotate(45deg) scale(1); }
+}
+@media (pointer: coarse) {
+  .wa-check { width: 28px; height: 28px; }
+  .wa-check:checked::after { left: 8px; top: 3px; width: 8px; height: 13px; }
+}
+@media (max-width: 767px) {
+  .wa-check { width: 32px; height: 32px; }
+  .wa-check:checked::after { left: 10px; top: 4px; width: 9px; height: 14px; }
+  .wa-check:indeterminate::after { left: 8px; top: 14px; width: 12px; height: 2px; }
 }
 
 .wa-toggle {
@@ -1062,4 +1141,126 @@
   color: var(--neutral-700);
   border-color: var(--neutral-300);
   font-weight: 700;
+}
+
+/* === Notification pulse dot (BARCODE CHECKER) === */
+.wa-btn--has-notification {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+.wa-btn--active { box-shadow: 0 0 0 2px var(--accent-ring); }
+.wa-pulse-dot {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 2px 6px;
+  background: var(--accent);
+  color: var(--bg-surface);
+  border-radius: 999px;
+  position: relative;
+  margin-left: 4px;
+}
+.wa-pulse-dot::before {
+  content: '';
+  position: absolute; inset: -2px;
+  border: 1.5px solid var(--accent);
+  border-radius: 999px;
+  animation: wa-pulse 1.5s var(--ease-out) infinite;
+}
+@keyframes wa-pulse {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+/* === Modal entrance animation === */
+@keyframes wa-modal-in {
+  0% { opacity: 0; transform: scale(0.95) translateY(8px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.wa-card[role="dialog"],
+.wa-modal {
+  animation: wa-modal-in 250ms var(--ease-out);
+}
+
+/* === Theme toggle button === */
+.wa-theme-toggle {
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 180ms var(--ease-out);
+}
+.wa-theme-toggle:hover {
+  background: var(--bg-input);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+/* === Loading state (sync button) === */
+.wa-btn.is-loading,
+.wa-btn-terracotta.is-loading {
+  pointer-events: none;
+  opacity: 0.85;
+  position: relative;
+  color: transparent;
+}
+.wa-btn.is-loading::after,
+.wa-btn-terracotta.is-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 14px; height: 14px;
+  margin: -7px 0 0 -7px;
+  border: 2px solid var(--bg-surface);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: wa-spin 800ms linear infinite;
+}
+@keyframes wa-spin { to { transform: rotate(360deg); } }
+.wa-spin { animation: wa-spin 800ms linear infinite; }
+
+/* === Signature pad === */
+.wa-signature-pad {
+  border: 1.5px dashed var(--border-strong);
+  border-radius: 8px;
+  height: 90px;
+  background: var(--bg-input);
+  cursor: crosshair;
+  transition: border-color 180ms var(--ease-out), background 180ms var(--ease-out);
+}
+.wa-signature-pad:hover {
+  border-color: var(--accent);
+  background: var(--bg-surface);
+}
+
+/* === Reduced motion === */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .wa-card:hover,
+  .wa-btn:hover,
+  .wa-check:active {
+    transform: none !important;
+  }
+}
+
+/* === Page transitions (theme switch smooth) === */
+body,
+.wa-card,
+.wa-input,
+.wa-table,
+.wa-app-header {
+  transition: background-color 200ms var(--ease-out),
+              color 200ms var(--ease-out),
+              border-color 200ms var(--ease-out);
 }
