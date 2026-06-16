@@ -23,10 +23,10 @@ function AdaToggle({ value, onChange }) {
     return (
         <div style={{ 
             display: 'inline-flex', 
-            background: 'var(--warm-100)', 
+            background: 'var(--bg-input)', 
             padding: '4px', 
             borderRadius: '999px',
-            border: '1px solid var(--warm-200)',
+            border: '1px solid var(--border)',
             position: 'relative',
             width: 'max-content'
         }}>
@@ -47,8 +47,8 @@ function AdaToggle({ value, onChange }) {
                     border: 'none',
                     cursor: 'pointer',
                     background: value === 'Ada' ? '#ffffff' : 'transparent',
-                    color: value === 'Ada' ? 'var(--success-600)' : 'var(--charcoal-400)',
-                    boxShadow: value === 'Ada' ? '0 2px 6px rgba(0,0,0,0.05), inset 0 0 0 1px var(--success-200)' : 'none'
+                    color: value === 'Ada' ? 'var(--success-500)' : 'var(--charcoal-400)',
+                    boxShadow: value === 'Ada' ? '0 2px 6px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(61, 140, 95, 0.2)' : 'none'
                 }}
             >
                 Ada
@@ -70,8 +70,8 @@ function AdaToggle({ value, onChange }) {
                     border: 'none',
                     cursor: 'pointer',
                     background: value === 'Tidak Ada' ? '#ffffff' : 'transparent',
-                    color: value === 'Tidak Ada' ? 'var(--danger-600)' : 'var(--charcoal-400)',
-                    boxShadow: value === 'Tidak Ada' ? '0 2px 6px rgba(0,0,0,0.05), inset 0 0 0 1px var(--danger-200)' : 'none'
+                    color: value === 'Tidak Ada' ? 'var(--danger-500)' : 'var(--charcoal-400)',
+                    boxShadow: value === 'Tidak Ada' ? '0 2px 6px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(196, 69, 69, 0.2)' : 'none'
                 }}
             >
                 Tdk
@@ -152,7 +152,7 @@ const AssetRow = React.memo(({ asset, roomIndex, onToggleCheck, onUpdateField })
             <td className="col-barcode" onClick={handleCopy} style={{ cursor: 'pointer', userSelect: 'none' }} title="Tap untuk copy">
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ 
-                        color: isCopied ? 'var(--success-600)' : 'var(--blue-700)', 
+                        color: isCopied ? 'var(--success-500)' : 'var(--accent)', 
                         fontWeight: 700, 
                         transition: 'color 0.2s'
                     }}>
@@ -177,7 +177,7 @@ const AssetRow = React.memo(({ asset, roomIndex, onToggleCheck, onUpdateField })
             <td className="col-nama">{asset.namaAset}</td>
             <td className="col-po">{asset.noPO}</td>
             <td className="col-tipe">{asset.tipe}</td>
-            <td className="col-bulan" style={{ whiteSpace: 'nowrap', fontSize: '11px', color: 'var(--neutral-600)' }}>
+            <td className="col-bulan" style={{ whiteSpace: 'nowrap', fontSize: '11px', color: 'var(--text-tertiary)' }}>
                 {asset.bulanPerolehan && asset.tahunPerolehan
                     ? `${String(asset.bulanPerolehan).padStart(2, '0')}/${asset.tahunPerolehan}`
                     : asset.bulanPerolehan || asset.tahunPerolehan || '—'}
@@ -282,7 +282,7 @@ export default function AssetTable({ assets, roomIndex, onToggleCheck, onUpdateF
                     ))}
                     {filteredAssets.length === 0 && (
                         <tr>
-                            <td colSpan={10} style={{ textAlign: 'center', padding: 'var(--space-4)', color: 'var(--neutral-400)' }}>
+                            <td colSpan={10} style={{ textAlign: 'center', padding: 'var(--space-4)', color: 'var(--text-muted)' }}>
                                 {searchQuery ? 'Tidak ada barcode yang cocok dengan pencarian.' : 'Belum ada data.'}
                             </td>
                         </tr>
@@ -291,7 +291,7 @@ export default function AssetTable({ assets, roomIndex, onToggleCheck, onUpdateF
             </table>
 
             {totalPages > 1 && (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-4)', padding: 'var(--space-4)', borderTop: '1px solid var(--neutral-200)', background: 'var(--neutral-50)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-4)', padding: 'var(--space-4)', borderTop: '1px solid var(--border)', background: 'var(--bg-input)' }}>
                     <button
                         className="btn btn--outline btn--icon"
                         onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
@@ -301,7 +301,7 @@ export default function AssetTable({ assets, roomIndex, onToggleCheck, onUpdateF
                     >
                         <ChevronLeft size={18} />
                     </button>
-                    <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--neutral-600)' }}>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-tertiary)' }}>
                         Hal {safePage} dari {totalPages}
                     </span>
                     <button
@@ -367,10 +367,10 @@ export function EditableAssetTable({
                 <tbody>
                     {assets.map((asset, i) => (
                         <tr key={asset.id} className="editable-row">
-                            <td className="col-no" style={{ textAlign: 'center', color: 'var(--neutral-400)' }}>{i + 1}</td>
+                            <td className="col-no" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>{i + 1}</td>
                             <td className="col-barcode" style={{ minWidth: 140, width: 140 }}>
                                 {sectionType === 'noBarcode' ? (
-                                    <span style={{ color: 'var(--neutral-400)', fontSize: 'var(--font-size-xs)' }}>(NO BARCODE)</span>
+                                    <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>(NO BARCODE)</span>
                                 ) : (
                                     <input
                                         type="text"
@@ -424,7 +424,7 @@ export function EditableAssetTable({
                                         placeholder="MM"
                                         style={{ width: 36, textAlign: 'center', fontSize: '11px' }}
                                     />
-                                    <span style={{ color: 'var(--neutral-400)', fontSize: '11px' }}>/</span>
+                                    <span style={{ color: 'var(--text-muted)', fontSize: '11px' }}>/</span>
                                     <input
                                         type="text"
                                         className="form-input form-input--compact ghost-input"
@@ -469,7 +469,7 @@ export function EditableAssetTable({
                     ))}
                     {assets.length === 0 && (
                         <tr>
-                            <td colSpan={10} style={{ textAlign: 'center', padding: 'var(--space-4)', color: 'var(--neutral-400)' }}>
+                            <td colSpan={10} style={{ textAlign: 'center', padding: 'var(--space-4)', color: 'var(--text-muted)' }}>
                                 Belum ada data. Klik tombol tambah di atas.
                             </td>
                         </tr>
