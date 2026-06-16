@@ -1,4 +1,6 @@
 // Global test setup — matchMedia is not provided by jsdom
+import '@testing-library/jest-dom/vitest';
+
 if (typeof window !== 'undefined' && !window.matchMedia) {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,

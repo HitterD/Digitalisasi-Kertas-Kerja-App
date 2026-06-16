@@ -71,6 +71,15 @@ const config = defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/__tests__/setup.js'],
+    css: false,
+    server: {
+      esbuild: {
+        jsx: 'automatic',
+      },
+    },
+    esbuild: {
+      jsx: 'automatic',
+    },
   },
 });
 
