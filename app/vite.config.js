@@ -67,11 +67,20 @@ const config = defineConfig({
   ],
   server: { host: '0.0.0.0', port: APP_PORT },
   preview: { host: '0.0.0.0', port: APP_PORT },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./src/__tests__/setup.js'],
+  },
 });
 
 // Register SQL probe at module load — just a callback, no execution here.
 // Actual probe runs only when registry.init() is called inside viteUpstreamStatusPlugin's configureServer.
+//
+// PENTING: options HARUS SAMA dengan sqlConfig di sqlPlugin.js — kalau beda,
+// probe akan fail dengan "self-signed certificate" karena default mssql pakai encrypt: true.
 registry.registerProbe('sql', async () => {
+  const startTime = Date.now();
   const pool = await sql.connect({
     user: process.env.MSSQL_USER,
     password: process.env.MSSQL_PASSWORD,
@@ -79,12 +88,20 @@ registry.registerProbe('sql', async () => {
     server: process.env.MSSQL_HOST || 'localhost',
     port: parseInt(process.env.MSSQL_PORT || '1433'),
     connectionTimeout: 10000,
-    requestTimeout: parseInt(process.env.UPSTREAM_PROBE_TIMEOUT_MS || '5000'),
+    requestTimeout: 5000,
+    options: {
+      encrypt: false,
+      trustServerCertificate: true,
+    },
   });
   try {
     await pool.request().query('SELECT 1');
   } finally {
     await pool.close();
+  }
+  const elapsed = Date.now() - startTime;
+  if (elapsed > 3000) {
+    console.log(`[SQL Probe] Connected in ${elapsed}ms (slow — check network/SQL Server load)`);
   }
 });
 
