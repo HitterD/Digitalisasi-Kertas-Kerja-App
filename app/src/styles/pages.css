@@ -3105,3 +3105,21 @@ html.plt-android .login-submit {
 .admin-callout { padding: 16px; border-radius: 4px; font-size: 13px; line-height: 1.6; }
 .admin-callout--info { background: var(--primary-50); border: 1px solid var(--primary-200); color: var(--primary-900); }
 .admin-loading { text-align: center; padding: 32px; color: var(--neutral-500); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; animation: pulse 2s infinite; font-size: 12px; }
+
+/* === Summary grid (Extract page cards) === */
+.summary-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, 1fr);
+  margin-bottom: 14px;
+}
+@media (max-width: 1023px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 599px) {
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
