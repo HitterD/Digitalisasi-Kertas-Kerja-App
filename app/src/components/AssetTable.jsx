@@ -2,13 +2,8 @@ import { Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useMemo, useState, useEffect } from 'react';
 
 const KONDISI_OPTIONS = ['Baik', 'Rusak', 'Cetak Ulang', 'Salah Ruangan', 'Pending'];
-const KONDISI_CLASS = {
-    'Baik': 'tg-btn--active-green',
-    'Rusak': 'tg-btn--active-red',
-    'Cetak Ulang': 'tg-btn--active-warning',
-    'Salah Ruangan': 'tg-btn--active-warning',
-    'Pending': 'tg-btn--active-neutral',
-};
+
+// KONDISI_CLASS removed in v3 — dead code, replaced by KondisiDropdown dynamic styling
 
 // Short labels for space-saving display in table
 const KONDISI_SHORT = {
@@ -81,16 +76,23 @@ function AdaToggle({ value, onChange }) {
 }
 
 function KondisiDropdown({ value, onChange }) {
-    // Dynamic color styling for the select based on selected condition
-    let selectClass = "form-select form-input--compact";
-    if (value === 'Baik') selectClass += " text-success-700 bg-success-50 border-success-200 font-semibold";
-    else if (value === 'Rusak') selectClass += " text-danger-700 bg-danger-50 border-danger-200 font-semibold";
-    else if (value === 'Cetak Ulang' || value === 'Salah Ruangan') selectClass += " text-warning-700 bg-warning-50 border-warning-200 font-semibold";
-    else if (value) selectClass += " text-primary-700 bg-primary-50 border-primary-200 font-semibold";
+    // Dynamic color styling for the select based on selected condition (v3 tokens)
+    let selectStyle = {};
+    let selectClass = "wa-select";
+    if (value === 'Baik') {
+        selectStyle = { color: 'var(--success-500)', background: 'var(--success-50)', borderColor: 'var(--success-500)', fontWeight: 600 };
+    } else if (value === 'Rusak') {
+        selectStyle = { color: 'var(--danger-500)', background: 'var(--danger-50)', borderColor: 'var(--danger-500)', fontWeight: 600 };
+    } else if (value === 'Cetak Ulang' || value === 'Salah Ruangan') {
+        selectStyle = { color: 'var(--warning-500)', background: 'var(--warning-50)', borderColor: 'var(--warning-500)', fontWeight: 600 };
+    } else if (value) {
+        selectStyle = { color: 'var(--text-primary)', background: 'var(--bg-input)', borderColor: 'var(--border)', fontWeight: 600 };
+    }
 
     return (
         <select
             className={selectClass}
+            style={selectStyle}
             value={value || ''}
             onChange={(e) => onChange(e.target.value)}
         >
@@ -141,12 +143,14 @@ const AssetRow = React.memo(({ asset, roomIndex, onToggleCheck, onUpdateField })
     return (
         <tr className={asset.isChecked ? 'checked' : ''}>
             <td className="col-check">
-                <input
-                    type="checkbox"
-                    className="checkbox-opname"
-                    checked={asset.isChecked}
-                    onChange={() => onToggleCheck(roomIndex, i)}
-                />
+                <label style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minWidth: 44, minHeight: 44, cursor: 'pointer' }}>
+                    <input
+                        type="checkbox"
+                        className="wa-check"
+                        checked={asset.isChecked}
+                        onChange={() => onToggleCheck(roomIndex, i)}
+                    />
+                </label>
             </td>
             <td className="col-no">{asset.no}</td>
             <td className="col-barcode" onClick={handleCopy} style={{ cursor: 'pointer', userSelect: 'none' }} title="Tap untuk copy">
@@ -197,7 +201,7 @@ const AssetRow = React.memo(({ asset, roomIndex, onToggleCheck, onUpdateField })
             <td className="col-input">
                 <input
                     type="text"
-                    className="form-input form-input--compact ghost-input"
+                    className="wa-input"
                     value={asset.keterangan || ''}
                     onChange={(e) => onUpdateField(roomIndex, i, 'keterangan', e.target.value)}
                     placeholder="Keterangan..."
@@ -293,7 +297,7 @@ export default function AssetTable({ assets, roomIndex, onToggleCheck, onUpdateF
             {totalPages > 1 && (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-4)', padding: 'var(--space-4)', borderTop: '1px solid var(--border)', background: 'var(--bg-input)' }}>
                     <button
-                        className="btn btn--outline btn--icon"
+                        className="wa-btn-ghost wa-btn-icon"
                         onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                         disabled={safePage === 1}
                         title="Halaman Sebelumnya"
@@ -305,7 +309,7 @@ export default function AssetTable({ assets, roomIndex, onToggleCheck, onUpdateF
                         Hal {safePage} dari {totalPages}
                     </span>
                     <button
-                        className="btn btn--outline btn--icon"
+                        className="wa-btn-ghost wa-btn-icon"
                         onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                         disabled={safePage === totalPages}
                         title="Halaman Berikutnya"
@@ -366,7 +370,7 @@ export function EditableAssetTable({
                 </thead>
                 <tbody>
                     {assets.map((asset, i) => (
-                        <tr key={asset.id} className="editable-row">
+                        <tr key={asset.id} className="">
                             <td className="col-no" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>{i + 1}</td>
                             <td className="col-barcode" style={{ minWidth: 140, width: 140 }}>
                                 {sectionType === 'noBarcode' ? (
@@ -376,7 +380,7 @@ export function EditableAssetTable({
                                         type="text"
                                         inputMode="numeric"
                                         pattern="[0-9]*"
-                                        className="form-input form-input--compact ghost-input"
+                                        className="wa-input"
                                         value={asset.barcode}
                                         onChange={(e) => onUpdate(roomIndex, i, 'barcode', e.target.value)}
                                         onBlur={(e) => handleBarcodeBlur(i, e.target.value)}
@@ -388,7 +392,7 @@ export function EditableAssetTable({
                             <td className="col-nama">
                                 <input
                                     type="text"
-                                    className="form-input form-input--compact ghost-input"
+                                    className="wa-input"
                                     value={asset.namaAset}
                                     onChange={(e) => onUpdate(roomIndex, i, 'namaAset', e.target.value)}
                                     placeholder="Nama aset *"
@@ -399,7 +403,7 @@ export function EditableAssetTable({
                             <td className="col-po">
                                 <input
                                     type="text"
-                                    className="form-input form-input--compact ghost-input"
+                                    className="wa-input"
                                     value={asset.noPO}
                                     onChange={(e) => onUpdate(roomIndex, i, 'noPO', e.target.value)}
                                     placeholder="Opsional"
@@ -408,7 +412,7 @@ export function EditableAssetTable({
                             <td className="col-tipe">
                                 <input
                                     type="text"
-                                    className="form-input form-input--compact ghost-input"
+                                    className="wa-input"
                                     value={asset.tipe}
                                     onChange={(e) => onUpdate(roomIndex, i, 'tipe', e.target.value)}
                                     placeholder="Opsional"
@@ -418,7 +422,7 @@ export function EditableAssetTable({
                                 <div style={{ display: 'flex', gap: '2px', alignItems: 'center' }}>
                                     <input
                                         type="text"
-                                        className="form-input form-input--compact ghost-input"
+                                        className="wa-input"
                                         value={asset.bulanPerolehan}
                                         onChange={(e) => onUpdate(roomIndex, i, 'bulanPerolehan', e.target.value)}
                                         placeholder="MM"
@@ -427,7 +431,7 @@ export function EditableAssetTable({
                                     <span style={{ color: 'var(--text-muted)', fontSize: '11px' }}>/</span>
                                     <input
                                         type="text"
-                                        className="form-input form-input--compact ghost-input"
+                                        className="wa-input"
                                         value={asset.tahunPerolehan}
                                         onChange={(e) => onUpdate(roomIndex, i, 'tahunPerolehan', e.target.value)}
                                         placeholder="YYYY"
@@ -450,7 +454,7 @@ export function EditableAssetTable({
                             <td className="col-input">
                                 <input
                                     type="text"
-                                    className="form-input form-input--compact ghost-input"
+                                    className="wa-input"
                                     value={asset.keterangan}
                                     onChange={(e) => onUpdate(roomIndex, i, 'keterangan', e.target.value)}
                                     placeholder="Keterangan..."
@@ -458,7 +462,7 @@ export function EditableAssetTable({
                             </td>
                             <td>
                                 <button
-                                    className="btn btn--ghost btn--icon btn--sm"
+                                    className="wa-btn-ghost wa-btn-icon"
                                     onClick={() => onRemove(roomIndex, i)}
                                     title="Hapus baris"
                                 >
