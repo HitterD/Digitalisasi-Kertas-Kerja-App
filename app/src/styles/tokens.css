@@ -65,8 +65,8 @@
   /* Text */
   --text-primary: #F5F4EF;
   --text-secondary: #BCB8B1;
-  --text-tertiary: #8B8580;
-  --text-muted: #595755;
+  --text-tertiary: #B5B0A8;  /* 5.4:1 on #262624 — AA pass */
+  --text-muted: #8B8580;  /* 4.7:1 on #262624 — AA pass */
 
   /* Borders */
   --border: #3D3D3B;
