@@ -6,7 +6,7 @@ vi.mock('../utils/apiConfig', () => ({
   fetchWithAuth: vi.fn(),
 }));
 
-import { fetchMatHistory } from '../utils/matApi';
+import { fetchActiveMatByBarcodes, fetchMatHistory } from '../utils/matApi';
 import * as apiConfig from '../utils/apiConfig';
 
 describe('fetchMatHistory', () => {
@@ -87,5 +87,53 @@ describe('fetchMatHistory', () => {
       expect.stringContaining('A%2F1'),
       expect.any(Object)
     );
+  });
+});
+
+describe('fetchActiveMatByBarcodes', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('returns empty response without fetch when barcode list is empty', async () => {
+    const result = await fetchActiveMatByBarcodes(['', null, undefined]);
+
+    expect(result).toEqual({ success: true, count: 0, data: {}, timestamp: '' });
+    expect(apiConfig.fetchWithAuth).not.toHaveBeenCalled();
+  });
+
+  it('deduplicates barcodes and URL-encodes query', async () => {
+    apiConfig.fetchWithAuth.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({
+        success: true,
+        count: 1,
+        data: {
+          'A/1': {
+            noMat: 'MAT-001',
+            status: 'WAITING_APPROVAL',
+          },
+        },
+        timestamp: '2026-06-25T00:00:00.000Z',
+      }),
+    });
+
+    const result = await fetchActiveMatByBarcodes([' A/1 ', '10001', 'A/1']);
+
+    expect(apiConfig.fetchWithAuth).toHaveBeenCalledWith(
+      'http://localhost:5173/api/db/mat-active?barcodes=A%2F1%2C10001',
+      expect.objectContaining({ signal: expect.any(AbortSignal) })
+    );
+    expect(result.data['A/1'].noMat).toBe('MAT-001');
+  });
+
+  it('throws server message when active MAT response is not ok', async () => {
+    apiConfig.fetchWithAuth.mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: () => Promise.resolve({ error: 'Query MAT aktif gagal' }),
+    });
+
+    await expect(fetchActiveMatByBarcodes(['10001'])).rejects.toThrow('Query MAT aktif gagal');
   });
 });
