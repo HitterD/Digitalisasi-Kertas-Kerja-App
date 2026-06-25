@@ -5,16 +5,24 @@ import AssetTable from '../components/AssetTable';
 import NoBarcodeSection from '../components/NoBarcodeSection';
 import NotAtLocationSection from '../components/NotAtLocationSection';
 import SignatureSection from '../components/SignatureSection';
+import RoomStatusSelect from '../components/RoomStatusSelect';
 import { saveRoomPDF, generateAndSaveAllPDFs } from '../utils/pdfGenerator';
-import { apiUrl, fetchWithAuth } from '../utils/apiConfig';
+import { apiUrl, fetchJsonWithAuth } from '../utils/apiConfig';
+import {
+    ROOM_NAV_ELLIPSIS,
+    getRoomStatus,
+    getVisibleRoomItems,
+} from '../utils/opnameRoomNav';
 import {
     ChevronLeft, ChevronRight, ChevronDown, FileDown, FilePlus, MapPin,
     AlertTriangle, Plus, Home, CheckCircle2, Circle, Wifi,
-    List, PenTool, UploadCloud, Search, Save
+    List, PenTool, UploadCloud, Search, Save, Loader2
 } from 'lucide-react';
 
 import CustomRoomModal from '../components/CustomRoomModal';
 import SaveLoadModal from '../components/SaveLoadModal'; // NEW
+import DeleteRoomConfirmModal from '../components/DeleteRoomConfirmModal';
+import SqlRoomImportModal from '../components/SqlRoomImportModal';
 
 export default function OpnamePage() {
     const navigate = useNavigate();
@@ -22,16 +30,20 @@ export default function OpnamePage() {
         state, masterDb, setRoomIndex, toggleAssetCheck, updateAssetField, autofillAsset,
         addNoBarcodeAsset, updateNoBarcodeAsset, removeNoBarcodeAsset,
         addNotAtLocationAsset, updateNotAtLocationAsset, removeNotAtLocationAsset,
-        setSignature, addCustomRoom, crossRoomCheck, importData
+        updateSignatures, addCustomRoom, removeRoomLocal, addSqlImportedRoom, crossRoomCheck, importData
     } = useOpname();
     const [generating, setGenerating] = useState(false);
     const [toast, setToast] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
     const [isSaveModalOpen, setIsSaveModalOpen] = useState(false); // NEW
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isSqlImportModalOpen, setIsSqlImportModalOpen] = useState(false);
 
     const roomIdx = state.currentRoomIndex;
     const room = state.rooms[roomIdx];
+
+    const [isRoomGridOpen, setIsRoomGridOpen] = useState(false);
 
     const showToast = useCallback((msg, type = 'success') => {
         setToast({ msg, type });
@@ -54,12 +66,52 @@ export default function OpnamePage() {
         });
     }, [state.rooms]);
 
+    const visibleRoomItems = useMemo(() => (
+        getVisibleRoomItems(roomIdx, state.rooms.length)
+    ), [roomIdx, state.rooms.length]);
+
+    const handleRoomSelect = useCallback((targetIndex) => {
+        setRoomIndex(targetIndex);
+        setIsRoomGridOpen(false);
+    }, [setRoomIndex]);
+
+    const getRoomName = useCallback((targetIndex) => {
+        const targetRoom = state.rooms[targetIndex];
+        return targetRoom?.meta?.roomName || targetRoom?.sheetName || `Ruangan ${targetIndex + 1}`;
+    }, [state.rooms]);
+
+    const renderRoomNavButton = useCallback((targetIndex, variant = 'preview') => {
+        const status = getRoomStatus(overallProgress[targetIndex]);
+        const isActive = targetIndex === roomIdx;
+        const roomName = getRoomName(targetIndex);
+
+        return (
+            <button
+                key={`${variant}-${targetIndex}`}
+                type="button"
+                title={`${targetIndex + 1}. ${roomName}`}
+                aria-label={`Buka ruangan ${targetIndex + 1}: ${roomName}`}
+                aria-current={isActive ? 'true' : undefined}
+                className={`wa-room-nav-dot wa-room-nav-dot--${variant} wa-room-nav-dot--${status}${isActive ? ' active' : ''}`}
+                onClick={() => handleRoomSelect(targetIndex)}
+            >
+                {targetIndex + 1}
+            </button>
+        );
+    }, [getRoomName, handleRoomSelect, overallProgress, roomIdx]);
+
     const handlePrevRoom = useCallback(() => {
-        if (roomIdx > 0) setRoomIndex(roomIdx - 1);
+        if (roomIdx > 0) {
+            setRoomIndex(roomIdx - 1);
+            setIsRoomGridOpen(false);
+        }
     }, [roomIdx, setRoomIndex]);
 
     const handleNextRoom = useCallback(() => {
-        if (roomIdx < state.rooms.length - 1) setRoomIndex(roomIdx + 1);
+        if (roomIdx < state.rooms.length - 1) {
+            setRoomIndex(roomIdx + 1);
+            setIsRoomGridOpen(false);
+        }
     }, [roomIdx, state.rooms.length, setRoomIndex]);
 
     const handleGenerateCurrentPDF = useCallback(async () => {
@@ -100,7 +152,7 @@ export default function OpnamePage() {
             };
 
             // Relative URL ensures we hit the exact same IP and Port serving the frontend
-            const res = await fetchWithAuth(apiUrl('/api/sync/result'), {
+            const data = await fetchJsonWithAuth(apiUrl('/api/sync/result'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -108,28 +160,17 @@ export default function OpnamePage() {
                 body: JSON.stringify(currentState),
             });
 
-            const data = await res.json();
-            if (data.success) {
-                showToast('Berhasil Upload ke Jaringan PC!');
-            } else {
-                showToast(`Gagal: ${data.error || 'Server tidak merespon'}`, 'error');
-            }
+            showToast('Berhasil Upload ke Jaringan PC!');
         } catch (err) {
             console.error('Sync Error:', err);
-            showToast('Koneksi Gagal. Pastikan Tablet & PC di WiFi yang sama.', 'error');
+            showToast(err.message || 'Koneksi Gagal. Pastikan Tablet & PC di WiFi yang sama.', 'error');
         } finally {
             setIsSyncing(false);
         }
     }, [state, showToast]);
 
     // === Signatures ===
-    const handleSaveSig = useCallback((type, data) => {
-        setSignature(roomIdx, type, data);
-    }, [roomIdx, setSignature]);
-
-    const handleSaveName = useCallback((type, name) => {
-        setSignature(roomIdx, type + 'Name', name);
-    }, [roomIdx, setSignature]);
+    // handled by updateSignatures directly in SignatureSection
 
     if (!room) {
         return (
@@ -153,92 +194,112 @@ export default function OpnamePage() {
     return (
         <div className="app-main" style={{ width: '100%', maxWidth: '100%', padding: '0 var(--space-4)' }}>
             {/* Room Navigation */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 18px', background: 'var(--cream-surface)', borderBottom: '1px solid rgba(26,26,26,0.06)' }}>
+            <div className="wa-room-nav">
               {/* Prev/Next + select */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
-                <button onClick={handlePrevRoom} disabled={roomIdx === 0} style={{ width: 30, height: 30, background: 'transparent', border: '1px solid rgba(26,26,26,0.1)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--charcoal-900)', cursor: roomIdx === 0 ? 'not-allowed' : 'pointer', opacity: roomIdx === 0 ? 0.25 : 1 }}>
-                  <ChevronLeft size={14} />
+              <div className="wa-room-nav-select-group">
+                <button className="wa-room-nav-btn" onClick={handlePrevRoom} disabled={roomIdx === 0} aria-label="Ruangan sebelumnya">
+                  <ChevronLeft size={16} />
                 </button>
-                <select className="wa-select" value={roomIdx} onChange={(e) => setRoomIndex(Number(e.target.value))} style={{ minWidth: 240, fontSize: 12, fontWeight: 600 }}>
-                  {state.rooms.map((r, i) => {
-                    const op = overallProgress[i];
-                    const pctStr = op ? ` (${op.checked}/${op.total})` : '';
-                    return <option key={i} value={i}>{i + 1}. {r.meta.roomName || r.sheetName}{pctStr}</option>;
-                  })}
-                </select>
-                <button onClick={handleNextRoom} disabled={roomIdx === state.rooms.length - 1} style={{ width: 30, height: 30, background: 'transparent', border: '1px solid rgba(26,26,26,0.1)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--charcoal-900)', cursor: roomIdx === state.rooms.length - 1 ? 'not-allowed' : 'pointer', opacity: roomIdx === state.rooms.length - 1 ? 0.25 : 1 }}>
-                  <ChevronRight size={14} />
+                <RoomStatusSelect
+                  rooms={state.rooms}
+                  progress={overallProgress}
+                  value={roomIdx}
+                  onChange={handleRoomSelect}
+                />
+                <button className="wa-room-nav-btn" onClick={handleNextRoom} disabled={roomIdx === state.rooms.length - 1} aria-label="Ruangan berikutnya">
+                  <ChevronRight size={16} />
                 </button>
               </div>
 
-              <div style={{ width: 1, height: 24, background: 'rgba(26,26,26,0.08)' }} />
+              <div className="wa-room-nav-divider" />
 
               {/* Progress ring + count */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+              <div className="wa-room-nav-progress-group">
                 <div style={{ position: 'relative', width: 36, height: 36 }}>
                   <svg width="36" height="36" viewBox="0 0 36 36" style={{ transform: 'rotate(-90deg)' }}>
-                    <circle cx="18" cy="18" r="14" fill="none" stroke="rgba(26,26,26,0.08)" strokeWidth="3" />
+                    <circle cx="18" cy="18" r="14" fill="none" stroke="var(--border)" strokeWidth="3" />
                     <circle cx="18" cy="18" r="14" fill="none" stroke="var(--terracotta-500)" strokeWidth="3" strokeDasharray="87.96" strokeDashoffset={87.96 - (87.96 * progress.pct / 100)} strokeLinecap="round" style={{ transition: 'stroke-dashoffset 400ms cubic-bezier(0.25,1,0.5,1)' }} />
                   </svg>
-                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono)', fontSize: 8.5, fontWeight: 700, color: 'var(--charcoal-900)' }}>{progress.pct}%</div>
+                  <div className="wa-room-nav-progress-pct">{progress.pct}%</div>
                 </div>
                 <div>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: 'var(--charcoal-400)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{progress.checked}/{progress.total}</div>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: 'var(--charcoal-400)', letterSpacing: '0.08em' }}>{progress.total - progress.checked} SISA</div>
+                  <div className="wa-room-nav-progress-text" style={{ marginBottom: 2 }}>{progress.checked}/{progress.total}</div>
+                  <div className="wa-room-nav-progress-text">{progress.total - progress.checked} SISA</div>
                 </div>
               </div>
 
-              <div style={{ width: 1, height: 24, background: 'rgba(26,26,26,0.08)' }} />
+              <div className="wa-room-nav-divider" />
 
-              {/* Dot grid (horizontal scroll) */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 3, overflowX: 'auto', flex: 1, minWidth: 0, paddingRight: 8 }}>
-                {state.rooms.map((r, i) => {
-                  const op = overallProgress[i];
-                  const isActive = i === roomIdx;
-                  const isDone = op && op.checked === op.total;
-                  const isProcess = op && op.checked > 0 && op.checked < op.total;
-                  return (
-                    <div key={i} title={`Ruang ${i + 1}`} style={{
-                      width: 12, height: 12, borderRadius: '50%', flexShrink: 0, cursor: 'pointer',
-                      background: isActive ? 'var(--cream-surface)' : (isDone ? 'var(--charcoal-900)' : (isProcess ? 'var(--terracotta-500)' : 'var(--cream-surface)')),
-                      border: isActive ? '2px solid var(--terracotta-500)' : '1.5px solid var(--charcoal-300)',
-                    }} onClick={() => setRoomIndex(i)} />
-                  );
-                })}
+              <div className="wa-room-nav-summary" aria-live="polite">
+                <span className="wa-room-nav-summary__current">Ruangan {roomIdx + 1}</span>
+                <span className="wa-room-nav-summary__total">dari {state.rooms.length}</span>
               </div>
+
+              <button
+                type="button"
+                className="wa-room-nav-toggle"
+                aria-expanded={isRoomGridOpen}
+                onClick={() => setIsRoomGridOpen((current) => !current)}
+              >
+                {isRoomGridOpen ? 'Tutup' : 'Lihat semua'}
+                <ChevronDown size={14} className={isRoomGridOpen ? 'open' : ''} />
+              </button>
+
+              {/* Compact room preview */}
+              <div className="wa-room-nav-dots wa-room-nav-dots--preview" aria-label="Preview nomor ruangan">
+                {visibleRoomItems.map((item) => (
+                  item.type === ROOM_NAV_ELLIPSIS
+                    ? <span key={item.key} className="wa-room-nav-ellipsis">…</span>
+                    : renderRoomNavButton(item.index, 'preview')
+                ))}
+              </div>
+
+              {isRoomGridOpen && (
+                <div className="wa-room-nav-grid-panel" role="region" aria-label="Pilih ruangan opname">
+                  <div className="wa-room-nav-grid">
+                    {state.rooms.map((_, i) => renderRoomNavButton(i, 'grid'))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Room Meta Info */}
-            <div className="wa-card" style={{ padding: 18, marginBottom: 14 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0 }}>
-                <div style={{ paddingRight: 18, borderRight: '1px solid rgba(26,26,26,0.06)' }}>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--terracotta-500)', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 4 }}>Ruangan</div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--charcoal-900)', lineHeight: 1.3 }}>{room.meta.roomName}</div>
+            <div className="wa-card wa-room-meta-card">
+              <div className="wa-room-meta-grid">
+                <div className="wa-room-meta-col">
+                  <div className="wa-room-meta-label">Ruangan</div>
+                  <div className="wa-room-meta-value">{room.meta.roomName}</div>
                 </div>
-                <div style={{ padding: '0 18px', borderRight: '1px solid rgba(26,26,26,0.06)' }}>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--terracotta-500)', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 4 }}>PIC Ruangan</div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--charcoal-900)', lineHeight: 1.3 }}>{room.meta.picName || '-'}</div>
+                <div className="wa-room-meta-col">
+                  <div className="wa-room-meta-label">PIC Ruangan</div>
+                  <div className="wa-room-meta-value">{room.meta.picName || '-'}</div>
                 </div>
-                <div style={{ padding: '0 18px', borderRight: '1px solid rgba(26,26,26,0.06)' }}>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--terracotta-500)', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 4 }}>Periode</div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--charcoal-900)', lineHeight: 1.3 }}>{room.meta.period}</div>
+                <div className="wa-room-meta-col">
+                  <div className="wa-room-meta-label">Periode</div>
+                  <div className="wa-room-meta-value">{room.meta.period}</div>
                 </div>
-                <div style={{ paddingLeft: 18 }}>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--terracotta-500)', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 4 }}>Tanggal</div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--charcoal-900)', lineHeight: 1.3 }}>{room.meta.date || '-'}</div>
+                <div className="wa-room-meta-col">
+                  <div className="wa-room-meta-label">Tanggal</div>
+                  <div className="wa-room-meta-value">{room.meta.date || '-'}</div>
                 </div>
               </div>
             </div>
 
             {/* Actions Bar */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 12 }}>
+            <div className="opname-actions-bar" style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 12, flexWrap: 'wrap' }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--charcoal-900)' }}>Daftar Aset</div>
               <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--charcoal-500)' }}>{room.assets.length} ITEM</div>
-              <button className="wa-btn" style={{ background: 'rgba(201,100,66,0.10)', color: 'var(--terracotta-500)', boxShadow: 'none' }}>◉ TEROPNAME</button>
+              <button className="wa-btn" style={{ background: 'var(--accent-soft)', color: 'var(--terracotta-500)', boxShadow: 'none' }}>◉ TEROPNAME</button>
               <div style={{ flex: 1 }} />
+              <button className="wa-btn" style={{ color: 'var(--danger-700)', background: 'var(--danger-50)', borderColor: 'var(--danger-200)' }} onClick={() => setIsDeleteModalOpen(true)}>Delete Ruangan</button>
               <button className="wa-btn-ghost" onClick={() => setIsCustomModalOpen(true)}>+ Custom</button>
               <button className="wa-btn-ghost" onClick={() => setIsSaveModalOpen(true)}>Save / Load</button>
-              <button className="wa-btn" onClick={handleGenerateCurrentPDF}>↓ PDF</button>
+              <button className="wa-btn" onClick={handleGenerateCurrentPDF} disabled={generating}>
+                {generating ? <Loader2 size={13} className="wa-spin" /> : '↓ PDF'}
+              </button>
+              <button className="wa-btn" onClick={handleGenerateAllPDFs} disabled={generating}>
+                {generating ? <Loader2 size={13} className="wa-spin" /> : '↓ Semua PDF'}
+              </button>
               <button className="wa-btn-terracotta" onClick={handleNetworkSync}>↻ Sync</button>
             </div>
 
@@ -258,7 +319,7 @@ export default function OpnamePage() {
 
                     <div className="wa-search" style={{ marginBottom: 12, maxWidth: 380 }}>
                       <Search size={13} />
-                      <input placeholder="Scan atau ketik barcode aset…" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                      <input inputMode="numeric" pattern="[0-9]*" placeholder="Scan atau ketik barcode aset…" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                     </div>
                 </div>
 
@@ -278,57 +339,6 @@ export default function OpnamePage() {
                                 onAutofill={autofillAsset}
                                 searchQuery={searchQuery}
                             />
-                        </div>
-                        <div className="opname-asset-cards">
-                            {room.assets.map((asset, i) => (
-                                <div key={asset.id} className="wa-card" style={{ padding: 12, marginBottom: 8 }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                        <div
-                                            className={`wa-check ${asset.isChecked ? 'on' : ''}`}
-                                            onClick={() => toggleAssetCheck(roomIdx, i)}
-                                            role="checkbox"
-                                            aria-checked={!!asset.isChecked}
-                                            tabIndex={0}
-                                        />
-                                        <div style={{ flex: 1, minWidth: 0 }}>
-                                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700, color: 'var(--terracotta-500)' }}>{asset.barcode}</div>
-                                            <div style={{ fontSize: 12.5, fontWeight: 500, color: 'var(--charcoal-900)', marginTop: 2, lineHeight: 1.3 }}>{asset.namaAset}</div>
-                                        </div>
-                                        <div className="wa-toggle">
-                                            <span
-                                                className={asset.adaTidakAda === 'Ada' ? 'on' : ''}
-                                                onClick={() => updateAssetField(roomIdx, i, 'adaTidakAda', 'Ada')}
-                                            >Ada</span>
-                                            <span
-                                                className={asset.adaTidakAda === 'Tidak Ada' ? 'on' : ''}
-                                                onClick={() => updateAssetField(roomIdx, i, 'adaTidakAda', 'Tidak Ada')}
-                                            >Tdk</span>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
-                                        <select
-                                            className="wa-select"
-                                            style={{ flex: 1, fontSize: 11 }}
-                                            value={asset.kondisi || ''}
-                                            onChange={(e) => updateAssetField(roomIdx, i, 'kondisi', e.target.value)}
-                                        >
-                                            <option value="">— Kondisi —</option>
-                                            <option>Baik</option>
-                                            <option>Rusak</option>
-                                            <option>Cetak Ulang</option>
-                                            <option>Salah Ruangan</option>
-                                            <option>Pending</option>
-                                        </select>
-                                        <input
-                                            className="wa-input"
-                                            style={{ flex: 1, fontSize: 11 }}
-                                            placeholder="Keterangan…"
-                                            value={asset.keterangan || ''}
-                                            onChange={(e) => updateAssetField(roomIdx, i, 'keterangan', e.target.value)}
-                                        />
-                                    </div>
-                                </div>
-                            ))}
                         </div>
                     </>
                 )}
@@ -359,8 +369,7 @@ export default function OpnamePage() {
             <SignatureSection
                 room={room}
                 roomIdx={roomIdx}
-                handleSaveSig={handleSaveSig}
-                handleSaveName={handleSaveName}
+                onUpdateSignatures={updateSignatures}
             />
 
             <div className="mb-8"></div>
@@ -375,6 +384,10 @@ export default function OpnamePage() {
                     setRoomIndex(state.rooms.length);
                 }}
                 defaultPeriod={state.rooms[0]?.meta?.period}
+                onOpenSqlImport={() => {
+                    setIsCustomModalOpen(false);
+                    setIsSqlImportModalOpen(true);
+                }}
             />
 
             <SaveLoadModal
@@ -385,6 +398,30 @@ export default function OpnamePage() {
                 onLoadState={async (loadedState) => {
                     importData(loadedState);
                     showToast('Data opname berhasil dimuat ulang!', 'success');
+                }}
+            />
+
+            {isDeleteModalOpen && (
+                <DeleteRoomConfirmModal
+                    roomName={room.meta.roomName}
+                    assetCount={room.assets ? room.assets.length : 0}
+                    sourceLabel={room.isCustomRoom ? (room.meta.isSqlImported ? 'Import SQL' : 'Manual') : 'File Excel'}
+                    onConfirm={() => {
+                        removeRoomLocal(roomIdx);
+                        setIsDeleteModalOpen(false);
+                        showToast('Ruangan dihapus dari kertas kerja lokal.', 'success');
+                    }}
+                    onCancel={() => setIsDeleteModalOpen(false)}
+                />
+            )}
+
+            <SqlRoomImportModal
+                isOpen={isSqlImportModalOpen}
+                existingRooms={state.rooms}
+                onClose={() => setIsSqlImportModalOpen(false)}
+                onImport={(data) => {
+                    addSqlImportedRoom(data);
+                    showToast(`Ruangan SQL ${data.roomName} berhasil ${data.appendIfExist ? 'diupdate' : 'ditambahkan'}!`, 'success');
                 }}
             />
 
