@@ -1,5 +1,6 @@
 import { Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useMemo, useState, useEffect } from 'react';
+import { fetchActiveMatByBarcodes } from '../utils/matApi';
 
 const KONDISI_OPTIONS = ['Baik', 'Rusak', 'Cetak Ulang', 'Salah Ruangan', 'Pending'];
 
@@ -16,58 +17,18 @@ const KONDISI_SHORT = {
 
 function AdaToggle({ value, onChange }) {
     return (
-        <div style={{ 
-            display: 'inline-flex', 
-            background: 'var(--bg-input)', 
-            padding: '4px', 
-            borderRadius: '999px',
-            border: '1px solid var(--border)',
-            position: 'relative',
-            width: 'max-content'
-        }}>
+        <div className="wa-toggle">
             <button
                 type="button"
+                className={`wa-toggle-btn ada ${value === 'Ada' ? 'active' : ''}`}
                 onClick={() => onChange(value === 'Ada' ? '' : 'Ada')}
-                style={{
-                    position: 'relative',
-                    zIndex: 1,
-                    padding: '4px 14px',
-                    borderRadius: '999px',
-                    fontSize: '11px',
-                    fontFamily: 'var(--font-mono)',
-                    fontWeight: value === 'Ada' ? 800 : 600,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                    border: 'none',
-                    cursor: 'pointer',
-                    background: value === 'Ada' ? '#ffffff' : 'transparent',
-                    color: value === 'Ada' ? 'var(--success-500)' : 'var(--charcoal-400)',
-                    boxShadow: value === 'Ada' ? '0 2px 6px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(61, 140, 95, 0.2)' : 'none'
-                }}
             >
                 Ada
             </button>
             <button
                 type="button"
+                className={`wa-toggle-btn tdk ${value === 'Tidak Ada' ? 'active' : ''}`}
                 onClick={() => onChange(value === 'Tidak Ada' ? '' : 'Tidak Ada')}
-                style={{
-                    position: 'relative',
-                    zIndex: 1,
-                    padding: '4px 14px',
-                    borderRadius: '999px',
-                    fontSize: '11px',
-                    fontFamily: 'var(--font-mono)',
-                    fontWeight: value === 'Tidak Ada' ? 800 : 600,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                    border: 'none',
-                    cursor: 'pointer',
-                    background: value === 'Tidak Ada' ? '#ffffff' : 'transparent',
-                    color: value === 'Tidak Ada' ? 'var(--danger-500)' : 'var(--charcoal-400)',
-                    boxShadow: value === 'Tidak Ada' ? '0 2px 6px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(196, 69, 69, 0.2)' : 'none'
-                }}
             >
                 Tdk
             </button>
@@ -76,23 +37,15 @@ function AdaToggle({ value, onChange }) {
 }
 
 function KondisiDropdown({ value, onChange }) {
-    // Dynamic color styling for the select based on selected condition (v3 tokens)
-    let selectStyle = {};
-    let selectClass = "wa-select";
-    if (value === 'Baik') {
-        selectStyle = { color: 'var(--success-500)', background: 'var(--success-50)', borderColor: 'var(--success-500)', fontWeight: 600 };
-    } else if (value === 'Rusak') {
-        selectStyle = { color: 'var(--danger-500)', background: 'var(--danger-50)', borderColor: 'var(--danger-500)', fontWeight: 600 };
-    } else if (value === 'Cetak Ulang' || value === 'Salah Ruangan') {
-        selectStyle = { color: 'var(--warning-500)', background: 'var(--warning-50)', borderColor: 'var(--warning-500)', fontWeight: 600 };
-    } else if (value) {
-        selectStyle = { color: 'var(--text-primary)', background: 'var(--bg-input)', borderColor: 'var(--border)', fontWeight: 600 };
-    }
+    let modifier = "";
+    if (value === 'Baik') modifier = "wa-select--success";
+    else if (value === 'Rusak') modifier = "wa-select--danger";
+    else if (value === 'Cetak Ulang' || value === 'Salah Ruangan') modifier = "wa-select--warning";
+    else if (value) modifier = "wa-select--filled";
 
     return (
         <select
-            className={selectClass}
-            style={selectStyle}
+            className={`wa-select ${modifier}`}
             value={value || ''}
             onChange={(e) => onChange(e.target.value)}
         >
@@ -106,37 +59,81 @@ function KondisiDropdown({ value, onChange }) {
     );
 }
 
+function MatProcessBadge({ matInfo }) {
+    if (!matInfo) return null;
+
+    const matLabel = matInfo.noMat ? `proses MAT · ${matInfo.noMat}` : 'proses MAT';
+    const nextLabel = matInfo.nextRoleVerificator || matInfo.nextVerificator;
+
+    return (
+        <div style={{ marginTop: 4 }}>
+            <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 4,
+                padding: '2px 7px',
+                borderRadius: 999,
+                border: '1px solid #bae6fd',
+                background: '#e0f2fe',
+                color: '#075985',
+                fontSize: 9.5,
+                fontWeight: 900,
+                letterSpacing: '0.03em',
+                textTransform: 'uppercase',
+                lineHeight: 1.2,
+            }}>
+                <span aria-hidden="true">●</span>
+                {matLabel}
+            </div>
+            {nextLabel && (
+                <div style={{
+                    marginTop: 3,
+                    color: 'var(--text-tertiary)',
+                    fontSize: 10.5,
+                    fontWeight: 700,
+                    lineHeight: 1.2,
+                }}>
+                    next: {nextLabel}
+                </div>
+            )}
+        </div>
+    );
+}
+
 // Optimization: Memoize the heavy table row to prevent entire DOM subtree from re-rendering on every keystroke
-const AssetRow = React.memo(({ asset, roomIndex, onToggleCheck, onUpdateField }) => {
+const areAssetPropsEqual = (prevProps, nextProps) => {
+    return (
+        prevProps.asset.isChecked === nextProps.asset.isChecked &&
+        prevProps.asset.adaTidakAda === nextProps.asset.adaTidakAda &&
+        prevProps.asset.kondisi === nextProps.asset.kondisi &&
+        prevProps.asset.keterangan === nextProps.asset.keterangan &&
+        prevProps.matInfo === nextProps.matInfo
+    );
+};
+
+const AssetRow = React.memo(({ asset, roomIndex, onToggleCheck, onUpdateField, matInfo }) => {
     const i = asset.originalIndex;
     const [isCopied, setIsCopied] = useState(false);
 
     const handleCopy = async () => {
         if (!asset.barcode) return;
         try {
-            await navigator.clipboard.writeText(asset.barcode);
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(asset.barcode);
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = asset.barcode;
+                textArea.style.position = "fixed";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try { document.execCommand('copy'); } catch (err) {}
+                document.body.removeChild(textArea);
+            }
             setIsCopied(true);
             setTimeout(() => setIsCopied(false), 2000);
         } catch (err) {
-            // Fallback for Android WebView / Unsecured HTTP contexts
-            const textArea = document.createElement("textarea");
-            textArea.value = asset.barcode;
-            // Prevent scrolling to bottom
-            textArea.style.position = "fixed";
-            textArea.style.top = "0";
-            textArea.style.left = "0";
-            textArea.style.opacity = "0";
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                setIsCopied(true);
-                setTimeout(() => setIsCopied(false), 2000);
-            } catch (fallbackErr) {
-                console.error('Fallback copy failed', fallbackErr);
-            }
-            document.body.removeChild(textArea);
+            console.error('Copy failed', err);
         }
     };
 
@@ -157,7 +154,7 @@ const AssetRow = React.memo(({ asset, roomIndex, onToggleCheck, onUpdateField })
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ 
                         color: isCopied ? 'var(--success-500)' : 'var(--accent)', 
-                        fontWeight: 700, 
+                        fontWeight: 800, 
                         transition: 'color 0.2s'
                     }}>
                         {asset.barcode}
@@ -178,7 +175,10 @@ const AssetRow = React.memo(({ asset, roomIndex, onToggleCheck, onUpdateField })
                     )}
                 </div>
             </td>
-            <td className="col-nama">{asset.namaAset}</td>
+            <td className="col-nama">
+                <div>{asset.namaAset}</div>
+                <MatProcessBadge matInfo={matInfo} />
+            </td>
             <td className="col-po">{asset.noPO}</td>
             <td className="col-tipe">{asset.tipe}</td>
             <td className="col-bulan" style={{ whiteSpace: 'nowrap', fontSize: '11px', color: 'var(--text-tertiary)' }}>
@@ -209,21 +209,54 @@ const AssetRow = React.memo(({ asset, roomIndex, onToggleCheck, onUpdateField })
             </td>
         </tr>
     );
-}, (prevProps, nextProps) => {
-    // Only re-render if vital content actually changed!
+}, areAssetPropsEqual);
+
+// Mobile layout component
+const AssetCard = React.memo(({ asset, roomIndex, onToggleCheck, onUpdateField, matInfo }) => {
+    const i = asset.originalIndex;
     return (
-        prevProps.asset.isChecked === nextProps.asset.isChecked &&
-        prevProps.asset.adaTidakAda === nextProps.asset.adaTidakAda &&
-        prevProps.asset.kondisi === nextProps.asset.kondisi &&
-        prevProps.asset.keterangan === nextProps.asset.keterangan
+        <div className="wa-card" style={{ padding: 12, marginBottom: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div
+                    className={`wa-check ${asset.isChecked ? 'on' : ''}`}
+                    onClick={() => onToggleCheck(roomIndex, i)}
+                    role="checkbox"
+                    aria-checked={!!asset.isChecked}
+                    tabIndex={0}
+                />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    <div className="asset-card-barcode">{asset.barcode}</div>
+                    <div style={{ fontSize: 12.5, fontWeight: 500, color: 'var(--charcoal-900)', marginTop: 2, lineHeight: 1.3 }}>{asset.namaAset}</div>
+                    <MatProcessBadge matInfo={matInfo} />
+                </div>
+                <AdaToggle
+                    value={asset.adaTidakAda}
+                    onChange={(val) => onUpdateField(roomIndex, i, 'adaTidakAda', val)}
+                />
+            </div>
+            <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+                <KondisiDropdown
+                    value={asset.kondisi}
+                    onChange={(val) => onUpdateField(roomIndex, i, 'kondisi', val)}
+                />
+                <input
+                    className="wa-input"
+                    style={{ flex: 1, fontSize: 11 }}
+                    placeholder="Keterangan…"
+                    value={asset.keterangan || ''}
+                    onChange={(e) => onUpdateField(roomIndex, i, 'keterangan', e.target.value)}
+                />
+            </div>
+        </div>
     );
-});
+}, areAssetPropsEqual);
 
 export default function AssetTable({ assets, roomIndex, onToggleCheck, onUpdateField, masterDb, onAutofill, searchQuery = '' }) {
 
     // --- Pagination State ---
-    const ITEMS_PER_PAGE = 10;
+    const ITEMS_PER_PAGE = 20;
     const [currentPage, setCurrentPage] = useState(1);
+    const [activeMatByBarcode, setActiveMatByBarcode] = useState({});
 
     // Reset page whenever room changes or search query changes
     useEffect(() => {
@@ -257,9 +290,41 @@ export default function AssetTable({ assets, roomIndex, onToggleCheck, onUpdateF
         return filteredAssets.slice(startIndex, Math.min(startIndex + ITEMS_PER_PAGE, filteredAssets.length));
     }, [filteredAssets, safePage]);
 
+    const visibleBarcodes = useMemo(() => (
+        Array.from(new Set(
+            paginatedAssets
+                .map((asset) => String(asset.barcode || '').trim())
+                .filter(Boolean)
+        ))
+    ), [paginatedAssets]);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        if (visibleBarcodes.length === 0) {
+            setActiveMatByBarcode({});
+            return () => { cancelled = true; };
+        }
+
+        fetchActiveMatByBarcodes(visibleBarcodes)
+            .then((result) => {
+                if (!cancelled) {
+                    setActiveMatByBarcode(result?.data || {});
+                }
+            })
+            .catch(() => {
+                if (!cancelled) {
+                    setActiveMatByBarcode({});
+                }
+            });
+
+        return () => { cancelled = true; };
+    }, [visibleBarcodes]);
+
     return (
         <div className="asset-table-wrapper">
-            <table className="wa-table">
+            <div className="opname-asset-table-wrapper">
+                <table className="wa-table">
                 <thead>
                     <tr>
                         <th className="col-check">✓</th>
@@ -282,6 +347,7 @@ export default function AssetTable({ assets, roomIndex, onToggleCheck, onUpdateF
                             roomIndex={roomIndex}
                             onToggleCheck={onToggleCheck}
                             onUpdateField={onUpdateField}
+                            matInfo={activeMatByBarcode[String(asset.barcode || '').trim()]}
                         />
                     ))}
                     {filteredAssets.length === 0 && (
@@ -293,6 +359,20 @@ export default function AssetTable({ assets, roomIndex, onToggleCheck, onUpdateF
                     )}
                 </tbody>
             </table>
+            </div>
+
+            <div className="opname-asset-cards">
+                {paginatedAssets.map((asset) => (
+                    <AssetCard
+                        key={asset.id}
+                        asset={asset}
+                        roomIndex={roomIndex}
+                        onToggleCheck={onToggleCheck}
+                        onUpdateField={onUpdateField}
+                        matInfo={activeMatByBarcode[String(asset.barcode || '').trim()]}
+                    />
+                ))}
+            </div>
 
             {totalPages > 1 && (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-4)', padding: 'var(--space-4)', borderTop: '1px solid var(--border)', background: 'var(--bg-input)' }}>
