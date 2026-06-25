@@ -1,6 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { saveAs } from 'file-saver';
+import { normalizeSignatures } from './signatures';
 
 // Shared PDF table configuration (DRY)
 /**
@@ -337,52 +338,47 @@ export function generateRoomPDF(roomData) {
     
     currentY += 12;
 
-    // 3 signature columns: Petugas 1, Petugas 2, PIC
-    const sigColWidth = (pageWidth - margin * 2) / 3;
-    const sig1X = margin + sigColWidth / 2;
-    const sig2X = margin + sigColWidth + sigColWidth / 2;
-    const sig3X = margin + sigColWidth * 2 + sigColWidth / 2;
+    const norms = normalizeSignatures(signatures);
+    const colCount = norms.length;
+    const sigColWidth = (pageWidth - margin * 2) / colCount;
+    
+    const sigXs = Array.from({ length: colCount }).map((_, i) => margin + (sigColWidth * i) + (sigColWidth / 2));
 
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
-    doc.text('PETUGAS OPNAME 1', sig1X, currentY, { align: 'center' });
-    doc.text('PETUGAS OPNAME 2', sig2X, currentY, { align: 'center' });
-    doc.text('PIC RUANGAN', sig3X, currentY, { align: 'center' });
+    norms.forEach((sig, i) => {
+        doc.text(sig.roleLabel || '', sigXs[i], currentY, { align: 'center' });
+    });
     currentY += 3;
 
     // Signature images
-    const sigImgW = 45;
-    const sigImgH = 18;
-    const sigKeys = [
-        { key: 'petugasOpname1', x: sig1X },
-        { key: 'petugasOpname2', x: sig2X },
-        { key: 'picRuangan', x: sig3X },
-    ];
-    for (const { key, x } of sigKeys) {
-        if (signatures?.[key]) {
+    const sigImgW = colCount === 4 ? 35 : 45;
+    const sigImgH = colCount === 4 ? 14 : 18;
+    
+    norms.forEach((sig, i) => {
+        if (sig.image) {
             try {
-                doc.addImage(signatures[key], 'PNG', x - sigImgW / 2, currentY, sigImgW, sigImgH);
+                doc.addImage(sig.image, 'PNG', sigXs[i] - sigImgW / 2, currentY, sigImgW, sigImgH);
             } catch (e) { /* signature not available */ }
         }
-    }
+    });
     currentY += sigImgH + 5;
 
     // Signature lines
     doc.setLineWidth(0.3);
-    for (const { x } of sigKeys) {
-        doc.line(x - 25, currentY, x + 25, currentY);
-    }
+    const lineW = colCount === 4 ? 20 : 25;
+    norms.forEach((_, i) => {
+        doc.line(sigXs[i] - lineW, currentY, sigXs[i] + lineW, currentY);
+    });
     currentY += 5;
 
     // Nama terang
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
-    const nameKeys = ['petugasOpname1Name', 'petugasOpname2Name', 'picRuanganName'];
-    const nameXs = [sig1X, sig2X, sig3X];
-    for (let i = 0; i < 3; i++) {
-        const name = signatures?.[nameKeys[i]] || '(.........................................)';
-        doc.text(name, nameXs[i], currentY, { align: 'center' });
-    }
+    norms.forEach((sig, i) => {
+        const name = sig.name || '(.........................................)';
+        doc.text(name, sigXs[i], currentY, { align: 'center' });
+    });
 
     return doc;
 }
