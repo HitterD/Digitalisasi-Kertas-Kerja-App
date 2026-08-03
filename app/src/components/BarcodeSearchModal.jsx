@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, X, Package, Hash, Calendar, Building, User, Info, FileText, History, MapPin, ClipboardCheck, Clock, ArrowLeftRight } from 'lucide-react';
+import { Search, X, Package, Hash, Info, History, MapPin, ClipboardCheck, Clock, ArrowLeftRight } from 'lucide-react';
 import { useOpname } from '../store/OpnameContext';
 import { lookupBarcode } from '../utils/masterDbParser';
 import { lookupBarcodeHistory } from '../utils/historyDbParser';
@@ -13,7 +13,18 @@ export default function BarcodeSearchModal({ isOpen, onClose }) {
     const [historyResult, setHistoryResult] = useState([]);
     const [hasSearched, setHasSearched] = useState(false);
     const [showMatHistory, setShowMatHistory] = useState(false);
+    const [recentSearches, setRecentSearches] = useState([]);
+    const [isCopied, setIsCopied] = useState(false);
     const inputRef = useRef(null);
+
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem('wa_recent_barcodes');
+            if (saved) {
+                setRecentSearches(JSON.parse(saved));
+            }
+        } catch (e) {}
+    }, []);
 
     useEffect(() => {
         if (isOpen) {
@@ -22,20 +33,55 @@ export default function BarcodeSearchModal({ isOpen, onClose }) {
             setHistoryResult([]);
             setHasSearched(false);
             setShowMatHistory(false);
+            setIsCopied(false);
             setTimeout(() => inputRef.current?.focus(), 150); // slight delay for animation smoothness
         }
     }, [isOpen]);
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        const trimCode = barcode.trim();
+    const saveRecentSearch = (code) => {
+        if (!code) return;
+        const upperCode = code.toUpperCase();
+        setRecentSearches(prev => {
+            const filtered = prev.filter(item => item !== upperCode);
+            const updated = [upperCode, ...filtered].slice(0, 10);
+            try { localStorage.setItem('wa_recent_barcodes', JSON.stringify(updated)); } catch (e) {}
+            return updated;
+        });
+    };
+
+    const handleSearch = (e, overrideCode) => {
+        if (e) e.preventDefault();
+        const trimCode = (overrideCode || barcode).trim();
         if (!trimCode) return;
+
+        if (overrideCode) setBarcode(overrideCode);
 
         const data = lookupBarcode(masterDb, trimCode);
         const histData = lookupBarcodeHistory(historyDb, trimCode);
         setResult(data);
         setHistoryResult(histData);
         setHasSearched(true);
+        saveRecentSearch(trimCode);
+    };
+
+    const handleCopy = async (text) => {
+        if (!text) return;
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(text);
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try { document.execCommand('copy'); } catch (err) {}
+                document.body.removeChild(textArea);
+            }
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000);
+        } catch (err) {}
     };
 
     const historyNonOpname = historyResult.filter(r => !r.keterangan?.toUpperCase().includes('OPNAME'));
@@ -59,7 +105,7 @@ export default function BarcodeSearchModal({ isOpen, onClose }) {
                     {/* Header */}
                     <div className="bcs-header">
                         <div className="bcs-title">
-                            <Search size={24} className="text-primary-600" />
+                            <Search size={24} style={{ color: 'var(--accent)' }} />
                             Cari Barcode Master Aset
                         </div>
                         <button className="bcs-close-btn" onClick={onClose} aria-label="Tutup modal">
@@ -89,10 +135,25 @@ export default function BarcodeSearchModal({ isOpen, onClose }) {
                             </button>
                         </form>
 
+                        {/* Recent Searches */}
+                        {!hasSearched && recentSearches.length > 0 && (
+                            <div style={{ marginTop: '16px', marginBottom: '16px' }}>
+                                <div className="bcs-recent-label">Pencarian Terakhir</div>
+                                <div className="bcs-recent-wrap">
+                                    {recentSearches.map((code) => (
+                                        <button key={code} className="bcs-recent-chip" onClick={() => handleSearch(null, code)}>
+                                            <History size={12} />
+                                            {code}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
                         {/* Warning if Master DB not loaded */}
                         {!masterDb && (
                             <div className="alert alert--warning" style={{ borderRadius: '16px', padding: '20px', display: 'flex', gap: '16px', marginBottom: '24px' }}>
-                                <Info size={24} className="text-warning-600" />
+                                <Info size={24} style={{ color: 'var(--warning-600)', flex: 'none' }} />
                                 <span style={{ fontSize: '15px', fontWeight: 600, lineHeight: 1.5, color: 'var(--warning-800)' }}>
                                     Database Master Aset belum dimuat. Silakan sinkronasikan dari SQL Server di halaman Upload terlebih dahulu.
                                 </span>
@@ -104,32 +165,52 @@ export default function BarcodeSearchModal({ isOpen, onClose }) {
                             <div className="bcs-result-area">
                                 {result ? (
                                     <>
-                                        {/* Hero Card */}
-                                        <div className="bcs-hero">
-                                            <div className="bcs-hero-header">
+                                        {/* Result Card */}
+                                        <div className="bcs-result-card">
+                                            <div className="bcs-card-header">
                                                 <div>
-                                                    <div className="bcs-hero-barcode">
-                                                        <Hash size={16} /> {barcode.toUpperCase()}
+                                                    <div className="bcs-card-barcode" onClick={() => handleCopy(barcode.toUpperCase())} title="Tap untuk salin">
+                                                        <Hash size={14} />
+                                                        <span style={{ color: isCopied ? 'var(--success-600)' : 'inherit', transition: 'color 0.2s' }}>
+                                                            {barcode.toUpperCase()}
+                                                        </span>
+                                                        {isCopied && <span className="bcs-copied-tag">TERSALIN</span>}
                                                     </div>
-                                                    <h3 className="bcs-hero-name">
-                                                        {result.namaAset || '(Tanpa Nama)'}
-                                                    </h3>
+                                                    <h3 className="bcs-card-name">{result.namaAset || '(Tanpa Nama)'}</h3>
                                                 </div>
                                                 <div className={`bcs-badge ${getConditionClass(result.kondisi)}`}>
                                                     {result.kondisi || 'TIDAK DIKETAHUI'}
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        {/* Bento Specs Grid */}
-                                        <div className="bcs-specs-grid">
-                                            <DetailItem icon={<Package />} label="Nomor PO" value={result.noPO} />
-                                            <DetailItem icon={<Info />} label="Tipe Aset" value={result.tipe} />
-                                            <DetailItem icon={<Calendar />} label="Periode Perolehan" value={`${result.bulanPerolehan || '-'} / ${result.tahunPerolehan || '-'}`} />
-                                            <DetailItem icon={<Building />} label="Lokasi" value={result.lokasi} />
-                                            <DetailItem icon={<User />} label="PIC" value={result.pic} />
-                                            <div className="bcs-spec-full">
-                                                <DetailItem icon={<FileText />} label="Keterangan Dasar" value={result.keterangan} />
+                                            <div className="bcs-keystrip">
+                                                <div className="bcs-keycell">
+                                                    <div className="bcs-keylabel">Lokasi</div>
+                                                    <div className="bcs-keyvalue">{result.lokasi || '-'}</div>
+                                                </div>
+                                                <div className="bcs-keycell">
+                                                    <div className="bcs-keylabel">PIC</div>
+                                                    <div className="bcs-keyvalue">{result.pic || '-'}</div>
+                                                </div>
+                                            </div>
+
+                                            <div className="bcs-detail-list">
+                                                <div className="bcs-detail-row">
+                                                    <span className="bcs-detail-label">Nomor PO</span>
+                                                    <span className="bcs-detail-value">{result.noPO || '-'}</span>
+                                                </div>
+                                                <div className="bcs-detail-row">
+                                                    <span className="bcs-detail-label">Tipe Aset</span>
+                                                    <span className="bcs-detail-value">{result.tipe || '-'}</span>
+                                                </div>
+                                                <div className="bcs-detail-row">
+                                                    <span className="bcs-detail-label">Periode Perolehan</span>
+                                                    <span className="bcs-detail-value">{`${result.bulanPerolehan || '-'} / ${result.tahunPerolehan || '-'}`}</span>
+                                                </div>
+                                                <div className="bcs-detail-row">
+                                                    <span className="bcs-detail-label">Keterangan Dasar</span>
+                                                    <span className="bcs-detail-value">{result.keterangan || '-'}</span>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -248,15 +329,4 @@ export default function BarcodeSearchModal({ isOpen, onClose }) {
         </>
     );
 }
-
-function DetailItem({ icon, label, value }) {
-    return (
-        <div className="bcs-spec-item">
-            <div className="bcs-spec-label">
-                {icon}
-                <span>{label}</span>
-            </div>
-            <div className="bcs-spec-value">{value || '-'}</div>
-        </div>
-    );
-}
+

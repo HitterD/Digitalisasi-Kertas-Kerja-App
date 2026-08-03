@@ -6,6 +6,8 @@ export const initialState = {
     rooms: [],
     currentRoomIndex: 0,
     isLoaded: false,
+    sync: null, // SyncMetadata — null until session created
+    localUpdateCount: 0,
 };
 
 // DRY helper: update a specific asset list within a room
@@ -14,7 +16,7 @@ function updateRoomAssetList(state, roomIndex, listKey, updater) {
     const room = { ...rooms[roomIndex] };
     room[listKey] = updater([...room[listKey]]);
     rooms[roomIndex] = room;
-    return { ...state, rooms };
+    return { ...state, rooms, localUpdateCount: (state.localUpdateCount || 0) + 1 };
 }
 
 export function opnameReducer(state, action) {
@@ -29,6 +31,7 @@ export function opnameReducer(state, action) {
             };
         case 'LOAD_SAVED':
             return {
+                ...initialState,
                 ...action.payload,
                 isLoaded: true,
             };
@@ -37,14 +40,14 @@ export function opnameReducer(state, action) {
         case 'TOGGLE_ASSET_CHECK': {
             const { roomIndex, assetIndex } = action.payload;
             return updateRoomAssetList(state, roomIndex, 'assets', (assets) => {
-                assets[assetIndex] = { ...assets[assetIndex], isChecked: !assets[assetIndex].isChecked };
+                assets[assetIndex] = { ...assets[assetIndex], isChecked: !assets[assetIndex].isChecked, updatedAt: new Date().toISOString() };
                 return assets;
             });
         }
         case 'UPDATE_ASSET_FIELD': {
             const { roomIndex, assetIndex, field, value } = action.payload;
             return updateRoomAssetList(state, roomIndex, 'assets', (assets) => {
-                assets[assetIndex] = { ...assets[assetIndex], [field]: value };
+                assets[assetIndex] = { ...assets[assetIndex], [field]: value, updatedAt: new Date().toISOString() };
                 return assets;
             });
         }
@@ -59,6 +62,7 @@ export function opnameReducer(state, action) {
                     bulanPerolehan: data.bulanPerolehan || assets[assetIndex].bulanPerolehan,
                     tahunPerolehan: data.tahunPerolehan || assets[assetIndex].tahunPerolehan,
                     keterangan: data.keterangan || assets[assetIndex].keterangan,
+                    updatedAt: new Date().toISOString(),
                 };
                 return assets;
             });
@@ -82,15 +86,16 @@ export function opnameReducer(state, action) {
                     kondisi: '',
                     keterangan: '',
                     isChecked: true,
+                    updatedAt: new Date().toISOString(),
                 },
             ];
             rooms[roomIndex] = room;
-            return { ...state, rooms };
+            return { ...state, rooms, localUpdateCount: (state.localUpdateCount || 0) + 1 };
         }
         case 'UPDATE_NO_BARCODE_ASSET': {
             const { roomIndex, assetIndex, field, value } = action.payload;
             return updateRoomAssetList(state, roomIndex, 'noBarcodeAssets', (assets) => {
-                assets[assetIndex] = { ...assets[assetIndex], [field]: value };
+                assets[assetIndex] = { ...assets[assetIndex], [field]: value, updatedAt: new Date().toISOString() };
                 return assets;
             });
         }
@@ -119,15 +124,16 @@ export function opnameReducer(state, action) {
                     kondisi: '',
                     keterangan: `Salah Ruangan - ditemukan di ${roomName || 'ruangan ini'}`,
                     isChecked: true,
+                    updatedAt: new Date().toISOString(),
                 },
             ];
             rooms[roomIndex] = room;
-            return { ...state, rooms };
+            return { ...state, rooms, localUpdateCount: (state.localUpdateCount || 0) + 1 };
         }
         case 'UPDATE_NOT_AT_LOCATION_ASSET': {
             const { roomIndex, assetIndex, field, value } = action.payload;
             return updateRoomAssetList(state, roomIndex, 'notAtLocationAssets', (assets) => {
-                assets[assetIndex] = { ...assets[assetIndex], [field]: value };
+                assets[assetIndex] = { ...assets[assetIndex], [field]: value, updatedAt: new Date().toISOString() };
                 return assets;
             });
         }
@@ -143,7 +149,7 @@ export function opnameReducer(state, action) {
             const room = { ...rooms[roomIndex] };
             room.signatures = data;
             rooms[roomIndex] = room;
-            return { ...state, rooms };
+            return { ...state, rooms, localUpdateCount: (state.localUpdateCount || 0) + 1 };
         }
         case 'MERGE_ROOMS': {
             const newRooms = action.payload.sheets;
@@ -314,6 +320,7 @@ export function opnameReducer(state, action) {
                         adaTidakAda: 'Ada',
                         kondisi: 'Salah Ruangan',
                         keterangan: `Salah Ruangan - ditemukan di ${sourceRoomName || 'ruangan lain'}`,
+                        updatedAt: new Date().toISOString(),
                     };
                     updatedRoom.assets = updatedAssets;
                     rooms[rIdx] = updatedRoom;
@@ -323,7 +330,38 @@ export function opnameReducer(state, action) {
             }
 
             // Reference equality preservation prevents unnecessary React DOM diffing
-            return foundMatch ? { ...state, rooms } : state;
+            return foundMatch ? { ...state, rooms, localUpdateCount: (state.localUpdateCount || 0) + 1 } : state;
+        }
+        case 'INIT_SYNC': {
+            return { ...state, sync: action.payload };
+        }
+        case 'UPDATE_SYNC_STATUS': {
+            if (!state.sync) return state;
+            return {
+                ...state,
+                sync: { ...state.sync, ...action.payload },
+            };
+        }
+        case 'UPDATE_LOCAL_CHANGE_AT': {
+            if (!state.sync) return state;
+            return {
+                ...state,
+                sync: { ...state.sync, lastLocalChangeAt: new Date().toISOString() },
+            };
+        }
+        case 'APPLY_SYNC_MERGE': {
+            const { rooms, lastSyncedAt } = action.payload;
+            return {
+                ...state,
+                rooms,
+                sync: state.sync ? {
+                    ...state.sync,
+                    lastSyncedAt,
+                    status: 'idle',
+                    failureCount: 0,
+                    lastError: '',
+                } : null,
+            };
         }
         case 'RESET':
             return { ...initialState, isLoaded: true };

@@ -15,7 +15,7 @@ export default function SignatureSection({ room, roomIdx, onUpdateSignatures }) 
     
     const handleUpdateItem = (index, updatedItem) => {
         const newSigs = [...signatures];
-        newSigs[index] = updatedItem;
+        newSigs[index] = { ...updatedItem, updatedAt: new Date().toISOString() };
         onUpdateSignatures(roomIdx, newSigs);
     };
 
@@ -35,18 +35,32 @@ export default function SignatureSection({ room, roomIdx, onUpdateSignatures }) 
                 </div>
                 <div style={{ display: 'flex', gap: 8 }}>
                     <button 
-                        className="btn btn--outline btn--sm" 
+                        className="wa-btn" 
+                        style={{ 
+                            background: 'var(--neutral-50)', 
+                            color: 'var(--charcoal-600)', 
+                            border: '1px solid var(--border)',
+                            boxShadow: 'none',
+                            opacity: signatures.length <= MIN_SIGNATURE_COLUMNS ? 0.5 : 1
+                        }}
                         onClick={handleRemove} 
                         disabled={signatures.length <= MIN_SIGNATURE_COLUMNS}
                     >
-                        <Minus size={14} style={{ marginRight: 4 }} /> Kurangi
+                        <Minus size={14} /> Kurangi
                     </button>
                     <button 
-                        className="btn btn--primary btn--sm" 
+                        className="wa-btn" 
+                        style={{ 
+                            background: 'rgba(239, 108, 0, 0.1)', 
+                            color: 'var(--terracotta-600)', 
+                            border: '1px solid rgba(239, 108, 0, 0.2)',
+                            boxShadow: 'none',
+                            opacity: signatures.length >= MAX_SIGNATURE_COLUMNS ? 0.5 : 1
+                        }}
                         onClick={handleAdd} 
                         disabled={signatures.length >= MAX_SIGNATURE_COLUMNS}
                     >
-                        <Plus size={14} style={{ marginRight: 4 }} /> Tambah PIC
+                        <Plus size={14} /> Tambah PIC
                     </button>
                 </div>
             </div>

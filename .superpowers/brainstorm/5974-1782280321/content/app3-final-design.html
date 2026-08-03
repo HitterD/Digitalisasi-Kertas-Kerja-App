@@ -1,0 +1,59 @@
+<h2>App3 Guided Upload — Final Design Summary</h2>
+<p class="subtitle">Spec akan ditulis dari desain ini jika sudah oke.</p>
+
+<style>
+  .summary-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:18px; }
+  .panel { border:1px solid #e8e5de; border-radius:18px; background:#fff; padding:18px; }
+  .panel h3 { margin:0 0 8px; font-size:16px; color:#262624; }
+  .panel p, .panel li { font-size:13px; line-height:1.55; color:#595755; }
+  .panel ul { margin:10px 0 0; padding-left:18px; }
+  .full { grid-column: 1 / -1; }
+  .badge { display:inline-block; border-radius:999px; padding:5px 9px; margin:0 6px 6px 0; background:rgba(217,119,87,.12); color:#c26a4d; font-size:10px; font-weight:900; letter-spacing:.08em; }
+  .mock-strip { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+  .mini { flex:1; min-width:180px; border:1px solid #e8e5de; border-radius:14px; background:#faf9f5; padding:14px; }
+  .mini-title { font-size:12px; font-weight:900; color:#262624; }
+  .mini-sub { margin-top:5px; font-size:10px; line-height:1.45; color:#595755; }
+  @media(max-width:800px){ .summary-grid{grid-template-columns:1fr}.full{grid-column:auto} }
+</style>
+
+<div class="summary-grid">
+  <div class="panel">
+    <h3>1. Scope</h3>
+    <p>Route `/app3` tetap gabung dua tab: Consolidation dan Evaluation. Redesign utama untuk Consolidation. Evaluation diselaraskan ringan agar topbar/tab/spacing tidak terasa beda.</p>
+    <span class="badge">NO NEW DEP</span><span class="badge">TOKEN CSS</span><span class="badge">DARK MODE</span>
+  </div>
+
+  <div class="panel">
+    <h3>2. Topbar</h3>
+    <p>Back button disamakan dengan App1/App2: transparent icon button, divider tipis, icon module 26px, title 13px, tab pill, theme toggle kanan.</p>
+    <ul><li>Hapus hover inline manual.</li><li>Gunakan class CSS reusable untuk App3 header.</li><li>Tab aktif jelas dengan charcoal pill.</li></ul>
+  </div>
+
+  <div class="panel">
+    <h3>3. Guided Upload</h3>
+    <p>Upload jadi fokus utama. Setiap slot punya status wajib/opsional/source/valid, filename jelas, dan aturan lanjut tampil eksplisit.</p>
+    <ul><li>Master Lama = opsional.</li><li>EXA / ADD / INV = minimal satu source wajib.</li><li>CTA ekstrak filter disabled sampai valid.</li></ul>
+  </div>
+
+  <div class="panel">
+    <h3>4. Filter + Generate</h3>
+    <p>Filter kategori memakai kartu count agar mudah scan dan tidak salah pilih. Generate hanya muncul sebagai satu primary CTA.</p>
+    <ul><li>Summary: Total BAT, Selected, Effective records.</li><li>Kategori: ICT, ENG, BAT, HRGA, Kosong.</li><li>Processing / success / error jelas.</li></ul>
+  </div>
+
+  <div class="panel full">
+    <h3>5. Layout Akhir</h3>
+    <div class="mock-strip">
+      <div class="mini"><div class="mini-title">Topbar Unified</div><div class="mini-sub">Back + module title + tab Consolidation/Evaluation + theme toggle.</div></div>
+      <div class="mini"><div class="mini-title">Step 1 Upload</div><div class="mini-sub">Empat slot file, aturan anti-salah upload, CTA ekstrak.</div></div>
+      <div class="mini"><div class="mini-title">Step 2 Filter</div><div class="mini-sub">Kartu kategori + count + selected state.</div></div>
+      <div class="mini"><div class="mini-title">Step 3 Generate</div><div class="mini-sub">Download Excel + feedback proses.</div></div>
+      <div class="mini"><div class="mini-title">Evaluation</div><div class="mini-sub">Diselaraskan ringan, bukan redesign penuh.</div></div>
+    </div>
+  </div>
+
+  <div class="panel full">
+    <h3>Non-goals</h3>
+    <p>Tidak ubah API, tidak ubah algoritma konsolidasi, tidak tambah library, tidak redesign penuh App4 Evaluation, tidak tambah wizard route baru. Lazy path: styling + copy + struktur JSX minimal agar dampak besar tanpa rewrite.</p>
+  </div>
+</div>

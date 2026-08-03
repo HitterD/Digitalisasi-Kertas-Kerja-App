@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockup Skenario Ruangan Kertas Kerja</title>
+  <style>
+    :root {
+      --ink: #2d2a27;
+      --muted: #756f68;
+      --paper: #fffaf5;
+      --card: #ffffff;
+      --line: #eaded4;
+      --terracotta: #dc7456;
+      --terracotta-dark: #b9563b;
+      --cream: #fff3e8;
+      --green: #22c55e;
+      --green-soft: #eafaf0;
+      --amber: #f59e0b;
+      --amber-soft: #fff6df;
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+      --shadow: 0 18px 45px rgba(48, 34, 24, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top left, #fff4e8 0, transparent 34%), linear-gradient(135deg, #fffaf5 0%, #f8efe7 100%);
+      padding: 28px;
+    }
+    .wrap { max-width: 1320px; margin: 0 auto; }
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: flex-start;
+      margin-bottom: 22px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      color: var(--terracotta-dark);
+      text-transform: uppercase;
+      background: var(--cream);
+      border: 1px solid #ffd7c2;
+      border-radius: 999px;
+      padding: 8px 12px;
+    }
+    h1 { margin: 14px 0 8px; font-size: 34px; line-height: 1.05; letter-spacing: -0.04em; }
+    .subtitle { color: var(--muted); font-size: 15px; max-width: 850px; line-height: 1.6; margin: 0; }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+    .pill { border-radius: 999px; padding: 8px 11px; font-size: 12px; font-weight: 800; border: 1px solid var(--line); background: rgba(255,255,255,.75); }
+    .board { display: grid; grid-template-columns: 1.08fr .92fr; gap: 18px; align-items: start; }
+    .card {
+      background: rgba(255,255,255,.88);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,250,245,.78);
+    }
+    .card-title { margin: 0; font-size: 18px; font-weight: 900; letter-spacing: -0.02em; }
+    .card-caption { margin: 4px 0 0; color: var(--muted); font-size: 12px; font-weight: 700; }
+    .card-body { padding: 18px 20px 20px; }
+    .steps { display: grid; gap: 12px; }
+    .step {
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+    }
+    .num {
+      width: 42px; height: 42px; border-radius: 14px;
+      display: grid; place-items: center;
+      color: white; background: var(--terracotta);
+      font-weight: 950;
+      box-shadow: 0 8px 18px rgba(220,116,86,.28);
+    }
+    .step h3 { margin: 0 0 4px; font-size: 15px; }
+    .step p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .status {
+      font-size: 11px; font-weight: 900; text-transform: uppercase;
+      border-radius: 999px; padding: 7px 9px; border: 1px solid;
+      white-space: nowrap;
+    }
+    .green { color: #15803d; border-color: #bbf7d0; background: var(--green-soft); }
+    .amber { color: #b45309; border-color: #fde68a; background: var(--amber-soft); }
+    .blue { color: #1d4ed8; border-color: #bfdbfe; background: var(--blue-soft); }
+    .danger { color: #b91c1c; border-color: #fecaca; background: #fff1f2; }
+    .toolbar {
+      display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+      background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 12px; margin-bottom: 14px;
+    }
+    .btn {
+      border: 1px solid var(--line); background: #fff; color: var(--ink);
+      border-radius: 12px; padding: 10px 13px; font-weight: 900; font-size: 12px;
+      box-shadow: 0 3px 0 #eaded4;
+    }
+    .btn.primary { background: var(--terracotta); color: #fff; border-color: var(--terracotta-dark); box-shadow: 0 3px 0 var(--terracotta-dark); }
+    .btn.danger { background: #fff1f2; color: #b91c1c; border-color: #fecaca; box-shadow: 0 3px 0 #fecaca; }
+    .input {
+      border: 1px solid var(--line); background: #fff; border-radius: 13px; padding: 11px 12px; color: var(--ink); min-width: 240px; font-weight: 700;
+    }
+    .room-row {
+      display: grid; grid-template-columns: 34px 1.1fr .75fr auto; gap: 10px; align-items: center;
+      border: 1px solid var(--line); background: #fff; border-radius: 16px; padding: 11px; margin-bottom: 9px;
+    }
+    .check { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; background: var(--green); color: white; font-weight: 900; }
+    .room-name { font-weight: 950; font-size: 13px; }
+    .room-meta { color: var(--muted); font-size: 11px; font-weight: 750; margin-top: 2px; }
+    .owner-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+    .owner {
+      border-radius: 18px; border: 1px solid var(--line); background: #fff; padding: 14px;
+    }
+    .owner h4 { margin: 0; font-size: 16px; }
+    .owner p { margin: 5px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .asset-table { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; background: #fff; }
+    .asset-row { display: grid; grid-template-columns: 110px 1fr 110px 110px; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--line); align-items: center; font-size: 12px; }
+    .asset-row:last-child { border-bottom: 0; }
+    .asset-head { background: #fff7ef; color: var(--terracotta-dark); font-weight: 950; text-transform: uppercase; letter-spacing: .08em; }
+    .modal {
+      margin-top: 16px; border: 1px solid var(--line); border-radius: 22px; background: #fff; overflow: hidden;
+    }
+    .modal-title { padding: 16px 18px; border-bottom: 1px solid var(--line); font-weight: 950; background: #fffaf5; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px 18px; }
+    .field label { display: block; font-size: 11px; color: var(--muted); font-weight: 950; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; }
+    .selectbox { border: 2px solid #f6c1a9; border-radius: 14px; padding: 12px; font-weight: 900; background: #fff; }
+    .hint { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+    .flow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .flow span { background: #fff; border: 1px dashed #e2c9bb; border-radius: 999px; padding: 8px 10px; font-size: 12px; font-weight: 850; }
+    @media (max-width: 980px) {
+      body { padding: 16px; }
+      .hero, .board { display: block; }
+      .badge-row { justify-content: flex-start; margin-top: 14px; }
+      .card { margin-bottom: 16px; }
+      .room-row, .asset-row { grid-template-columns: 1fr; }
+      .owner-grid, .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Ponytail + UI/UX Pro Max · APP1 Opname</div>
+        <h1>Skenario ruangan: delete dari kertas kerja, match SQL, tarik aset, konfirmasi owner</h1>
+        <p class="subtitle">Mockup ini fokus ke flow aman: server SQL 192.168.2.111 tetap tidak disentuh. Delete hanya menghapus ruangan dari kertas kerja sesi opname. Saat create ruangan, user memilih kode ruangan dari data SQL, lalu sistem menyiapkan aset di ruangan itu dan minta konfirmasi owner: ICT / HRGA / ENG.</p>
+      </div>
+      <div class="badge-row">
+        <span class="pill">No SQL delete</span>
+        <span class="pill">Audit-friendly</span>
+        <span class="pill">Dropdown kode ruang</span>
+        <span class="pill">Owner confirmation</span>
+      </div>
+    </section>
+
+    <section class="board">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2 class="card-title">Flow utama</h2>
+            <p class="card-caption">Satu jalur kerja operator dari hapus sampai tarik aset</p>
+          </div>
+          <span class="status green">Recommended</span>
+        </div>
+        <div class="card-body">
+          <div class="steps">
+            <div class="step">
+              <div class="num">1</div>
+              <div><h3>Delete ruangan tidak terpakai</h3><p>Action menghapus ruangan dari state kertas kerja, bukan SQL. Sistem tampilkan confirm: “Tidak menghapus data server”.</p></div>
+              <span class="status danger">Local only</span>
+            </div>
+            <div class="step">
+              <div class="num">2</div>
+              <div><h3>Create ruangan baru</h3><p>Modal tidak lagi input bebas saja. User cari kode/nama ruangan dari SQL master.</p></div>
+              <span class="status amber">Match SQL</span>
+            </div>
+            <div class="step">
+              <div class="num">3</div>
+              <div><h3>Ambil seluruh aset lokasi</h3><p>Sistem fetch aset yang latest location-nya cocok dengan ruangan terpilih.</p></div>
+              <span class="status blue">Auto import</span>
+            </div>
+            <div class="step">
+              <div class="num">4</div>
+              <div><h3>Konfirmasi aset milik siapa</h3><p>Sebelum masuk kertas kerja, user review dan set owner batch/per asset: ICT, HRGA, atau ENG.</p></div>
+              <span class="status green">User confirms</span>
+            </div>
+          </div>
+          <div class="flow">
+            <span>Delete local room</span><span>Search SQL room</span><span>Select kode ruang</span><span>Fetch assets</span><span>Confirm owner</span><span>Add to worksheet</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2 class="card-title">Mockup area ruangan</h2>
+            <p class="card-caption">Tombol delete muncul jelas tapi aman</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="toolbar">
+            <input class="input" value="Cari ruangan / kode ruang..." readonly />
+            <button class="btn primary">+ Ruangan dari SQL</button>
+            <button class="btn danger">Delete dari Kertas Kerja</button>
+          </div>
+          <div class="room-row">
+            <div class="check">✓</div>
+            <div><div class="room-name">RUANG 801 - PACKING R.KACA</div><div class="room-meta">Kode SQL: 801 · 18 aset · PIC: DJOKO</div></div>
+            <span class="status green">Selesai</span>
+            <button class="btn danger">Delete</button>
+          </div>
+          <div class="room-row">
+            <div class="check" style="background:#f59e0b">…</div>
+            <div><div class="room-name">RUANG SERVER EXTERNAL</div><div class="room-meta">Kode SQL: SRV-EXT · 31 aset · Owner belum final</div></div>
+            <span class="status amber">Perlu konfirmasi</span>
+            <button class="btn danger">Delete</button>
+          </div>
+          <div class="room-row" style="opacity:.72">
+            <div class="check" style="background:#9ca3af">○</div>
+            <div><div class="room-name">RUANG 803 - TIDAK DIPAKAI</div><div class="room-meta">Akan dihapus dari kertas kerja, server tetap aman</div></div>
+            <span class="status danger">Delete local</span>
+            <button class="btn">Undo</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="board" style="margin-top:18px">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2 class="card-title">Modal create ruangan baru</h2>
+            <p class="card-caption">Input nama bebas diganti pencocokan SQL + dropdown kode ruang</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="modal">
+            <div class="modal-title">Tambah Ruangan dari SQL</div>
+            <div class="form-grid">
+              <div class="field">
+                <label>Cari kode / nama ruangan</label>
+                <div class="selectbox">SRV-EXT · RUANG SERVER EXTERNAL</div>
+                <div class="hint">Data dari SQL 192.168.2.111. User pilih hasil match, bukan mengetik manual sembarang.</div>
+              </div>
+              <div class="field">
+                <label>Preview data SQL</label>
+                <div class="selectbox">31 aset ditemukan · PIC: BUDI / IT</div>
+                <div class="hint">Sistem belum memasukkan aset sebelum owner dikonfirmasi.</div>
+              </div>
+              <div class="field">
+                <label>Periode</label>
+                <div class="selectbox">PERIODE OPNAME JUNI 2026</div>
+              </div>
+              <div class="field">
+                <label>Action</label>
+                <button class="btn primary" style="width:100%">Lanjut Review Aset</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="owner-grid">
+            <div class="owner" style="border-color:#bfdbfe;background:#eff6ff"><h4>ICT</h4><p>Komputer, tablet, scanner, printer, network device, perangkat IT.</p></div>
+            <div class="owner" style="border-color:#fde68a;background:#fff6df"><h4>HRGA</h4><p>Furniture, fasilitas umum, alat kantor non-IT.</p></div>
+            <div class="owner" style="border-color:#bbf7d0;background:#eafaf0"><h4>ENG</h4><p>Engineering tools, equipment teknis, mesin/utility support.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2 class="card-title">Review aset sebelum masuk kertas kerja</h2>
+            <p class="card-caption">Konfirmasi owner bisa batch atau per baris</p>
+          </div>
+          <span class="status amber">Need confirm</span>
+        </div>
+        <div class="card-body">
+          <div class="toolbar">
+            <button class="btn blue">Set semua ICT</button>
+            <button class="btn">Set semua HRGA</button>
+            <button class="btn">Set semua ENG</button>
+            <button class="btn primary">Masukkan ke Kertas Kerja</button>
+          </div>
+          <div class="asset-table">
+            <div class="asset-row asset-head"><div>Barcode</div><div>Nama aset</div><div>SQL room</div><div>Owner</div></div>
+            <div class="asset-row"><div>2303000995</div><div>XIAOMI REDMI PAD 6/128 GB</div><div>SRV-EXT</div><div><span class="status blue">ICT</span></div></div>
+            <div class="asset-row"><div>2306003433</div><div>BARCODE SCANNER ZEBRA MOBILE TC-210K</div><div>SRV-EXT</div><div><span class="status blue">ICT</span></div></div>
+            <div class="asset-row"><div>2401000149</div><div>MEJA KERJA BESI</div><div>SRV-EXT</div><div><span class="status amber">HRGA?</span></div></div>
+            <div class="asset-row"><div>2401000167</div><div>TOOLKIT MAINTENANCE</div><div>SRV-EXT</div><div><span class="status green">ENG?</span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

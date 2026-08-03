@@ -1,0 +1,77 @@
+<h2>App1 Home — opsi penyesuaian dark mode</h2>
+<p class="subtitle">Target: halaman <strong>/app1</strong> saja. Halaman <strong>/app1/opname</strong> tidak disentuh.</p>
+
+<div class="cards">
+  <div class="card" data-choice="A" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#262624;color:#f5f4ef;border:1px solid #4A4A48;border-radius:14px;padding:16px;font-family:system-ui;min-height:220px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div style="display:flex;gap:10px;align-items:center"><div style="width:28px;height:28px;border-radius:8px;background:#1f1f1d;color:#D97757;display:grid;place-items:center">▣</div><b>Opname Aset</b></div>
+          <button style="background:#f5f4ef;color:#262624;border:0;border-radius:8px;padding:8px 10px;font-weight:700">BARCODE CHECKER</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div style="background:#2D2D2B;border:1px solid #3D3D3B;border-radius:14px;padding:14px">
+            <div style="font-size:11px;color:#B5B0A8;font-weight:700;letter-spacing:.08em">MODUL 01 · OPERASIONAL</div>
+            <h3 style="margin:8px 0 6px;color:#F5F4EF">Kertas Kerja Opname</h3>
+            <p style="margin:0;color:#BCB8B1;font-size:13px">Mulai opname baru, lanjutkan sesi, atau sinkronkan data.</p>
+          </div>
+          <div style="background:#2D2D2B;border:1px solid #3D3D3B;border-radius:14px;padding:14px">
+            <div style="height:10px;background:#3D3D3B;border-radius:99px;margin-bottom:12px"></div>
+            <div style="height:10px;background:#4A4A48;border-radius:99px;width:70%;margin-bottom:12px"></div>
+            <button style="background:#D97757;color:#1f1f1d;border:0;border-radius:10px;padding:10px 12px;font-weight:800">Ambil Data Server</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Token-only patch</h3>
+      <p>Ganti warna hardcoded/inline yang bikin teks gelap di dark mode. Struktur tetap.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="B" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#262624;color:#f5f4ef;border:1px solid #4A4A48;border-radius:14px;padding:16px;font-family:system-ui;min-height:220px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;background:#2D2D2B;border:1px solid #3D3D3B;border-radius:12px;padding:10px">
+          <div style="display:flex;gap:10px;align-items:center"><div style="width:28px;height:28px;border-radius:8px;background:#1f1f1d;color:#D97757;display:grid;place-items:center">▣</div><b>Opname Aset</b></div>
+          <button style="background:#D97757;color:#1f1f1d;border:0;border-radius:8px;padding:8px 10px;font-weight:700">BARCODE CHECKER</button>
+        </div>
+        <div style="background:#2D2D2B;border:1px solid #3D3D3B;border-radius:16px;padding:16px;margin-bottom:12px">
+          <div style="font-size:11px;color:#B5B0A8;font-weight:700;letter-spacing:.08em">MODUL 01 · OPERASIONAL</div>
+          <h3 style="margin:8px 0 6px;color:#F5F4EF">Kertas Kerja Opname</h3>
+          <p style="margin:0;color:#BCB8B1;font-size:13px">Hierarki warna lebih stabil di semua kartu.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div style="height:48px;background:#1F1F1D;border:1px solid #4A4A48;border-radius:12px"></div>
+          <div style="height:48px;background:#1F1F1D;border:1px solid #4A4A48;border-radius:12px"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Token + surface cleanup</h3>
+      <p>Rapikan warna header, kartu, modal server, dan tombol agar kontras konsisten. Rekomendasi.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="C" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#1f1f1d;color:#f5f4ef;border:1px solid #4A4A48;border-radius:14px;padding:16px;font-family:system-ui;min-height:220px">
+        <div style="height:54px;background:#2D2D2B;border:1px solid #4A4A48;border-radius:16px;margin-bottom:14px"></div>
+        <div style="display:grid;grid-template-columns:1.2fr .8fr;gap:14px">
+          <div style="background:linear-gradient(135deg,#2D2D2B,#42301A);border:1px solid #8A6133;border-radius:18px;padding:18px">
+            <div style="font-size:11px;color:#F4C47A;font-weight:800;letter-spacing:.08em">OPNAME ASET</div>
+            <h3 style="margin:10px 0;color:#F5F4EF">Workspace baru</h3>
+            <button style="background:#E8A94A;color:#1f1f1d;border:0;border-radius:10px;padding:10px 12px;font-weight:900">Mulai</button>
+          </div>
+          <div style="display:grid;gap:10px"><div style="height:52px;background:#2D2D2B;border-radius:12px"></div><div style="height:52px;background:#2D2D2B;border-radius:12px"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Full visual redesign</h3>
+      <p>Desain ulang lebih besar. Lebih cantik, tapi risiko nyentuh flow dan scope melebar.</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle">Klik opsi jika mau pilih visual. Kalau tidak, jawab di terminal.</p>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockup Import Ruangan per Kategori</title>
+  <style>
+    :root { --ink:#2d2a27; --muted:#756f68; --paper:#fffaf5; --line:#eaded4; --terracotta:#dc7456; --blue:#2563eb; --amber:#f59e0b; --green:#16a34a; --red:#dc2626; }
+    * { box-sizing:border-box; }
+    body { margin:0; padding:26px; font-family:Inter,system-ui,sans-serif; color:var(--ink); background:linear-gradient(135deg,#fffaf5,#f7eee7); }
+    .wrap { max-width:1280px; margin:0 auto; }
+    .hero { display:flex; justify-content:space-between; gap:18px; align-items:flex-start; margin-bottom:18px; }
+    .eyebrow { display:inline-flex; border:1px solid #ffd7c2; background:#fff3e8; color:#b9563b; border-radius:999px; padding:8px 12px; font-size:12px; font-weight:950; letter-spacing:.1em; text-transform:uppercase; }
+    h1 { margin:12px 0 8px; font-size:32px; line-height:1.08; letter-spacing:-.04em; }
+    .subtitle { margin:0; color:var(--muted); max-width:850px; line-height:1.55; }
+    .pill { display:inline-flex; padding:8px 11px; border:1px solid var(--line); background:white; border-radius:999px; font-size:12px; font-weight:850; margin:0 0 8px 8px; }
+    .grid { display:grid; grid-template-columns:.95fr 1.05fr; gap:18px; align-items:start; }
+    .card { background:rgba(255,255,255,.92); border:1px solid var(--line); border-radius:22px; box-shadow:0 18px 45px rgba(48,34,24,.12); overflow:hidden; }
+    .head { padding:17px 19px; border-bottom:1px solid var(--line); background:#fffaf5; display:flex; justify-content:space-between; gap:12px; align-items:center; }
+    h2 { margin:0; font-size:18px; }
+    .caption { margin:3px 0 0; color:var(--muted); font-size:12px; font-weight:700; }
+    .body { padding:18px 19px 20px; }
+    .steps { display:grid; gap:10px; }
+    .step { display:grid; grid-template-columns:38px 1fr; gap:12px; border:1px solid var(--line); background:white; border-radius:17px; padding:13px; }
+    .num { width:38px; height:38px; display:grid; place-items:center; border-radius:13px; color:white; background:var(--terracotta); font-weight:950; }
+    .step h3 { margin:0 0 4px; font-size:14px; }
+    .step p { margin:0; color:var(--muted); font-size:12px; line-height:1.45; }
+    .selector { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
+    .choice { border:2px solid var(--line); border-radius:18px; padding:14px; background:white; }
+    .choice.active { border-color:var(--blue); background:#eff6ff; box-shadow:0 0 0 4px rgba(37,99,235,.1); }
+    .choice h3 { margin:0; font-size:18px; }
+    .choice p { margin:5px 0 0; font-size:12px; color:var(--muted); line-height:1.35; }
+    .summary { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:12px 0 14px; }
+    .box { border:1px solid var(--line); background:white; border-radius:15px; padding:10px; }
+    .box b { display:block; font-size:19px; }
+    .box span { color:var(--muted); font-size:11px; font-weight:800; text-transform:uppercase; }
+    .tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+    .tab { border:1px solid var(--line); background:white; border-radius:999px; padding:8px 11px; font-size:12px; font-weight:900; }
+    .tab.active { background:#fff3e8; color:#b9563b; border-color:#ffc7ae; }
+    .table { border:1px solid var(--line); border-radius:18px; overflow:hidden; background:white; }
+    .row { display:grid; grid-template-columns:34px 115px 1fr 100px 120px 118px; gap:10px; align-items:center; padding:11px 13px; border-bottom:1px solid var(--line); font-size:12px; }
+    .row:last-child { border-bottom:0; }
+    .row.headrow { background:#fff7ef; color:#b9563b; font-weight:950; text-transform:uppercase; letter-spacing:.06em; }
+    .check { width:24px; height:24px; border-radius:8px; display:grid; place-items:center; color:white; background:var(--blue); font-weight:900; }
+    .check.empty { background:white; border:2px solid #d6c7bb; color:transparent; }
+    .badge { display:inline-flex; border:1px solid; border-radius:999px; padding:6px 8px; font-size:11px; font-weight:900; justify-content:center; white-space:nowrap; }
+    .b-blue { color:#1d4ed8; background:#eff6ff; border-color:#bfdbfe; }
+    .b-green { color:#15803d; background:#eafaf0; border-color:#bbf7d0; }
+    .b-amber { color:#b45309; background:#fff6df; border-color:#fde68a; }
+    .b-red { color:#b91c1c; background:#fff1f2; border-color:#fecaca; }
+    .note { margin-top:12px; border:1px dashed #e2c9bb; border-radius:16px; padding:12px; background:#fffaf5; color:var(--muted); font-size:12px; line-height:1.5; }
+    .actions { display:flex; justify-content:flex-end; gap:9px; margin-top:14px; }
+    .btn { border:1px solid var(--line); border-radius:13px; padding:10px 13px; background:white; font-weight:950; box-shadow:0 3px 0 #eaded4; }
+    .btn.primary { background:var(--terracotta); color:white; border-color:#b9563b; box-shadow:0 3px 0 #b9563b; }
+    @media(max-width:980px){ body{padding:14px}.hero,.grid{display:block}.card{margin-bottom:16px}.selector,.summary{grid-template-columns:1fr}.row{grid-template-columns:1fr}.pill{margin-left:0;margin-right:8px} }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Import 1 kategori per create</div>
+        <h1>Preview aset harus pisahkan: masuk kategori, perlu review, dan exclude</h1>
+        <p class="subtitle">Karena Monitor/UPS bisa milik ICT atau ENG, sistem tidak boleh asal filter keras. User pilih satu kategori import, lalu preview menampilkan kandidat masuk + aset ambigu yang perlu keputusan manual.</p>
+      </div>
+      <div><span class="pill">SQL tetap read-only</span><span class="pill">Aset belum terceklis</span><span class="pill">Wajib confirm owner</span></div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <div class="head"><div><h2>Flow kategori</h2><p class="caption">Satu kategori per create room</p></div><span class="badge b-blue">ICT selected</span></div>
+        <div class="body">
+          <div class="steps">
+            <div class="step"><div class="num">1</div><div><h3>Pilih ruangan SQL</h3><p>User pilih `NAMA_RUANGAN`, sistem fetch semua latest asset dari lokasi itu.</p></div></div>
+            <div class="step"><div class="num">2</div><div><h3>Pilih kategori import</h3><p>Hanya satu: ICT / HRGA / ENG. Tidak boleh import campur.</p></div></div>
+            <div class="step"><div class="num">3</div><div><h3>Preview klasifikasi</h3><p>Tabel dipisah jadi “Masuk ICT”, “Perlu Review”, dan “Exclude”.</p></div></div>
+            <div class="step"><div class="num">4</div><div><h3>Manual include/exclude aset ambigu</h3><p>Monitor/UPS bisa dipilih masuk ICT atau tetap exclude jika bukan milik ICT.</p></div></div>
+            <div class="step"><div class="num">5</div><div><h3>Import ke kertas kerja</h3><p>Hanya aset selected kategori ICT masuk ruangan baru. Semua `isChecked=false`.</p></div></div>
+          </div>
+          <div class="note"><b>Nama room hasil import:</b> `RUANG SERVER EXTERNAL — ICT`. Jika nanti HRGA perlu, user create lagi kategori HRGA.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="head"><div><h2>Preview: RUANG SERVER EXTERNAL</h2><p class="caption">Kategori import: ICT</p></div></div>
+        <div class="body">
+          <div class="selector">
+            <div class="choice active"><h3>ICT</h3><p>Import perangkat IT saja. Monitor/UPS masuk review.</p></div>
+            <div class="choice"><h3>HRGA</h3><p>Furniture/fasilitas umum. Buat room terpisah jika dipilih.</p></div>
+            <div class="choice"><h3>ENG</h3><p>Engineering/utility. Buat room terpisah jika dipilih.</p></div>
+          </div>
+          <div class="summary">
+            <div class="box"><b>18</b><span>Masuk ICT</span></div>
+            <div class="box"><b>5</b><span>Perlu Review</span></div>
+            <div class="box"><b>13</b><span>Exclude</span></div>
+            <div class="box"><b>23</b><span>Akan import</span></div>
+          </div>
+          <div class="tabs"><span class="tab active">Masuk ICT (18)</span><span class="tab">Perlu Review (5)</span><span class="tab">Exclude (13)</span></div>
+          <div class="table">
+            <div class="row headrow"><div></div><div>Barcode</div><div>Nama aset</div><div>SQL hint</div><div>Keputusan</div><div>Status</div></div>
+            <div class="row"><div class="check">✓</div><div>2303000995</div><div>XIAOMI REDMI PAD 6/128 GB</div><div>Type IT</div><div><span class="badge b-blue">Masuk ICT</span></div><div><span class="badge b-green">High confidence</span></div></div>
+            <div class="row"><div class="check">✓</div><div>2306003433</div><div>BARCODE SCANNER ZEBRA MOBILE TC-210K</div><div>Type IT</div><div><span class="badge b-blue">Masuk ICT</span></div><div><span class="badge b-green">High confidence</span></div></div>
+            <div class="row"><div class="check empty">x</div><div>2401000149</div><div>MONITOR 24 INCH</div><div>Blank</div><div><span class="badge b-amber">Perlu pilih</span></div><div><span class="badge b-amber">Ambiguous ICT/ENG</span></div></div>
+            <div class="row"><div class="check empty">x</div><div>2401000167</div><div>UPS 1200VA</div><div>Blank</div><div><span class="badge b-amber">Perlu pilih</span></div><div><span class="badge b-amber">Ambiguous ICT/ENG</span></div></div>
+          </div>
+          <div class="actions"><button class="btn">Review Aset Ambigu</button><button class="btn primary">Import 23 Aset ICT</button></div>
+          <div class="note">Tombol import aktif hanya jika semua aset ambiguous sudah diputuskan: include ke kategori terpilih atau exclude.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

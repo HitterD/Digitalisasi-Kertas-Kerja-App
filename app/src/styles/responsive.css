@@ -272,3 +272,47 @@
 @media (min-width: 768px) {
   .opname-asset-cards { display: none !important; }
 }
+
+/* ===== Opname tablet ===== */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .wa-room-nav { flex-wrap: wrap; align-items: flex-start; }
+  .wa-room-nav-select-group { flex: 1 1 420px; }
+  .wa-room-nav-select { min-width: 0; flex: 1; }
+  .room-status-select { min-width: 0; flex: 1; }
+  .room-status-select__list { max-height: 280px; }
+  .wa-room-nav-dots--preview { order: 3; flex-basis: 100%; }
+  .wa-room-nav-grid-panel { order: 4; max-height: 260px; }
+  .wa-room-nav-dot--grid { min-width: 42px; height: 42px; font-size: 12px; }
+  .wa-room-meta-grid { grid-template-columns: repeat(2, 1fr); row-gap: 14px; }
+  .wa-room-meta-col { border-right: none; padding: 0 14px; }
+  .signature-section--three { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* ===== Opname mobile ===== */
+@media (max-width: 767px) {
+  .wa-room-nav { flex-wrap: wrap; gap: 10px; padding: 10px 14px; }
+  .wa-room-nav-select-group { flex: 1 1 100%; }
+  .wa-room-nav-select { min-width: 0; flex: 1; }
+  .room-status-select { min-width: 0; flex: 1; }
+  .room-status-select__trigger { min-height: 48px; padding: 8px 10px; gap: 8px; }
+  .room-status-select__badge { display: none; }
+  .room-status-select__progress { font-size: 11px; }
+  .room-status-select__popover { position: fixed; left: 12px; right: 12px; top: auto; bottom: 12px; max-height: 70vh; }
+  .room-status-select__list { max-height: 56vh; }
+  .room-status-select__option { grid-template-columns: 30px minmax(0, 1fr) auto; }
+  .room-status-select__option .room-status-select__badge { display: inline-flex; }
+  .room-status-select__option-progress { display: none; }
+  .wa-room-nav-divider { display: none; }
+  .wa-room-nav-progress-group { order: 2; }
+  .wa-room-nav-summary { order: 2; min-width: 76px; }
+  .wa-room-nav-toggle { order: 2; margin-left: auto; }
+  .wa-room-nav-dots--preview { display: none; }
+  .wa-room-nav-grid-panel { order: 4; max-height: 240px; }
+  .wa-room-nav-grid { grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); }
+  .wa-room-nav-dot--grid { min-width: 44px; height: 44px; font-size: 13px; }
+  .wa-room-meta-grid { grid-template-columns: repeat(2, 1fr); row-gap: 12px; }
+  .wa-room-meta-col { border-right: none; padding: 0; }
+  .opname-actions-bar { gap: 6px; }
+  .signature-section--three { grid-template-columns: 1fr !important; }
+  .signature-pad__canvas-wrap { height: 260px; }
+}

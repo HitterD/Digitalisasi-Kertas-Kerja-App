@@ -6,7 +6,7 @@
     background-color: rgba(15, 23, 42, 0.6);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-    z-index: 1100;
+    z-index: 999999;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -21,7 +21,7 @@
 
 .mhm-modal {
     background: var(--cream-surface, #FDFCF7);
-    border: 1px solid rgba(26, 26, 26, 0.06);
+    border: 1px solid var(--border);
     border-radius: var(--radius-xl, 14px);
     box-shadow: 0 1px 2px rgba(45, 45, 45, 0.03), 0 14px 30px rgba(45, 45, 45, 0.08);
     width: 100%;
@@ -160,80 +160,45 @@
     margin-top: 6px;
 }
 
-/* ── Timeline ─────────────────────────────────────────────── */
-.mhm-timeline {
+/* ── Timeline (Option B) ──────────────────────────────────── */
+.mhm-timeline-container {
     display: flex;
     flex-direction: column;
+    gap: 24px;
 }
 
-.mhm-timeline-item {
-    display: flex;
-    gap: 14px;
-}
-
-.mhm-timeline-left {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex-shrink: 0;
-    width: 18px;
-    padding-top: 2px;
-}
-
-.mhm-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--neutral-300, #cbd5e1);
-    border: 2.5px solid #fff;
-    box-shadow: 0 0 0 2px var(--neutral-300, #cbd5e1);
-    flex-shrink: 0;
-}
-.mhm-dot.active {
-    background: #f59e0b;
-    box-shadow: 0 0 0 2px #f59e0b;
-}
-
-.mhm-line {
-    width: 2px;
-    flex: 1;
-    background: var(--border, #e2e8f0);
-    min-height: 12px;
-    margin: 3px 0;
-}
-.mhm-timeline-item:last-child .mhm-line {
-    display: none;
-}
-
-/* ── Card ─────────────────────────────────────────────────── */
-.mhm-card {
+.mhm-transaction-block {
     background: var(--cream-surface, #FDFCF7);
-    border: 1px solid rgba(26, 26, 26, 0.06);
+    border: 1px solid var(--border);
     border-radius: var(--radius-xl, 14px);
-    padding: 14px 16px;
-    margin-bottom: 16px;
-    flex: 1;
-    min-width: 0;
+    padding: 18px 20px;
     box-shadow: 0 1px 2px rgba(45, 45, 45, 0.03), 0 8px 20px rgba(45, 45, 45, 0.05);
 }
 
-.mhm-card-header {
+.mhm-trx-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     gap: 8px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed var(--border);
 }
 
-.mhm-card-date {
+.mhm-trx-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.mhm-trx-date {
     font-size: 11px;
     color: var(--text-muted, #94a3b8);
     font-weight: 600;
     letter-spacing: 0.04em;
 }
 
-.mhm-card-no-mat {
+.mhm-trx-no {
     font-size: 13px;
     font-weight: 700;
     color: var(--neutral-900, #0f172a);
@@ -255,73 +220,122 @@
 .mhm-status-badge.status-done    { color: #059669; background: #d1fae5; }
 .mhm-status-badge.status-rejected { color: #dc2626; background: #fee2e2; }
 
-/* ── Movement Banner ──────────────────────────────────────── */
-.mhm-movement {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--neutral-900, #0f172a);
-    color: #fff;
-    border-radius: 10px;
-    padding: 10px 14px;
-    margin-bottom: 12px;
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.mhm-movement-from,
-.mhm-movement-to {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.mhm-movement-label {
-    font-size: 9px;
-    color: rgba(255,255,255,0.45);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    display: block;
-    margin-bottom: 1px;
-    font-weight: 600;
-}
-
-.mhm-movement-arrow {
-    color: #fbbf24;
-    flex-shrink: 0;
-}
-
-/* ── Fields Grid ──────────────────────────────────────────── */
-.mhm-fields {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px 16px;
-}
-
-.mhm-field {
+/* ── Steps ────────────────────────────────────────────────── */
+.mhm-steps {
     display: flex;
     flex-direction: column;
-    gap: 2px;
-}
-.mhm-field.full-width {
-    grid-column: 1 / -1;
+    gap: 16px;
+    position: relative;
+    padding-left: 2px;
 }
 
-.mhm-field-label {
-    font-size: 10px;
-    color: var(--text-muted, #94a3b8);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+.mhm-steps-line {
+    position: absolute;
+    left: 13px;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    background: #e2e8f0;
+    z-index: 0;
+}
+
+.mhm-step {
+    display: flex;
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+}
+
+.mhm-step-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 4px var(--cream-surface, #FDFCF7);
+}
+
+.mhm-step-content {
+    display: flex;
+    flex-direction: column;
+    padding-top: 2px;
+    flex: 1;
+    min-width: 0;
+}
+
+.mhm-step-title {
     font-weight: 600;
-}
-
-.mhm-field-value {
     font-size: 13px;
-    font-weight: 600;
+    color: var(--neutral-900, #0f172a);
+    margin-bottom: 2px;
+}
+
+.mhm-step-subtitle {
+    color: var(--neutral-500, #64748b);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.mhm-step-desc {
+    margin-top: 8px;
+    background: var(--neutral-50, #f8fafc);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
     color: var(--neutral-700, #334155);
+    border-left: 3px solid var(--border);
     word-break: break-word;
+}
+
+.mhm-step-date {
+    margin-top: 4px;
+    font-size: 11px;
+    color: var(--text-muted, #94a3b8);
+    font-weight: 600;
+}
+
+/* Step variations */
+.mhm-step-done .mhm-step-icon {
+    background: #10b981;
+    color: #fff;
+}
+
+.mhm-step-active .mhm-step-icon {
+    background: #3b82f6;
+    color: #fff;
+    box-shadow: 0 0 0 4px #eff6ff;
+}
+.mhm-step-active .mhm-step-title {
+    color: #1e3a8a;
+}
+.mhm-step-active .mhm-step-desc {
+    background: #eff6ff;
+    border-left-color: #3b82f6;
+}
+
+.mhm-step-rejected .mhm-step-icon {
+    background: #ef4444;
+    color: #fff;
+}
+.mhm-step-rejected .mhm-step-title {
+    color: #b91c1c;
+    text-decoration: line-through;
+}
+
+.mhm-step-pending {
+    opacity: 0.6;
+}
+.mhm-step-pending .mhm-step-icon {
+    background: #fff;
+    border: 2px solid #cbd5e1;
+    color: #94a3b8;
+}
+.mhm-step-pending .mhm-step-title {
+    color: #64748b;
 }
 
 /* ── Footer ───────────────────────────────────────────────── */

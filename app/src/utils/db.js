@@ -186,3 +186,20 @@ export async function loadExtractOpnameState() {
     }
     return data;
 }
+
+// ============================================================
+// BAST Documents DB — JSON Array data (state persistence)
+// ============================================================
+const BAST_DATA_KEY = 'bast-documents-list';
+
+export async function saveBastDocuments(documents) {
+    const db = await getDB();
+    await db.put(STORE_NAME, documents, `${getUserPrefix()}${BAST_DATA_KEY}`);
+}
+
+export async function loadBastDocuments() {
+    const db = await getDB();
+    const data = await db.get(STORE_NAME, `${getUserPrefix()}${BAST_DATA_KEY}`);
+    return data || [];
+}
+

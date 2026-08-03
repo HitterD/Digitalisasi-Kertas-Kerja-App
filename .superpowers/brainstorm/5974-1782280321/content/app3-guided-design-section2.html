@@ -1,0 +1,79 @@
+<h2>App3 Guided Upload — Section 2: Komponen Upload</h2>
+<p class="subtitle">Back button sudah disamakan gaya App1/App2: transparan, icon saja, divider tipis.</p>
+
+<style>
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  .mock-app { border:1px solid #e8e5de; border-radius:22px; overflow:hidden; background:#faf9f5; box-shadow:0 18px 45px rgba(38,38,36,.10); }
+  .topbar { height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 18px; background:#fff; border-bottom:1px solid #e8e5de; }
+  .left { display:flex; align-items:center; gap:14px; }
+  .back { width:28px; height:28px; border:0; background:transparent; display:grid; place-items:center; color:#595755; font-weight:800; font-size:17px; }
+  .divider { width:1px; height:18px; background:#e8e5de; }
+  .brand { display:flex; align-items:center; gap:8px; }
+  .brand-icon { width:26px; height:26px; border-radius:6px; background:#f5f4ef; color:#d97757; display:grid; place-items:center; font-size:15px; }
+  .brand-title { font-size:13px; font-weight:700; color:#262624; letter-spacing:-.01em; }
+  .tabs { display:flex; gap:4px; border:1px solid #e8e5de; background:#f5f4ef; border-radius:999px; padding:4px; }
+  .tab { border-radius:999px; padding:8px 13px; font-size:10px; font-weight:800; color:#595755; }
+  .tab.active { background:#262624; color:#faf9f5; }
+  .theme { width:34px; height:34px; border-radius:10px; border:1px solid #e8e5de; background:#fff; display:grid; place-items:center; color:#595755; }
+  .main { padding:22px; display:grid; gap:16px; }
+  .step-card { border:1px solid #e8e5de; background:#fff; border-radius:18px; overflow:hidden; }
+  .step-head { display:flex; align-items:center; gap:14px; padding:15px 18px; border-bottom:1px solid #e8e5de; background:#f5f4ef; }
+  .num { width:30px; height:30px; border-radius:9px; display:grid; place-items:center; background:#262624; color:#faf9f5; font-size:11px; font-weight:900; }
+  .head-title { font-size:14px; font-weight:850; color:#262624; }
+  .head-sub { margin-top:2px; font-size:11px; color:#595755; }
+  .step-body { padding:20px; }
+  .rule { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; padding:12px 14px; border:1px solid #e8e5de; border-radius:14px; background:#faf9f5; }
+  .rule-left { font-size:12px; color:#595755; line-height:1.5; }
+  .rule-left strong { color:#262624; }
+  .rule-pill { white-space:nowrap; border-radius:999px; background:rgba(217,119,87,.12); color:#c26a4d; padding:7px 10px; font-size:9px; font-weight:900; letter-spacing:.08em; }
+  .upload-grid { display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:12px; }
+  .slot { position:relative; min-height:132px; border:1.5px dashed #d4d0c8; border-radius:16px; background:#fff; padding:16px; display:flex; flex-direction:column; justify-content:space-between; }
+  .slot.required { border-color:#d97757; background:rgba(217,119,87,.055); }
+  .slot.ok { border-style:solid; border-color:#16a34a; background:rgba(22,163,74,.06); }
+  .badge { position:absolute; top:12px; right:12px; border-radius:999px; padding:4px 7px; font-size:8px; font-weight:900; letter-spacing:.08em; background:#f5f4ef; color:#595755; }
+  .badge.required { background:rgba(217,119,87,.14); color:#c26a4d; }
+  .badge.ok { background:rgba(22,163,74,.14); color:#15803d; }
+  .icon { width:34px; height:34px; border-radius:10px; background:#f5f4ef; display:grid; place-items:center; color:#d97757; margin-bottom:12px; }
+  .slot-title { font-size:13px; font-weight:850; color:#262624; padding-right:54px; }
+  .slot-sub { margin-top:6px; font-size:10px; line-height:1.45; color:#8b8580; }
+  .file-name { margin-top:6px; font-size:10px; line-height:1.35; color:#15803d; font-weight:800; word-break:break-all; }
+  .slot-action { margin-top:14px; font-size:9px; color:#595755; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+  .footer { display:flex; align-items:center; justify-content:space-between; gap:14px; padding-top:16px; margin-top:16px; border-top:1px solid #e8e5de; }
+  .readiness { display:flex; gap:8px; flex-wrap:wrap; }
+  .chip { border-radius:999px; padding:6px 9px; font-size:9px; font-weight:900; letter-spacing:.08em; background:#f5f4ef; color:#595755; }
+  .chip.ok { background:rgba(22,163,74,.12); color:#15803d; }
+  .cta { background:#262624; color:#faf9f5; border-radius:999px; padding:11px 16px; font-size:10px; font-weight:900; }
+  @media(max-width:900px){ .upload-grid{grid-template-columns:1fr 1fr}.topbar{height:auto;gap:12px;align-items:flex-start;flex-direction:column;padding:14px}.tabs{width:100%;}.tab{flex:1;text-align:center}.theme{display:none} }
+  @media(max-width:560px){ .upload-grid{grid-template-columns:1fr}.rule,.footer{align-items:flex-start;flex-direction:column} }
+</style>
+
+<div class="wrap">
+  <div class="mock-app">
+    <div class="topbar">
+      <div class="left">
+        <div class="back">←</div><div class="divider"></div>
+        <div class="brand"><div class="brand-icon">▦</div><div class="brand-title">Master Data</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="tabs"><div class="tab active">Consolidation</div><div class="tab">Evaluation</div></div>
+        <div class="theme">◐</div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="step-card">
+        <div class="step-head"><div class="num">1</div><div><div class="head-title">Upload File</div><div class="head-sub">Masukkan file sumber sebelum ekstrak filter.</div></div></div>
+        <div class="step-body">
+          <div class="rule"><div class="rule-left"><strong>Aturan lanjut:</strong> minimal satu source valid dari EXA / ADD / INV. Master Lama tetap opsional.</div><div class="rule-pill">ANTI-SALAH UPLOAD</div></div>
+          <div class="upload-grid">
+            <div class="slot"><span class="badge">OPSIONAL</span><div><div class="icon">DB</div><div class="slot-title">Master Lama</div><div class="slot-sub">Kamus master existing untuk arsip.</div></div><div class="slot-action">Pilih / drop file</div></div>
+            <div class="slot required"><span class="badge required">SOURCE</span><div><div class="icon">EXA</div><div class="slot-title">EXA</div><div class="slot-sub">Source document Excel.</div></div><div class="slot-action">Pilih / drop file</div></div>
+            <div class="slot required"><span class="badge required">SOURCE</span><div><div class="icon">ADD</div><div class="slot-title">ADD</div><div class="slot-sub">Source document Excel.</div></div><div class="slot-action">Pilih / drop file</div></div>
+            <div class="slot ok"><span class="badge ok">VALID</span><div><div class="icon">✓</div><div class="slot-title">INV</div><div class="file-name">INV_JUNI_2026.xlsx</div><div class="slot-sub">File siap diproses.</div></div><div class="slot-action">Ganti file</div></div>
+          </div>
+          <div class="footer"><div class="readiness"><span class="chip ok">1 SOURCE VALID</span><span class="chip">.XLSX / .XLS SAJA</span><span class="chip">MASTER OPSIONAL</span></div><div class="cta">EKSTRAK FILTER →</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -95,6 +95,10 @@ export function createJsonSender(req, res) {
     return (statusCode, data) => {
         res.setHeader('Access-Control-Allow-Origin', getAllowedOrigin(req));
         res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+        res.setHeader('Surrogate-Control', 'no-store');
         res.statusCode = statusCode;
         res.end(JSON.stringify(data));
     };

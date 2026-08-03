@@ -1,0 +1,119 @@
+<h2>App3 — 3 Arah Redesign</h2>
+<p class="subtitle">Semua opsi pakai warm compact App1/App2. Klik opsi yang paling pas, lalu balas di terminal.</p>
+
+<style>
+  .app3-preview-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .app3-card { border: 1px solid #e8e5de; border-radius: 18px; overflow: hidden; background: #faf9f5; cursor: pointer; transition: 180ms ease; }
+  .app3-card:hover { transform: translateY(-2px); box-shadow: 0 14px 35px rgba(38,38,36,.12); }
+  .app3-card.selected { outline: 3px solid #d97757; outline-offset: 3px; }
+  .app3-topbar { height: 46px; display:flex; align-items:center; justify-content:space-between; padding: 0 14px; border-bottom: 1px solid #e8e5de; background: #fff; }
+  .brand { display:flex; align-items:center; gap:8px; font-weight:700; font-size:12px; color:#262624; }
+  .brand-icon { width:24px; height:24px; border-radius:7px; background:#262624; color:#d97757; display:grid; place-items:center; font-size:12px; }
+  .tabs { display:flex; gap:4px; background:#f5f4ef; border:1px solid #e8e5de; border-radius:999px; padding:3px; }
+  .tab { padding:5px 9px; border-radius:999px; font-size:9px; font-weight:700; color:#595755; }
+  .tab.active { background:#262624; color:#faf9f5; }
+  .body { padding:14px; }
+  .hero { border:1px solid #e8e5de; background:#fff; border-radius:14px; padding:14px; margin-bottom:12px; }
+  .eyebrow { font-size:8px; letter-spacing:.14em; color:#d97757; font-weight:800; text-transform:uppercase; }
+  .title { margin-top:4px; font-size:16px; font-weight:800; color:#262624; }
+  .hint { margin-top:5px; font-size:10px; line-height:1.45; color:#595755; }
+  .stepper { display:flex; gap:6px; margin:12px 0; }
+  .step { flex:1; height:6px; border-radius:999px; background:#e8e5de; }
+  .step.on { background:#d97757; }
+  .upload-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .slot { border:1px dashed #d4d0c8; border-radius:12px; background:#fff; padding:12px; min-height:74px; }
+  .slot.required { border-color:#d97757; background:rgba(217,119,87,.06); }
+  .slot.ok { border-style:solid; border-color:#16a34a; background:rgba(22,163,74,.06); }
+  .slot-title { font-size:10px; font-weight:800; color:#262624; }
+  .slot-sub { margin-top:5px; font-size:8px; line-height:1.35; color:#8b8580; }
+  .footer { display:flex; align-items:center; justify-content:space-between; margin-top:12px; border-top:1px solid #e8e5de; padding-top:10px; }
+  .meta { font-size:8px; color:#595755; font-weight:700; }
+  .btn { background:#262624; color:#faf9f5; border-radius:999px; padding:8px 12px; font-size:9px; font-weight:800; }
+  .panel { border:1px solid #e8e5de; border-radius:14px; background:#fff; padding:12px; margin-bottom:10px; }
+  .row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #f0eee8; }
+  .row:last-child { border-bottom:0; }
+  .pill { border-radius:999px; background:#f5f4ef; padding:4px 8px; font-size:8px; font-weight:800; color:#595755; }
+  .pill.hot { background:rgba(217,119,87,.12); color:#c26a4d; }
+  .choice-body { padding: 14px 16px 16px; }
+  .choice-body h3 { margin: 0 0 6px; font-size: 15px; }
+  .choice-body p { margin: 0; font-size: 12px; line-height: 1.45; color: #595755; }
+  @media (max-width: 900px) { .app3-preview-grid { grid-template-columns: 1fr; } }
+</style>
+
+<div class="app3-preview-grid">
+  <div class="app3-card card" data-choice="a-guided" onclick="toggleSelect(this)">
+    <div class="app3-topbar">
+      <div class="brand"><div class="brand-icon">↤</div> Master Data</div>
+      <div class="tabs"><div class="tab active">Consolidation</div><div class="tab">Evaluation</div></div>
+    </div>
+    <div class="body">
+      <div class="hero">
+        <div class="eyebrow">STEP 1 · UPLOAD</div>
+        <div class="title">Siapkan file sumber</div>
+        <div class="hint">EXA / ADD / INV wajib minimal satu. Master lama opsional untuk arsip.</div>
+      </div>
+      <div class="stepper"><div class="step on"></div><div class="step"></div><div class="step"></div></div>
+      <div class="upload-grid">
+        <div class="slot"><div class="slot-title">Master Lama</div><div class="slot-sub">Opsional</div></div>
+        <div class="slot required"><div class="slot-title">EXA</div><div class="slot-sub">Source utama</div></div>
+        <div class="slot required"><div class="slot-title">ADD</div><div class="slot-sub">Source tambahan</div></div>
+        <div class="slot ok"><div class="slot-title">INV</div><div class="slot-sub">inv-juni.xlsx</div></div>
+      </div>
+      <div class="footer"><div class="meta">1 source valid</div><div class="btn">EKSTRAK FILTER</div></div>
+    </div>
+    <div class="choice-body">
+      <h3>A. Guided Upload (Rekomendasi)</h3>
+      <p>Paling anti-salah upload. Fokus step 1 jelas, wajib/opsional terlihat, CTA terkunci sampai valid.</p>
+    </div>
+  </div>
+
+  <div class="app3-card card" data-choice="b-ops" onclick="toggleSelect(this)">
+    <div class="app3-topbar">
+      <div class="brand"><div class="brand-icon">↤</div> Master Data</div>
+      <div class="tabs"><div class="tab active">Consolidation</div><div class="tab">Evaluation</div></div>
+    </div>
+    <div class="body">
+      <div class="hero">
+        <div class="eyebrow">LIVE PIPELINE</div>
+        <div class="title">1 / 3 langkah selesai</div>
+        <div class="hint">Status proses dan ringkasan kategori ditaruh paling atas.</div>
+      </div>
+      <div class="panel">
+        <div class="row"><strong style="font-size:11px">File source</strong><span class="pill hot">1 valid</span></div>
+        <div class="row"><strong style="font-size:11px">Kategori</strong><span class="pill">Belum diekstrak</span></div>
+        <div class="row"><strong style="font-size:11px">Output</strong><span class="pill">Excel</span></div>
+      </div>
+      <div class="upload-grid">
+        <div class="slot ok"><div class="slot-title">INV</div><div class="slot-sub">Siap</div></div>
+        <div class="slot"><div class="slot-title">EXA / ADD</div><div class="slot-sub">Tambah bila ada</div></div>
+      </div>
+      <div class="footer"><div class="meta">status-first</div><div class="btn">LANJUT</div></div>
+    </div>
+    <div class="choice-body">
+      <h3>B. Operations Dashboard</h3>
+      <p>Paling mudah dipantau. Lebih padat, bagus untuk admin, tapi upload guidance tidak sekuat A.</p>
+    </div>
+  </div>
+
+  <div class="app3-card card" data-choice="c-minimal" onclick="toggleSelect(this)">
+    <div class="app3-topbar">
+      <div class="brand"><div class="brand-icon">↤</div> Master Data</div>
+      <div class="tabs"><div class="tab active">Consolidation</div><div class="tab">Evaluation</div></div>
+    </div>
+    <div class="body">
+      <div class="hero">
+        <div class="eyebrow">UPLOAD</div>
+        <div class="title">Pilih file</div>
+        <div class="hint">Satu kartu besar per aksi. Lebih kosong dan tenang.</div>
+      </div>
+      <div class="slot required" style="min-height:150px; display:grid; place-items:center; text-align:center;">
+        <div><div class="slot-title" style="font-size:14px">Drop file Excel di sini</div><div class="slot-sub">.xlsx atau .xls</div></div>
+      </div>
+      <div class="footer"><div class="meta">minimal</div><div class="btn">PILIH FILE</div></div>
+    </div>
+    <div class="choice-body">
+      <h3>C. Minimal Wizard</h3>
+      <p>Paling sederhana dilihat. Tapi butuh klik/scroll lebih banyak dan kurang cocok kalau user upload 4 file.</p>
+    </div>
+  </div>
+</div>

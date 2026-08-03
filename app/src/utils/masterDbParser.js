@@ -31,7 +31,7 @@ export function parseMasterDatabase(buffer) {
         const barcode = getCellValue(r, 1);  // B: BARCODE
         if (!barcode) continue;
 
-        lookup.set(barcode, {
+        lookup.set(String(barcode).trim().toUpperCase(), {
             namaAset: getCellValue(r, 2),       // C: NAMA ASSET
             noPO: getCellValue(r, 14),          // O: NO PO
             oracleId: getCellValue(r, 16),      // Q: ORACLE ID
@@ -56,5 +56,5 @@ export function parseMasterDatabase(buffer) {
  */
 export function lookupBarcode(lookup, barcode) {
     if (!lookup || !barcode) return null;
-    return lookup.get(barcode.trim()) || null;
+    return lookup.get(String(barcode).trim().toUpperCase()) || null;
 }

@@ -34,13 +34,67 @@
   --accent-glow: rgba(217, 119, 87, 0.20);
   --accent-ring: rgba(217, 119, 87, 0.12);
 
-  /* Status */
-  --success-500: #3D8C5F;
-  --success-50: rgba(61, 140, 95, 0.10);
-  --warning-500: #C28B1A;
-  --warning-50: rgba(194, 139, 26, 0.10);
-  --danger-500: #C44545;
-  --danger-50: rgba(196, 69, 69, 0.10);
+  /* Status & Neutrals */
+
+  /* Primary (Blue) */
+  --primary-50: #eff6ff;
+  --primary-100: #dbeafe;
+  --primary-200: #bfdbfe;
+  --primary-300: #93c5fd;
+  --primary-400: #60a5fa;
+  --primary-500: #3b82f6;
+  --primary-600: #2563eb;
+  --primary-700: #1d4ed8;
+  --primary-800: #1e40af;
+  --primary-900: #1e3a8a;
+
+  /* Success (Green) */
+  --success-50: #f0fdf4;
+  --success-100: #dcfce7;
+  --success-200: #bbf7d0;
+  --success-300: #86efac;
+  --success-400: #4ade80;
+  --success-500: #22c55e;
+  --success-600: #16a34a;
+  --success-700: #15803d;
+  --success-800: #166534;
+  --success-900: #14532d;
+
+  /* Warning (Yellow/Orange) */
+  --warning-50: #fffbeb;
+  --warning-100: #fef3c7;
+  --warning-200: #fde68a;
+  --warning-300: #fcd34d;
+  --warning-400: #fbbf24;
+  --warning-500: #f59e0b;
+  --warning-600: #d97706;
+  --warning-700: #b45309;
+  --warning-800: #92400e;
+  --warning-900: #78350f;
+
+  /* Danger (Red) */
+  --danger-50: #fef2f2;
+  --danger-100: #fee2e2;
+  --danger-200: #fecaca;
+  --danger-300: #fca5a5;
+  --danger-400: #f87171;
+  --danger-500: #ef4444;
+  --danger-600: #dc2626;
+  --danger-700: #b91c1c;
+  --danger-800: #991b1b;
+  --danger-900: #7f1d1d;
+
+  /* Neutrals */
+  --neutral-50: #F8F9FA;
+  --neutral-100: #F1F3F5;
+  --neutral-200: #E9ECEF;
+  --neutral-300: #DEE2E6;
+  --neutral-400: #CED4DA;
+  --neutral-500: #ADB5BD;
+  --neutral-600: #868E96;
+  --neutral-700: #495057;
+  --neutral-800: #343A40;
+  --neutral-900: #212529;
 
   /* Backward-compat aliases (v1 Warm Atelier) */
   --cream-bg: var(--bg-primary);
@@ -79,13 +133,67 @@
   --accent-glow: rgba(217, 119, 87, 0.30);
   --accent-ring: rgba(217, 119, 87, 0.20);
 
-  /* Status */
-  --success-500: #3D8C5F;
-  --success-50: rgba(61, 140, 95, 0.15);
-  --warning-500: #C28B1A;
-  --warning-50: rgba(194, 139, 26, 0.15);
-  --danger-500: #C44545;
-  --danger-50: rgba(196, 69, 69, 0.15);
+  /* Status & Neutrals Dark */
+
+  /* Primary Dark */
+  --primary-50: rgba(59, 130, 246, 0.15);
+  --primary-100: rgba(59, 130, 246, 0.25);
+  --primary-200: rgba(59, 130, 246, 0.4);
+  --primary-300: #1d4ed8;
+  --primary-400: #2563eb;
+  --primary-500: #3b82f6;
+  --primary-600: #60a5fa;
+  --primary-700: #93c5fd;
+  --primary-800: #bfdbfe;
+  --primary-900: #dbeafe;
+
+  /* Success Dark */
+  --success-50: rgba(34, 197, 94, 0.15);
+  --success-100: rgba(34, 197, 94, 0.25);
+  --success-200: rgba(34, 197, 94, 0.4);
+  --success-300: #15803d;
+  --success-400: #16a34a;
+  --success-500: #22c55e;
+  --success-600: #4ade80;
+  --success-700: #86efac;
+  --success-800: #bbf7d0;
+  --success-900: #dcfce7;
+
+  /* Warning Dark */
+  --warning-50: rgba(245, 158, 11, 0.15);
+  --warning-100: rgba(245, 158, 11, 0.25);
+  --warning-200: rgba(245, 158, 11, 0.4);
+  --warning-300: #b45309;
+  --warning-400: #d97706;
+  --warning-500: #f59e0b;
+  --warning-600: #fbbf24;
+  --warning-700: #fcd34d;
+  --warning-800: #fde68a;
+  --warning-900: #fef3c7;
+
+  /* Danger Dark */
+  --danger-50: rgba(239, 68, 68, 0.15);
+  --danger-100: rgba(239, 68, 68, 0.25);
+  --danger-200: rgba(239, 68, 68, 0.4);
+  --danger-300: #b91c1c;
+  --danger-400: #dc2626;
+  --danger-500: #ef4444;
+  --danger-600: #f87171;
+  --danger-700: #fca5a5;
+  --danger-800: #fecaca;
+  --danger-900: #fee2e2;
+
+  /* Neutrals (Inverted for Dark Mode) */
+  --neutral-50: #212529;
+  --neutral-100: #2B3035;
+  --neutral-200: #343A40;
+  --neutral-300: #495057;
+  --neutral-400: #868E96;
+  --neutral-500: #ADB5BD;
+  --neutral-600: #CED4DA;
+  --neutral-700: #DEE2E6;
+  --neutral-800: #F1F3F5;
+  --neutral-900: #F8F9FA;
 
   /* Backward-compat aliases (v1 Warm Atelier → dark) */
   --cream-bg: var(--bg-primary);
@@ -99,6 +207,25 @@
   --terracotta-500: var(--accent);
   --terracotta-400: #E58A6A;
   --terracotta-600: var(--accent-hover);
+
+  /* Legacy LOGIN / BentoMenu Palette mapping for Dark Mode */
+  --amber-50:  #2D2316;
+  --amber-100: #42301A;
+  --amber-300: #8A6133;
+  --amber-400: #A8763E;
+  --amber-500: #C28B1A;
+  --amber-600: #E8A94A;
+  --amber-700: #F4C47A;
+
+  --charcoal-800: var(--bg-surface);
+  --charcoal-600: var(--bg-input);
+
+  --warm-50:  var(--bg-primary);
+  --warm-100: var(--bg-surface);
+  --warm-200: var(--border);
+  --warm-300: var(--border-strong);
+  --warm-400: var(--text-tertiary);
+  --warm-500: var(--text-secondary);
 }
 
 /* === Legacy LOGIN / BentoMenu palette (preserved unchanged) === */
@@ -159,7 +286,7 @@
   --shadow-sm: 0 1px 2px rgba(45, 45, 45, 0.04);
   --shadow-md: 0 1px 2px rgba(45, 45, 45, 0.03), 0 6px 18px rgba(45, 45, 45, 0.04);
   --shadow-lg: 0 2px 4px rgba(45, 45, 45, 0.04), 0 14px 30px rgba(45, 45, 45, 0.08);
-  --shadow-glow: 0 6px 14px rgba(201, 100, 66, 0.25);
+  --shadow-glow: 0 6px 14px var(--accent-glow);
 
   /* === Easing === */
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);

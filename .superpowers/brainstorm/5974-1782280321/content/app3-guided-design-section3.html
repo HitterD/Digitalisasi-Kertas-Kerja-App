@@ -1,0 +1,91 @@
+<h2>App3 Guided Upload — Section 3: Filter, Generate, States</h2>
+<p class="subtitle">Setelah upload valid: pilih kategori sebagai kartu count, lalu generate Excel. Satu CTA utama per tahap.</p>
+
+<style>
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  .mock-app { border:1px solid #e8e5de; border-radius:22px; overflow:hidden; background:#faf9f5; box-shadow:0 18px 45px rgba(38,38,36,.10); }
+  .topbar { height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 18px; background:#fff; border-bottom:1px solid #e8e5de; }
+  .left { display:flex; align-items:center; gap:14px; }
+  .back { width:28px; height:28px; border:0; background:transparent; display:grid; place-items:center; color:#595755; font-weight:800; font-size:17px; }
+  .divider { width:1px; height:18px; background:#e8e5de; }
+  .brand { display:flex; align-items:center; gap:8px; }
+  .brand-icon { width:26px; height:26px; border-radius:6px; background:#f5f4ef; color:#d97757; display:grid; place-items:center; font-size:15px; }
+  .brand-title { font-size:13px; font-weight:700; color:#262624; letter-spacing:-.01em; }
+  .tabs { display:flex; gap:4px; border:1px solid #e8e5de; background:#f5f4ef; border-radius:999px; padding:4px; }
+  .tab { border-radius:999px; padding:8px 13px; font-size:10px; font-weight:800; color:#595755; }
+  .tab.active { background:#262624; color:#faf9f5; }
+  .theme { width:34px; height:34px; border-radius:10px; border:1px solid #e8e5de; background:#fff; display:grid; place-items:center; color:#595755; }
+  .main { padding:22px; display:grid; grid-template-columns: 1fr 1fr; gap:16px; align-items:start; }
+  .step-card { border:1px solid #e8e5de; background:#fff; border-radius:18px; overflow:hidden; }
+  .step-head { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:15px 18px; border-bottom:1px solid #e8e5de; background:#f5f4ef; }
+  .head-left { display:flex; align-items:center; gap:14px; }
+  .num { width:30px; height:30px; border-radius:9px; display:grid; place-items:center; background:#262624; color:#faf9f5; font-size:11px; font-weight:900; }
+  .head-title { font-size:14px; font-weight:850; color:#262624; }
+  .head-sub { margin-top:2px; font-size:11px; color:#595755; }
+  .state-pill { border-radius:999px; padding:6px 9px; font-size:9px; font-weight:900; letter-spacing:.08em; background:rgba(217,119,87,.12); color:#c26a4d; }
+  .step-body { padding:20px; }
+  .summary { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:15px; }
+  .summary-chip { border-radius:999px; padding:7px 10px; font-size:9px; font-weight:900; letter-spacing:.08em; background:#f5f4ef; color:#595755; }
+  .summary-chip.hot { background:rgba(217,119,87,.12); color:#c26a4d; }
+  .cat-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; }
+  .cat { border:1.5px solid #e8e5de; border-radius:14px; background:#fff; padding:14px; min-height:84px; cursor:pointer; }
+  .cat.selected { background:#262624; color:#faf9f5; border-color:#262624; box-shadow:0 10px 22px rgba(38,38,36,.16); }
+  .cat-title { display:flex; justify-content:space-between; align-items:center; gap:10px; font-size:13px; font-weight:900; }
+  .count { border-radius:999px; padding:4px 8px; font-size:10px; font-weight:900; background:#f5f4ef; color:#595755; }
+  .cat.selected .count { background:#d97757; color:#fff; }
+  .cat-sub { margin-top:10px; font-size:10px; line-height:1.4; color:#8b8580; }
+  .cat.selected .cat-sub { color:rgba(250,249,245,.72); }
+  .footer { display:flex; align-items:center; justify-content:space-between; gap:14px; padding-top:16px; margin-top:16px; border-top:1px solid #e8e5de; }
+  .ghost { border:1px solid #e8e5de; background:#fff; color:#595755; border-radius:999px; padding:10px 13px; font-size:10px; font-weight:900; }
+  .cta { background:#262624; color:#faf9f5; border-radius:999px; padding:11px 16px; font-size:10px; font-weight:900; }
+  .cta.disabled { opacity:.45; }
+  .progress { height:8px; border-radius:999px; background:#e8e5de; overflow:hidden; margin:14px 0 10px; }
+  .bar { height:100%; width:64%; background:#d97757; border-radius:999px; }
+  .state-list { display:grid; gap:10px; }
+  .state { border:1px solid #e8e5de; border-radius:14px; padding:13px; background:#faf9f5; display:flex; gap:11px; align-items:flex-start; }
+  .state-icon { width:28px; height:28px; border-radius:9px; display:grid; place-items:center; background:#fff; color:#d97757; flex:none; }
+  .state-title { font-size:12px; font-weight:900; color:#262624; }
+  .state-copy { margin-top:4px; font-size:10px; line-height:1.45; color:#595755; }
+  @media(max-width:900px){ .main{grid-template-columns:1fr}.topbar{height:auto;gap:12px;align-items:flex-start;flex-direction:column;padding:14px}.tabs{width:100%;}.tab{flex:1;text-align:center}.theme{display:none} }
+  @media(max-width:560px){ .cat-grid{grid-template-columns:1fr}.footer{align-items:flex-start;flex-direction:column} }
+</style>
+
+<div class="wrap">
+  <div class="mock-app">
+    <div class="topbar">
+      <div class="left"><div class="back">←</div><div class="divider"></div><div class="brand"><div class="brand-icon">▦</div><div class="brand-title">Master Data</div></div></div>
+      <div style="display:flex;align-items:center;gap:12px"><div class="tabs"><div class="tab active">Consolidation</div><div class="tab">Evaluation</div></div><div class="theme">◐</div></div>
+    </div>
+
+    <div class="main">
+      <div class="step-card">
+        <div class="step-head"><div class="head-left"><div class="num">2</div><div><div class="head-title">Filter Kategori</div><div class="head-sub">Pilih kategori yang akan masuk output.</div></div></div><div class="state-pill">5 KATEGORI</div></div>
+        <div class="step-body">
+          <div class="summary"><span class="summary-chip hot">TOTAL BAT 128</span><span class="summary-chip">SELECTED 2</span><span class="summary-chip">EFFECTIVE 58</span></div>
+          <div class="cat-grid">
+            <div class="cat selected"><div class="cat-title"><span>ICT</span><span class="count">32</span></div><div class="cat-sub">Kategori aktif, masuk hasil Excel.</div></div>
+            <div class="cat"><div class="cat-title"><span>ENG</span><span class="count">26</span></div><div class="cat-sub">Klik untuk tambah filter.</div></div>
+            <div class="cat selected"><div class="cat-title"><span>BAT</span><span class="count">26</span></div><div class="cat-sub">Kategori aktif, masuk hasil Excel.</div></div>
+            <div class="cat"><div class="cat-title"><span>HRGA</span><span class="count">14</span></div><div class="cat-sub">Klik untuk tambah filter.</div></div>
+            <div class="cat"><div class="cat-title"><span>Kosong</span><span class="count">30</span></div><div class="cat-sub">Data tanpa prefix kategori.</div></div>
+          </div>
+          <div class="footer"><div class="ghost">← KEMBALI</div><div class="cta">GENERATE EXCEL →</div></div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-head"><div class="head-left"><div class="num">3</div><div><div class="head-title">Generate & Feedback</div><div class="head-sub">Status proses harus jelas dan tidak menakutkan.</div></div></div><div class="state-pill">OUTPUT</div></div>
+        <div class="step-body">
+          <div class="summary"><span class="summary-chip hot">2 KATEGORI</span><span class="summary-chip">58 RECORD</span><span class="summary-chip">XLSX</span></div>
+          <div class="progress"><div class="bar"></div></div>
+          <div class="state-list">
+            <div class="state"><div class="state-icon">⟳</div><div><div class="state-title">Processing</div><div class="state-copy">Menyusun data master… tombol disabled sampai selesai.</div></div></div>
+            <div class="state"><div class="state-icon">✓</div><div><div class="state-title">Success</div><div class="state-copy">File otomatis terunduh, pesan sukses tetap terlihat.</div></div></div>
+            <div class="state"><div class="state-icon">!</div><div><div class="state-title">Error</div><div class="state-copy">Jelaskan penyebab: file salah format, source kosong, server gagal.</div></div></div>
+          </div>
+          <div class="footer"><div class="ghost">GANTI FILTER</div><div class="cta disabled">SEDANG PROSES</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

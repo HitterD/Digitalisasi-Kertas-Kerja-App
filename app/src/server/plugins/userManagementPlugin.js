@@ -176,6 +176,7 @@ function userManagementMiddleware(req, res, next) {
         if (edits.role) users[index].role = edits.role;
         if (edits.name) users[index].name = edits.name;
         if (edits.isActive !== undefined) users[index].isActive = edits.isActive;
+        if (edits.access !== undefined) users[index].access = edits.access;
         
         // Atomic write: write to temp file then rename
         const tempPath = usersFilePath + '.' + Date.now() + '.tmp';

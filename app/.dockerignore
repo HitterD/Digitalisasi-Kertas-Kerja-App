@@ -40,3 +40,8 @@ data/app3_archive/
 !src/
 !public/
 !data/
+
+# Ignore mobile projects
+android/
+ios/
+capacitor-cordova-android-plugins/

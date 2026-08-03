@@ -1,0 +1,59 @@
+<h2>Theme Toggle — Where Does It Live?</h2>
+<p class="subtitle">Three placement patterns. Pick the one that fits how you want users to find it.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="header" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#FAF9F5; padding:20px; border-radius:8px; border:1px solid #E8E5DE;">
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:#fff; border-radius:6px; border:1px solid #E8E5DE;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:20px; height:20px; background:#262624; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#D97757; font-size:9px; font-weight:700;">K</div>
+          <div style="font-size:12px; font-weight:600; color:#262624;">KKD</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button style="background:#F5F4EF; border:1px solid #E8E5DE; border-radius:6px; padding:5px 8px; cursor:pointer; display:flex; align-items:center; gap:5px;">
+            <span style="font-size:13px;">☀️</span>
+          </button>
+          <div style="font-size:10px; color:#8B8580;">USER</div>
+          <button style="background:transparent; border:1px solid #E8E5DE; border-radius:6px; padding:4px 10px; font-size:11px; color:#262624;">Logout</button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. In the header bar</h3>
+      <p>Next to user info / Logout. Visible on LoginPage, BentoMenu, and all in-app pages that use <code>.wa-app-header</code>. Persistent, discoverable.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="floating" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#FAF9F5; padding:20px; border-radius:8px; border:1px solid #E8E5DE; position:relative; min-height:140px;">
+      <div style="opacity:0.3; padding:10px 14px; font-size:11px; color:#8B8580; font-family:var(--font-mono);">[mock page content]</div>
+      <button style="position:absolute; bottom:14px; right:14px; width:40px; height:40px; border-radius:50%; background:#262624; color:#F5F4EF; border:none; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.15); display:flex; align-items:center; justify-content:center; font-size:16px;">☀️</button>
+    </div>
+    <div class="card-body">
+      <h3>B. Floating button</h3>
+      <p>Bottom-right corner, always visible regardless of page layout. Most discoverable. Risk: overlaps content on small screens.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="header-compact" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#FAF9F5; padding:20px; border-radius:8px; border:1px solid #E8E5DE;">
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:#fff; border-radius:6px; border:1px solid #E8E5DE;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:20px; height:20px; background:#262624; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#D97757; font-size:9px; font-weight:700;">K</div>
+          <div style="font-size:12px; font-weight:600; color:#262624;">KKD</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="font-size:10px; color:#8B8580;">USER</div>
+          <button style="background:transparent; border:1px solid #E8E5DE; border-radius:6px; padding:4px 10px; font-size:11px; color:#262624;">Logout</button>
+        </div>
+      </div>
+      <p style="margin-top:12px; font-size:10px; color:#8B8580; font-family:var(--font-mono);">— no toggle in header. Hide theme behind avatar menu / settings —</p>
+    </div>
+    <div class="card-body">
+      <h3>C. In header, compact (icon only)</h3>
+      <p>Same as A, but a square icon button. Less visual weight. Same discoverability.</p>
+    </div>
+  </div>
+
+</div>

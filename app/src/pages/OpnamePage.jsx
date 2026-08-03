@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOpname } from '../store/OpnameContext';
 import AssetTable from '../components/AssetTable';
@@ -7,20 +7,13 @@ import NotAtLocationSection from '../components/NotAtLocationSection';
 import SignatureSection from '../components/SignatureSection';
 import RoomStatusSelect from '../components/RoomStatusSelect';
 import { saveRoomPDF, generateAndSaveAllPDFs } from '../utils/pdfGenerator';
-import { apiUrl, fetchJsonWithAuth } from '../utils/apiConfig';
-import {
-    ROOM_NAV_ELLIPSIS,
-    getRoomStatus,
-    getVisibleRoomItems,
-} from '../utils/opnameRoomNav';
 import {
     ChevronLeft, ChevronRight, ChevronDown, FileDown, FilePlus, MapPin,
     AlertTriangle, Plus, Home, CheckCircle2, Circle, Wifi,
-    List, PenTool, UploadCloud, Search, Save, Loader2
+    List, PenTool, UploadCloud, Search, Save, Loader2, MoreVertical, ArrowUp
 } from 'lucide-react';
-
 import CustomRoomModal from '../components/CustomRoomModal';
-import SaveLoadModal from '../components/SaveLoadModal'; // NEW
+import SaveLoadModal from '../components/SaveLoadModal';
 import DeleteRoomConfirmModal from '../components/DeleteRoomConfirmModal';
 import SqlRoomImportModal from '../components/SqlRoomImportModal';
 
@@ -30,20 +23,58 @@ export default function OpnamePage() {
         state, masterDb, setRoomIndex, toggleAssetCheck, updateAssetField, autofillAsset,
         addNoBarcodeAsset, updateNoBarcodeAsset, removeNoBarcodeAsset,
         addNotAtLocationAsset, updateNotAtLocationAsset, removeNotAtLocationAsset,
-        updateSignatures, addCustomRoom, removeRoomLocal, addSqlImportedRoom, crossRoomCheck, importData
+        updateSignatures, addCustomRoom, removeRoomLocal, addSqlImportedRoom, crossRoomCheck, importData,
+        syncStatus, manualSync, syncLastError
     } = useOpname();
     const [generating, setGenerating] = useState(false);
     const [toast, setToast] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
-    const [isSaveModalOpen, setIsSaveModalOpen] = useState(false); // NEW
+    const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isSqlImportModalOpen, setIsSqlImportModalOpen] = useState(false);
+    
+    const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
+    const optionsMenuRef = useRef(null);
+
+    // Scroll to Top FAB State
+    const [showScrollTop, setShowScrollTop] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = (e) => {
+            const scrollTop = e.target.scrollTop || window.scrollY || document.documentElement.scrollTop || 0;
+            setShowScrollTop(scrollTop > 300);
+        };
+        // Use capture phase to catch scroll events from any scrollable container
+        window.addEventListener('scroll', handleScroll, true);
+        
+        function handleClickOutside(event) {
+            if (optionsMenuRef.current && !optionsMenuRef.current.contains(event.target)) {
+                setIsOptionsMenuOpen(false);
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        
+        return () => {
+            window.removeEventListener('scroll', handleScroll, true);
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.documentElement.scrollTo({ top: 0, behavior: 'smooth' });
+        // Fallback for containers
+        const root = document.getElementById('root');
+        if (root) root.scrollTo({ top: 0, behavior: 'smooth' });
+        const appMain = document.querySelector('.app-main');
+        if (appMain) appMain.scrollTo({ top: 0, behavior: 'smooth' });
+        const appContainer = document.querySelector('.app-container');
+        if (appContainer) appContainer.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     const roomIdx = state.currentRoomIndex;
     const room = state.rooms[roomIdx];
-
-    const [isRoomGridOpen, setIsRoomGridOpen] = useState(false);
 
     const showToast = useCallback((msg, type = 'success') => {
         setToast({ msg, type });
@@ -66,51 +97,19 @@ export default function OpnamePage() {
         });
     }, [state.rooms]);
 
-    const visibleRoomItems = useMemo(() => (
-        getVisibleRoomItems(roomIdx, state.rooms.length)
-    ), [roomIdx, state.rooms.length]);
-
     const handleRoomSelect = useCallback((targetIndex) => {
         setRoomIndex(targetIndex);
-        setIsRoomGridOpen(false);
     }, [setRoomIndex]);
-
-    const getRoomName = useCallback((targetIndex) => {
-        const targetRoom = state.rooms[targetIndex];
-        return targetRoom?.meta?.roomName || targetRoom?.sheetName || `Ruangan ${targetIndex + 1}`;
-    }, [state.rooms]);
-
-    const renderRoomNavButton = useCallback((targetIndex, variant = 'preview') => {
-        const status = getRoomStatus(overallProgress[targetIndex]);
-        const isActive = targetIndex === roomIdx;
-        const roomName = getRoomName(targetIndex);
-
-        return (
-            <button
-                key={`${variant}-${targetIndex}`}
-                type="button"
-                title={`${targetIndex + 1}. ${roomName}`}
-                aria-label={`Buka ruangan ${targetIndex + 1}: ${roomName}`}
-                aria-current={isActive ? 'true' : undefined}
-                className={`wa-room-nav-dot wa-room-nav-dot--${variant} wa-room-nav-dot--${status}${isActive ? ' active' : ''}`}
-                onClick={() => handleRoomSelect(targetIndex)}
-            >
-                {targetIndex + 1}
-            </button>
-        );
-    }, [getRoomName, handleRoomSelect, overallProgress, roomIdx]);
 
     const handlePrevRoom = useCallback(() => {
         if (roomIdx > 0) {
             setRoomIndex(roomIdx - 1);
-            setIsRoomGridOpen(false);
         }
     }, [roomIdx, setRoomIndex]);
 
     const handleNextRoom = useCallback(() => {
         if (roomIdx < state.rooms.length - 1) {
             setRoomIndex(roomIdx + 1);
-            setIsRoomGridOpen(false);
         }
     }, [roomIdx, state.rooms.length, setRoomIndex]);
 
@@ -140,37 +139,15 @@ export default function OpnamePage() {
         }
     }, [state.rooms, showToast]);
 
-    // === Sync Jaringan (Tablet -> PC) ===
-    const [isSyncing, setIsSyncing] = useState(false);
+    // === Sync Jaringan (Auto + Manual) ===
     const handleNetworkSync = useCallback(async () => {
-        setIsSyncing(true);
         try {
-            const currentState = {
-                fileName: state.fileName,
-                rooms: state.rooms,
-                currentRoomIndex: state.currentRoomIndex || 0,
-            };
-
-            // Relative URL ensures we hit the exact same IP and Port serving the frontend
-            const data = await fetchJsonWithAuth(apiUrl('/api/sync/result'), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(currentState),
-            });
-
-            showToast('Berhasil Upload ke Jaringan PC!');
+            await manualSync();
+            showToast('Berhasil sinkron!');
         } catch (err) {
-            console.error('Sync Error:', err);
-            showToast(err.message || 'Koneksi Gagal. Pastikan Tablet & PC di WiFi yang sama.', 'error');
-        } finally {
-            setIsSyncing(false);
+            showToast(err.message || 'Gagal sync', 'error');
         }
-    }, [state, showToast]);
-
-    // === Signatures ===
-    // handled by updateSignatures directly in SignatureSection
+    }, [manualSync, showToast]);
 
     if (!room) {
         return (
@@ -189,13 +166,10 @@ export default function OpnamePage() {
         );
     }
 
-
-
     return (
-        <div className="app-main" style={{ width: '100%', maxWidth: '100%', padding: '0 var(--space-4)' }}>
+        <div className="app-main" style={{ width: '100%', maxWidth: '100%', padding: '0 var(--space-4)', paddingBottom: '100px' }}>
             {/* Room Navigation */}
             <div className="wa-room-nav">
-              {/* Prev/Next + select */}
               <div className="wa-room-nav-select-group">
                 <button className="wa-room-nav-btn" onClick={handlePrevRoom} disabled={roomIdx === 0} aria-label="Ruangan sebelumnya">
                   <ChevronLeft size={16} />
@@ -214,93 +188,88 @@ export default function OpnamePage() {
               <div className="wa-room-nav-divider" />
 
               {/* Progress ring + count */}
-              <div className="wa-room-nav-progress-group">
-                <div style={{ position: 'relative', width: 36, height: 36 }}>
-                  <svg width="36" height="36" viewBox="0 0 36 36" style={{ transform: 'rotate(-90deg)' }}>
-                    <circle cx="18" cy="18" r="14" fill="none" stroke="var(--border)" strokeWidth="3" />
-                    <circle cx="18" cy="18" r="14" fill="none" stroke="var(--terracotta-500)" strokeWidth="3" strokeDasharray="87.96" strokeDashoffset={87.96 - (87.96 * progress.pct / 100)} strokeLinecap="round" style={{ transition: 'stroke-dashoffset 400ms cubic-bezier(0.25,1,0.5,1)' }} />
+              <div className="wa-room-nav-progress-group" style={{ gap: '20px', marginLeft: '12px' }}>
+                <div style={{ position: 'relative', width: 72, height: 72 }}>
+                  <svg width="72" height="72" viewBox="0 0 72 72" style={{ transform: 'rotate(-90deg)' }}>
+                    <circle cx="36" cy="36" r="32" fill="none" stroke="var(--neutral-200)" strokeWidth="5" />
+                    <circle cx="36" cy="36" r="32" fill="none" stroke="var(--terracotta-500)" strokeWidth="5" strokeDasharray="201.06" strokeDashoffset={201.06 - (201.06 * progress.pct / 100)} strokeLinecap="round" style={{ transition: 'stroke-dashoffset 400ms cubic-bezier(0.25,1,0.5,1)' }} />
                   </svg>
-                  <div className="wa-room-nav-progress-pct">{progress.pct}%</div>
+                  <div className="wa-room-nav-progress-pct" style={{ fontSize: '16px', fontWeight: 'bold' }}>{progress.pct}%</div>
                 </div>
                 <div>
-                  <div className="wa-room-nav-progress-text" style={{ marginBottom: 2 }}>{progress.checked}/{progress.total}</div>
-                  <div className="wa-room-nav-progress-text">{progress.total - progress.checked} SISA</div>
+                  <div className="wa-room-nav-progress-text" style={{ marginBottom: 4, fontSize: '16px', fontWeight: 'bold' }}>{progress.checked}/{progress.total} SELESAI</div>
+                  <div className="wa-room-nav-progress-text" style={{ fontSize: '13px', color: 'var(--neutral-500)', fontWeight: 600 }}>{progress.total - progress.checked} SISA</div>
                 </div>
               </div>
 
               <div className="wa-room-nav-divider" />
 
               <div className="wa-room-nav-summary" aria-live="polite">
-                <span className="wa-room-nav-summary__current">Ruangan {roomIdx + 1}</span>
-                <span className="wa-room-nav-summary__total">dari {state.rooms.length}</span>
+                <span className="wa-room-nav-summary__current" style={{ fontSize: '16px', fontWeight: 'bold' }}>Ruangan {roomIdx + 1}</span>
+                <span className="wa-room-nav-summary__total" style={{ fontSize: '13px' }}>dari {state.rooms.length}</span>
               </div>
-
-              <button
-                type="button"
-                className="wa-room-nav-toggle"
-                aria-expanded={isRoomGridOpen}
-                onClick={() => setIsRoomGridOpen((current) => !current)}
-              >
-                {isRoomGridOpen ? 'Tutup' : 'Lihat semua'}
-                <ChevronDown size={14} className={isRoomGridOpen ? 'open' : ''} />
-              </button>
-
-              {/* Compact room preview */}
-              <div className="wa-room-nav-dots wa-room-nav-dots--preview" aria-label="Preview nomor ruangan">
-                {visibleRoomItems.map((item) => (
-                  item.type === ROOM_NAV_ELLIPSIS
-                    ? <span key={item.key} className="wa-room-nav-ellipsis">…</span>
-                    : renderRoomNavButton(item.index, 'preview')
-                ))}
-              </div>
-
-              {isRoomGridOpen && (
-                <div className="wa-room-nav-grid-panel" role="region" aria-label="Pilih ruangan opname">
-                  <div className="wa-room-nav-grid">
-                    {state.rooms.map((_, i) => renderRoomNavButton(i, 'grid'))}
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Room Meta Info */}
-            <div className="wa-card wa-room-meta-card">
-              <div className="wa-room-meta-grid">
+            <div className="wa-card wa-room-meta-card" style={{ marginBottom: '24px' }}>
+              <div className="wa-room-meta-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', padding: '16px 20px' }}>
                 <div className="wa-room-meta-col">
-                  <div className="wa-room-meta-label">Ruangan</div>
-                  <div className="wa-room-meta-value">{room.meta.roomName}</div>
+                  <div className="wa-room-meta-label" style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--neutral-500)', letterSpacing: '0.05em', marginBottom: '4px' }}>Ruangan</div>
+                  <div className="wa-room-meta-value" style={{ fontSize: '15px', fontWeight: 600, color: 'var(--charcoal-900)' }}>{room.meta.roomName}</div>
                 </div>
                 <div className="wa-room-meta-col">
-                  <div className="wa-room-meta-label">PIC Ruangan</div>
-                  <div className="wa-room-meta-value">{room.meta.picName || '-'}</div>
+                  <div className="wa-room-meta-label" style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--neutral-500)', letterSpacing: '0.05em', marginBottom: '4px' }}>PIC Ruangan</div>
+                  <div className="wa-room-meta-value" style={{ fontSize: '15px', fontWeight: 600, color: 'var(--charcoal-900)' }}>{room.meta.picName || '-'}</div>
                 </div>
                 <div className="wa-room-meta-col">
-                  <div className="wa-room-meta-label">Periode</div>
-                  <div className="wa-room-meta-value">{room.meta.period}</div>
+                  <div className="wa-room-meta-label" style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--neutral-500)', letterSpacing: '0.05em', marginBottom: '4px' }}>Periode</div>
+                  <div className="wa-room-meta-value" style={{ fontSize: '15px', fontWeight: 600, color: 'var(--charcoal-900)' }}>{room.meta.period}</div>
                 </div>
                 <div className="wa-room-meta-col">
-                  <div className="wa-room-meta-label">Tanggal</div>
-                  <div className="wa-room-meta-value">{room.meta.date || '-'}</div>
+                  <div className="wa-room-meta-label" style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--neutral-500)', letterSpacing: '0.05em', marginBottom: '4px' }}>Tanggal</div>
+                  <div className="wa-room-meta-value" style={{ fontSize: '15px', fontWeight: 600, color: 'var(--charcoal-900)' }}>{room.meta.date || '-'}</div>
                 </div>
               </div>
             </div>
 
             {/* Actions Bar */}
-            <div className="opname-actions-bar" style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 12, flexWrap: 'wrap' }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--charcoal-900)' }}>Daftar Aset</div>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--charcoal-500)' }}>{room.assets.length} ITEM</div>
-              <button className="wa-btn" style={{ background: 'var(--accent-soft)', color: 'var(--terracotta-500)', boxShadow: 'none' }}>◉ TEROPNAME</button>
+            <div className="opname-actions-bar" style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
+              <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--charcoal-900)' }}>Daftar Aset</div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--neutral-500)', background: 'var(--neutral-100)', padding: '2px 8px', borderRadius: '12px' }}>{room.assets.length} ITEM</div>
+              <div className="badge badge--success" style={{ padding: '4px 10px' }}>◉ {progress.checked} TEROPNAME</div>
               <div style={{ flex: 1 }} />
-              <button className="wa-btn" style={{ color: 'var(--danger-700)', background: 'var(--danger-50)', borderColor: 'var(--danger-200)' }} onClick={() => setIsDeleteModalOpen(true)}>Delete Ruangan</button>
-              <button className="wa-btn-ghost" onClick={() => setIsCustomModalOpen(true)}>+ Custom</button>
-              <button className="wa-btn-ghost" onClick={() => setIsSaveModalOpen(true)}>Save / Load</button>
-              <button className="wa-btn" onClick={handleGenerateCurrentPDF} disabled={generating}>
-                {generating ? <Loader2 size={13} className="wa-spin" /> : '↓ PDF'}
+              <button
+                className={`wa-btn-terracotta wa-btn-sync-status wa-btn-sync-status--${syncStatus}`}
+                onClick={handleNetworkSync}
+              >
+                <Wifi size={13} />
+                Auto Sync
               </button>
-              <button className="wa-btn" onClick={handleGenerateAllPDFs} disabled={generating}>
-                {generating ? <Loader2 size={13} className="wa-spin" /> : '↓ Semua PDF'}
-              </button>
-              <button className="wa-btn-terracotta" onClick={handleNetworkSync}>↻ Sync</button>
+
+              <div style={{ position: 'relative' }} ref={optionsMenuRef}>
+                <button 
+                  className="wa-btn-ghost" 
+                  style={{ padding: '8px', minHeight: '34px', minWidth: '34px' }}
+                  onClick={() => setIsOptionsMenuOpen(!isOptionsMenuOpen)}
+                >
+                  <MoreVertical size={16} />
+                </button>
+                {isOptionsMenuOpen && (
+                  <div style={{ 
+                    position: 'absolute', right: 0, top: '100%', marginTop: '4px',
+                    background: 'var(--cream-surface)', border: '1px solid var(--border)',
+                    borderRadius: '8px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+                    width: '180px', zIndex: 50, overflow: 'hidden', padding: '4px'
+                  }}>
+                    <button className="wa-btn-ghost" style={{ width: '100%', justifyContent: 'flex-start', border: 'none', marginBottom: '2px', fontWeight: 500, padding: '8px 12px' }} onClick={() => { setIsOptionsMenuOpen(false); setIsCustomModalOpen(true); }}>+ Custom Ruangan</button>
+                    <button className="wa-btn-ghost" style={{ width: '100%', justifyContent: 'flex-start', border: 'none', marginBottom: '2px', fontWeight: 500, padding: '8px 12px' }} onClick={() => { setIsOptionsMenuOpen(false); setIsSaveModalOpen(true); }}>Save / Load Data</button>
+                    <button className="wa-btn-ghost" style={{ width: '100%', justifyContent: 'flex-start', border: 'none', marginBottom: '2px', fontWeight: 500, padding: '8px 12px' }} onClick={() => { setIsOptionsMenuOpen(false); handleGenerateCurrentPDF(); }}>Download PDF</button>
+                    <button className="wa-btn-ghost" style={{ width: '100%', justifyContent: 'flex-start', border: 'none', marginBottom: '4px', fontWeight: 500, padding: '8px 12px' }} onClick={() => { setIsOptionsMenuOpen(false); handleGenerateAllPDFs(); }}>Semua PDF</button>
+                    <div style={{ height: '1px', background: 'var(--border)', margin: '4px 0' }} />
+                    <button className="wa-btn-ghost" style={{ width: '100%', justifyContent: 'flex-start', border: 'none', color: 'var(--danger-600)', fontWeight: 500, padding: '8px 12px' }} onClick={() => { setIsOptionsMenuOpen(false); setIsDeleteModalOpen(true); }}>Delete Ruangan</button>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Main Asset Table */}
@@ -317,34 +286,31 @@ export default function OpnamePage() {
                         </div>
                     </div>
 
-                    <div className="wa-search" style={{ marginBottom: 12, maxWidth: 380 }}>
-                      <Search size={13} />
+                    <div className="wa-search" style={{ marginBottom: 12, maxWidth: 480 }}>
+                      <Search size={16} />
                       <input inputMode="numeric" pattern="[0-9]*" placeholder="Scan atau ketik barcode aset…" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                     </div>
                 </div>
 
                 {room.isCustomRoom ? (
                     <div className="alert alert--info" style={{ backgroundColor: 'var(--blue-50)', color: 'var(--blue-800)', border: '1px solid var(--blue-200)', borderRadius: '8px', padding: '16px' }}>
-                        <strong>Ruangan Custom:</strong> Ruangan ini ditambahkan secara manual. Gunakan form <b>Asset Tidak Ada di Lokasi (Salah Ruangan)</b> dan <b>Asset Tanpa Barcode</b> di bawah untuk menginput data opname.
+                        <strong>Ruangan Custom:</strong> Ruangan ini ditambahkan secara manual.
                     </div>
                 ) : (
-                    <>
-                        <div className="opname-asset-table-wrapper">
-                            <AssetTable
-                                assets={room.assets}
-                                roomIndex={roomIdx}
-                                onToggleCheck={toggleAssetCheck}
-                                onUpdateField={updateAssetField}
-                                masterDb={masterDb}
-                                onAutofill={autofillAsset}
-                                searchQuery={searchQuery}
-                            />
-                        </div>
-                    </>
+                    <div className="opname-asset-table-wrapper">
+                        <AssetTable
+                            assets={room.assets}
+                            roomIndex={roomIdx}
+                            onToggleCheck={toggleAssetCheck}
+                            onUpdateField={updateAssetField}
+                            masterDb={masterDb}
+                            onAutofill={autofillAsset}
+                            searchQuery={searchQuery}
+                        />
+                    </div>
                 )}
             </div>
 
-            {/* No Barcode Section */}
             <NoBarcodeSection
                 room={room}
                 roomIdx={roomIdx}
@@ -354,7 +320,6 @@ export default function OpnamePage() {
                 masterDb={masterDb}
             />
 
-            {/* Not at Location Section */}
             <NotAtLocationSection
                 room={room}
                 roomIdx={roomIdx}
@@ -365,7 +330,6 @@ export default function OpnamePage() {
                 onCrossRoomCheck={(barcode) => crossRoomCheck(roomIdx, barcode, room.meta.roomName)}
             />
 
-            {/* Signature Section */}
             <SignatureSection
                 room={room}
                 roomIdx={roomIdx}
@@ -374,7 +338,6 @@ export default function OpnamePage() {
 
             <div className="mb-8"></div>
 
-            {/* Modal */}
             <CustomRoomModal 
                 isOpen={isCustomModalOpen} 
                 onClose={() => setIsCustomModalOpen(false)} 
@@ -427,6 +390,31 @@ export default function OpnamePage() {
 
             {/* Toast */}
             {toast && <div className={`toast toast--${toast.type}`}>{toast.msg}</div>}
+
+            {/* Scroll to Top FAB */}
+            {showScrollTop && (
+                <button
+                    onClick={scrollToTop}
+                    className="wa-btn-terracotta"
+                    style={{
+                        position: 'fixed',
+                        bottom: '40px',
+                        right: '24px',
+                        width: '48px',
+                        height: '48px',
+                        borderRadius: '50%',
+                        padding: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                        zIndex: 99,
+                    }}
+                    title="Kembali ke atas"
+                >
+                    <ArrowUp size={24} />
+                </button>
+            )}
         </div>
     );
 }

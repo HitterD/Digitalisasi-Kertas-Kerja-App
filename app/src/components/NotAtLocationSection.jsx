@@ -14,19 +14,12 @@ export default function NotAtLocationSection({ room, roomIdx, addNotAtLocationAs
                         Aset Tidak Ada di Lokasi (Salah Ruangan)
                     </div>
                     <span style={{
-                        fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
-                        padding: '2px 8px', borderRadius: 999, background: 'rgba(220,38,38,0.12)', color: 'var(--danger-500)'
+                        fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
+                        padding: '4px 10px', borderRadius: 999, background: 'rgba(220,38,38,0.12)', color: 'var(--danger-500)'
                     }}>
                         {count} ITEM
                     </span>
                 </div>
-                <button
-                    className="wa-btn"
-                    style={{ background: 'rgba(220,38,38,0.10)', color: 'var(--danger-500)', boxShadow: 'none' }}
-                    onClick={() => addNotAtLocationAsset(roomIdx, room.meta.roomName)}
-                >
-                    <Plus size={14} /> Tambah
-                </button>
             </div>
             <div style={{ padding: '0 12px 12px' }}>
                 <EditableAssetTable
@@ -36,7 +29,8 @@ export default function NotAtLocationSection({ room, roomIdx, addNotAtLocationAs
                     onRemove={removeNotAtLocationAsset}
                     sectionType="notAtLocation"
                     masterDb={masterDb}
-                    onCrossRoomCheck={onCrossRoomCheck}
+                    onCrossRoomCheck={(barcode) => onCrossRoomCheck && onCrossRoomCheck(barcode)}
+                    onAdd={() => addNotAtLocationAsset(roomIdx, room.meta.roomName)}
                 />
             </div>
         </div>

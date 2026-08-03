@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link, useLocation, Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Routes, Route, Link, useLocation, Navigate, Outlet, useNavigate } from 'react-router-dom';
 import { OpnameProvider } from './store/OpnameContext';
 import UploadPage from './pages/UploadPage';
 import OpnamePage from './pages/OpnamePage';
@@ -15,8 +15,10 @@ import './index.css';
 import './extract-opname.css';
 import App3ConsolidationPage from './pages/App3ConsolidationPage';
 import UnifiedMasterDataPage from './pages/UnifiedMasterDataPage';
+import BastPage from './pages/BastPage';
 import { isCapacitor, fetchWithAuth } from './utils/apiConfig';
 import { getAuthStr, clearAuth } from './utils/auth';
+import ThemeToggle from './components/ThemeToggle';
 
 const isNativePlatform = isCapacitor();
 
@@ -91,24 +93,27 @@ function App1Layout() {
       <>
         <header className="wa-app-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <button onClick={handleLogout} title={isNativePlatform ? 'Logout Aplikasi' : 'Kembali ke Menu'}
-              style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center', color: 'var(--charcoal-500)' }}>
+            <button onClick={isNativePlatform ? handleLogout : () => navigate('/')} title={isNativePlatform ? 'Logout Aplikasi' : 'Kembali ke Menu'}
+              style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center', color: 'var(--text-secondary)' }}>
               {isNativePlatform ? <LogOut size={18} color="var(--danger-500)" /> : <ArrowLeft size={18} />}
             </button>
-            <div style={{ width: 1, height: 18, background: 'rgba(26,26,26,0.1)' }} />
+            <div style={{ width: 1, height: 18, background: 'var(--border)' }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ width: 26, height: 26, background: 'var(--charcoal-900)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <ClipboardList size={18} color="var(--terracotta-400)" />
+              <div style={{ width: 26, height: 26, background: 'var(--bg-input)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <ClipboardList size={18} color="var(--accent)" />
               </div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--charcoal-900)', letterSpacing: '-0.01em' }}>Opname Aset</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>Opname Aset</div>
             </div>
             <div className="wa-pill" style={{ marginLeft: 8 }}>
-              <Link to="/app1" className={`wa-pill-item ${isHome ? 'active' : ''}`}><Home size={15} style={{ color: isHome ? 'var(--terracotta-500)' : 'var(--charcoal-400)' }} />Home</Link>
+              <Link to="/app1" className={`wa-pill-item ${isHome ? 'active' : ''}`}><Home size={15} />Home</Link>
               <Link to="/app1/opname" className={`wa-pill-item ${!isHome ? 'active' : ''}`}><ClipboardCheck size={15} />Kertas Kerja</Link>
             </div>
           </div>
-          <div className="wa-btn" onClick={() => setIsSearchOpen(true)} style={{ background: 'var(--charcoal-900)', color: 'var(--cream-surface)', cursor: 'pointer' }}>
-            <Search size={16} strokeWidth={3} /> BARCODE CHECKER
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div className="wa-btn" onClick={() => setIsSearchOpen(true)} style={{ background: 'var(--text-primary)', color: 'var(--bg-primary)', cursor: 'pointer' }}>
+              <Search size={16} strokeWidth={3} /> BARCODE CHECKER
+            </div>
+            <ThemeToggle />
           </div>
         </header>
         <BarcodeSearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
@@ -123,35 +128,42 @@ function App2Layout() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
-    <>
-      <header className="wa-app-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          <Link to="/" style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center', color: 'var(--charcoal-500)' }}>
-            <ArrowLeft size={18} />
-          </Link>
-          <div style={{ width: 1, height: 18, background: 'rgba(26,26,26,0.1)' }} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <div style={{ width: 26, height: 26, background: 'var(--charcoal-900)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <FileSpreadsheet size={18} color="var(--terracotta-400)" />
+    <OpnameProvider>
+      <>
+        <header className="wa-app-header">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <Link to="/" style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center', color: 'var(--text-secondary)' }}>
+              <ArrowLeft size={18} />
+            </Link>
+            <div style={{ width: 1, height: 18, background: 'var(--border)' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ width: 26, height: 26, background: 'var(--bg-input)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <FileSpreadsheet size={18} color="var(--accent)" />
+              </div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>Extract &amp; MAT</div>
             </div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--charcoal-900)', letterSpacing: '-0.01em' }}>Extract &amp; MAT</div>
           </div>
-        </div>
-        <div className="wa-btn" onClick={() => setIsSearchOpen(true)} style={{ background: 'var(--charcoal-900)', color: 'var(--cream-surface)', cursor: 'pointer' }}>
-          <Search size={16} strokeWidth={3} /> BARCODE CHECKER
-        </div>
-      </header>
-      <BarcodeSearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
-      <Outlet />
-    </>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div className="wa-btn" onClick={() => setIsSearchOpen(true)} style={{ background: 'var(--text-primary)', color: 'var(--bg-primary)', cursor: 'pointer' }}>
+              <Search size={16} strokeWidth={3} /> BARCODE CHECKER
+            </div>
+            <ThemeToggle />
+          </div>
+        </header>
+        <BarcodeSearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+        <Outlet />
+      </>
+    </OpnameProvider>
   );
 }
 
 /* ---- Main App ---- */
 export default function App() {
+  const RouterComponent = isNativePlatform ? HashRouter : BrowserRouter;
+
   return (
     <ErrorBoundary>
-      <BrowserRouter>
+      <RouterComponent>
         <AuthRefresher />
         <Routes>
           {/* Public */}
@@ -194,10 +206,13 @@ export default function App() {
             <Route path="/dashboard" element={<RequireAuth requiredApp="app3"><DashboardPage /></RequireAuth>} />
           )}
 
+          {/* Modul 06 — Berita Acara Serah Terima (BAST) */}
+          <Route path="/bast" element={<RequireAuth><BastPage /></RequireAuth>} />
+
           {/* Catch-all */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </BrowserRouter>
+      </RouterComponent>
     </ErrorBoundary>
   );
 }

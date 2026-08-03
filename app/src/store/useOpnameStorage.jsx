@@ -132,7 +132,11 @@ export function useOpnameStorage({ state, dispatch }) {
     }, []);
 
     const importData = useCallback((importedState) => {
-        const payload = { ...importedState, isLoaded: true };
+        const payload = {
+            ...importedState,
+            currentRoomIndex: importedState.currentRoomIndex ?? 0,
+            isLoaded: true
+        };
         saveOpnameData(STORAGE_KEY, payload);
         dispatch({ type: 'LOAD_SAVED', payload });
     }, [dispatch]);

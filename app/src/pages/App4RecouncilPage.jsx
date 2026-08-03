@@ -164,38 +164,31 @@ export default function App4RecouncilPage() {
     const allFilesReady = files.opname.length > 0 && files.master;
 
     return (
-        <div style={{ padding: '32px', maxWidth: '1400px', margin: '0 auto' }}>
-            <div className="upload-dashboard-bento" style={{ gap: '24px' }}>
+        <div className="app3-page app4-page-lite">
+            <div className="app3-container">
+                <div className="upload-dashboard-bento" style={{ gap: '24px' }}>
 
                 {/* Hero Header */}
-                <div className="bento-header" style={{ marginBottom: '16px', flexDirection: 'column', alignItems: 'flex-start', borderBottom: '3px solid var(--charcoal-900)', paddingBottom: '24px' }}>
-                    <div style={{
-                        display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px',
-                        background: 'var(--charcoal-900)', color: 'var(--terracotta-500)',
-                        fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 800,
-                        textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px'
-                    }}>
-                        <Activity size={14} color="var(--terracotta-500)" /> Final Evaluation Module
-                    </div>
-                    <h1 className="bento-title" style={{ fontSize: '32px', marginBottom: '12px' }}>
-                        Recouncil <span style={{ color: 'var(--terracotta-500)' }}>Intelligence</span>
-                    </h1>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--charcoal-500)', maxWidth: '800px', lineHeight: 1.6 }}>
-                        Modul mitigasi otomatis menyilangkan (Left-Join) data Lapangan (Opname) dengan Master Data Oracle.
-                        Mengkalkulasi <strong style={{ color: 'var(--charcoal-900)' }}>Barcode loss</strong>, <strong style={{ color: 'var(--charcoal-900)' }}>Perbedaan Ruangan</strong>, dan <strong style={{ color: 'var(--charcoal-900)' }}>Status Kesesuaian</strong>.
+                <div className="app3-hero app4-hero-lite">
+                  <div>
+                    <div className="app3-eyebrow"><Activity size={14} /> APP4 · EVALUATION</div>
+                    <h1 className="app3-title">Evaluation Recouncil</h1>
+                    <p className="app3-copy">
+                      Bandingkan hasil opname dengan master data terbaru. Upload file wajib, tambahkan ASPxGridView bila ada, lalu generate hasil evaluasi.
                     </p>
+                  </div>
                 </div>
 
                 {successMsg && (
-                    <div className="wa-status success" style={{ padding: 12, background: 'rgba(22,163,74,0.05)', border: '1px solid rgba(22,163,74,0.2)', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 10, marginBottom: '24px' }}>
-                        <CheckCircle2 size={16} color="var(--success-500)" />
-                        <div style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, fontSize: 13, color: 'var(--success-800)' }}>{successMsg}</div>
+                    <div className="app3-alert app3-alert--success" role="status">
+                        <CheckCircle2 size={18} />
+                        <span>{successMsg}</span>
                     </div>
                 )}
                 {errorMsg && (
-                    <div className="wa-status danger" style={{ padding: 12, background: 'rgba(220,38,38,0.05)', border: '1px solid rgba(220,38,38,0.2)', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 10, marginBottom: '24px' }}>
-                        <FileWarning size={16} color="var(--danger-500)" />
-                        <div style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, fontSize: 13, color: 'var(--danger-800)' }}>{errorMsg}</div>
+                    <div className="app3-alert app3-alert--danger" role="alert">
+                        <FileWarning size={18} />
+                        <span>{errorMsg}</span>
                     </div>
                 )}
 
@@ -281,6 +274,7 @@ export default function App4RecouncilPage() {
                     </div>
                 </div>
 
+            </div>
             </div>
         </div>
     );

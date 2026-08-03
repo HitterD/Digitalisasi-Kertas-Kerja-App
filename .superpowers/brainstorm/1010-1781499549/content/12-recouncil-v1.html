@@ -1,0 +1,249 @@
+<style>
+  .rc-card { transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1), border-color 220ms ease; }
+  .rc-card:hover { transform: translateY(-2px); border-color: rgba(26,26,26,0.14) !important; box-shadow: 0 2px 4px rgba(45,45,45,0.04), 0 14px 30px rgba(45,45,45,0.08) !important; }
+
+  .rc-row { transition: background 140ms ease; }
+  .rc-row:hover { background: rgba(201,100,66,0.04) !important; }
+  .rc-row.matched { background: rgba(22,163,74,0.04) !important; }
+  .rc-row.matched td:first-child { box-shadow: inset 3px 0 0 0 #16a34a; }
+  .rc-row.missing { background: rgba(220,38,38,0.04) !important; }
+  .rc-row.missing td:first-child { box-shadow: inset 3px 0 0 0 #dc2626; }
+  .rc-row.extra { background: rgba(217,119,6,0.04) !important; }
+  .rc-row.extra td:first-child { box-shadow: inset 3px 0 0 0 #d97706; }
+
+  .rc-zone { transition: all 220ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .rc-zone:hover { border-color: #C96442 !important; background: #FDFCF7 !important; transform: translateY(-2px); }
+  .rc-zone:hover .rc-zone-icon { background: rgba(201,100,66,0.10); color: #C96442; }
+  .rc-zone-icon { transition: all 220ms ease; }
+  .rc-zone.loaded { border-color: #16a34a !important; background: rgba(22,163,74,0.04) !important; }
+  .rc-zone.loaded .rc-zone-icon { background: rgba(22,163,74,0.10); color: #16a34a; }
+
+  .rc-cta { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .rc-cta:hover { background: #2A2A2A !important; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+  .rc-cta:disabled { opacity: 0.4; cursor: not-allowed; }
+  .rc-cta:disabled:hover { background: #1A1A1A !important; transform: none; box-shadow: none; }
+
+  .rc-terracotta { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .rc-terracotta:hover { background: #D87554 !important; transform: translateY(-1px); box-shadow: 0 6px 14px rgba(201,100,66,0.30); }
+  .rc-terracotta:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .rc-ghost { transition: all 180ms ease; cursor: pointer; }
+  .rc-ghost:hover { background: #FDFCF7 !important; border-color: #1A1A1A !important; color: #1A1A1A !important; }
+
+  .rc-barcode-btn { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .rc-barcode-btn:hover { background: #C96442 !important; color: #FDFCF7 !important; transform: translateY(-1px); box-shadow: 0 6px 14px rgba(201,100,66,0.25); }
+
+  .rc-tab { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .rc-tab:hover { background: rgba(26,26,26,0.04); }
+  .rc-tab.active { background: #1A1A1A; color: #FDFCF7; }
+  .rc-tab.active .rc-tab-num { background: #C96442; }
+
+  .rc-pill { display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:700; letter-spacing:0.1em; }
+  .rc-pill.match { background:rgba(22,163,74,0.10); color:#16a34a; }
+  .rc-pill.miss { background:rgba(220,38,38,0.10); color:#dc2626; }
+  .rc-pill.extra { background:rgba(217,119,6,0.10); color:#d97706; }
+</style>
+
+<h2>App4 — Recouncil (Rekonsiliasi)</h2>
+<p class="subtitle">Upload 3 jenis file (Opname multi-file + Master + ASPx), proses, sistem tampilkan tabel rekonsiliasi dengan status match / missing / extra per record. Bahasa visual sama dengan App3.</p>
+
+<div class="mockup">
+  <div class="mockup-header">Preview: /app4 (Recouncil) — state "siap proses"</div>
+  <div class="mockup-body" style="background:#F5EFE6;padding:0;font-family:'Sora',system-ui,sans-serif;">
+
+    <!-- In-app header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:rgba(253,251,247,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(26,26,26,0.06);">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <button style="background:transparent;border:none;cursor:pointer;padding:4px;color:#6B6660;display:flex;align-items:center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        </button>
+        <div style="width:1px;height:18px;background:rgba(26,26,26,0.1);"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:26px;height:26px;background:#1A1A1A;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#C96442;letter-spacing:0.05em;">KKD</div>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Master Data &amp; Recouncil</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.1em;text-transform:uppercase;">Reconciliation Engine</div>
+          </div>
+        </div>
+      </div>
+      <div class="rc-barcode-btn" style="display:flex;align-items:center;gap:8px;background:#1A1A1A;color:#FDFCF7;border-radius:8px;padding:8px 14px;font-size:11px;font-weight:600;letter-spacing:0.05em;border:none;font-family:inherit;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        BARCODE CHECKER
+      </div>
+    </div>
+
+    <!-- Tab strip -->
+    <div style="display:flex;align-items:center;gap:0;padding:14px 24px 0;background:#F5EFE6;">
+      <div class="rc-tab" style="display:flex;align-items:center;gap:10px;padding:10px 18px;border-radius:10px 10px 0 0;font-size:12px;font-weight:600;color:#8B8580;font-family:inherit;">
+        <div class="rc-tab-num" style="width:22px;height:22px;border-radius:6px;background:rgba(26,26,26,0.06);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;">1</div>
+        Consolidation
+      </div>
+      <div style="width:1px;height:18px;background:rgba(26,26,26,0.1);margin:0 4px;"></div>
+      <div class="rc-tab active" style="display:flex;align-items:center;gap:10px;padding:10px 18px;border-radius:10px 10px 0 0;font-size:12px;font-weight:600;font-family:inherit;">
+        <div class="rc-tab-num" style="width:22px;height:22px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;">2</div>
+        Recouncil
+      </div>
+      <div style="flex:1;border-bottom:1px solid rgba(26,26,26,0.08);"></div>
+    </div>
+
+    <div style="padding:14px 24px 24px;background:#F5EFE6;">
+
+      <!-- Page header -->
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px;">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.2em;text-transform:uppercase;">Modul 03 · Database</div>
+          <div style="font-size:22px;font-weight:600;color:#1A1A1A;letter-spacing:-0.02em;margin-top:4px;">Tahap 2 — Rekonsiliasi</div>
+          <div style="font-size:12px;color:#6B6660;margin-top:6px;max-width:520px;line-height:1.5;">Bandingkan Master dengan data opname. Sistem deteksi match, missing (di master tidak ada di opname), dan extra (ada di opname tidak ada di master).</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="rc-ghost" style="display:flex;align-items:center;gap:6px;background:transparent;color:#1A1A1A;border:1px solid rgba(26,26,26,0.12);border-radius:8px;padding:9px 14px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;">Reset</button>
+          <button class="rc-terracotta" style="display:flex;align-items:center;gap:6px;background:#C96442;color:#FDFCF7;border:none;border-radius:8px;padding:9px 16px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;box-shadow:0 2px 6px rgba(201,100,66,0.2);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Proses Recouncil
+          </button>
+        </div>
+      </div>
+
+      <!-- 3 file upload zones -->
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px;margin-bottom:16px;">
+
+        <div class="rc-zone loaded" style="border:1.5px dashed rgba(26,26,26,0.12);border-radius:12px;padding:18px;background:transparent;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.18em;text-transform:uppercase;font-weight:600;">File Opname</div>
+            <div class="rc-zone-icon" style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(26,26,26,0.04);color:#1A1A1A;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+          </div>
+          <div style="font-size:12px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;margin-bottom:4px;">3 file dimuat</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#16a34a;font-weight:600;letter-spacing:0.08em;">✓ SIAP PROSES</div>
+        </div>
+
+        <div class="rc-zone loaded" style="border:1.5px dashed rgba(26,26,26,0.12);border-radius:12px;padding:18px;background:transparent;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.18em;text-transform:uppercase;font-weight:600;">Master DB</div>
+            <div class="rc-zone-icon" style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(26,26,26,0.04);color:#1A1A1A;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+            </div>
+          </div>
+          <div style="font-size:12px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;margin-bottom:4px;">Master_v3.xlsx</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#16a34a;font-weight:600;letter-spacing:0.08em;">✓ 1.247 RECORD</div>
+        </div>
+
+        <div class="rc-zone" style="border:1.5px dashed rgba(26,26,26,0.12);border-radius:12px;padding:18px;background:transparent;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.18em;text-transform:uppercase;font-weight:600;">ASPx Grid</div>
+            <div class="rc-zone-icon" style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(26,26,26,0.04);color:#1A1A1A;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            </div>
+          </div>
+          <div style="font-size:12px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;margin-bottom:4px;font-style:italic;color:#8B8580;">Belum dimuat</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.08em;">OPSIONAL</div>
+        </div>
+
+      </div>
+
+      <!-- Summary strip (visible after process) -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">
+        <div style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:10px;padding:12px 16px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;">Match</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-top:3px;">
+            <span style="font-size:20px;font-weight:700;color:#16a34a;letter-spacing:-0.01em;">1.218</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;letter-spacing:0.05em;">97.7%</span>
+          </div>
+        </div>
+        <div style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:10px;padding:12px 16px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;">Missing</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-top:3px;">
+            <span style="font-size:20px;font-weight:700;color:#dc2626;letter-spacing:-0.01em;">19</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;letter-spacing:0.05em;">di Master</span>
+          </div>
+        </div>
+        <div style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:10px;padding:12px 16px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;">Extra</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-top:3px;">
+            <span style="font-size:20px;font-weight:700;color:#d97706;letter-spacing:-0.01em;">10</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;letter-spacing:0.05em;">di Opname</span>
+          </div>
+        </div>
+        <div style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:10px;padding:12px 16px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;">Total</div>
+          <div style="font-size:20px;font-weight:700;color:#1A1A1A;letter-spacing:-0.01em;margin-top:3px;">1.247</div>
+        </div>
+      </div>
+
+      <!-- Recouncil result table -->
+      <div class="rc-card" style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(45,45,45,0.03),0 6px 18px rgba(45,45,45,0.04);">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <thead>
+            <tr style="background:#FAF6EF;">
+              <th style="padding:11px 12px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">BARCODE</th>
+              <th style="padding:11px 12px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">NAMA ASET</th>
+              <th style="padding:11px 12px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">MASTER</th>
+              <th style="padding:11px 12px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">OPNAME</th>
+              <th style="padding:11px 12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">STATUS</th>
+            </tr>
+          </thead>
+          <tbody style="font-family:'Sora',sans-serif;color:#1A1A1A;">
+            <tr class="rc-row matched">
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#C96442;letter-spacing:0.02em;">230300995</td>
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-size:12px;font-weight:500;">XIAOMI REDMI PAD 6/128 GB</td>
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#16a34a;">✓ Ada</td>
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#16a34a;">✓ Ada</td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><span class="rc-pill match">● MATCH</span></td>
+            </tr>
+            <tr class="rc-row missing">
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#C96442;letter-spacing:0.02em;">230401001</td>
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-size:12px;font-weight:500;">LAPTOP LENOVO THINKPAD T14</td>
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#16a34a;">✓ Ada</td>
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#dc2626;">✗ Tidak</td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><span class="rc-pill miss">● MISSING</span></td>
+            </tr>
+            <tr class="rc-row extra">
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#C96442;letter-spacing:0.02em;">230499988</td>
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-size:12px;font-weight:500;">PRINTER EPSON L3210</td>
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#dc2626;">✗ Tidak</td>
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#16a34a;">✓ Ada</td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><span class="rc-pill extra">● EXTRA</span></td>
+            </tr>
+            <tr class="rc-row matched">
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#C96442;letter-spacing:0.02em;">240100166</td>
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-size:12px;font-weight:500;">XIAOMI REDMI PAD SE 4/128GB</td>
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#16a34a;">✓ Ada</td>
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#16a34a;">✓ Ada</td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><span class="rc-pill match">● MATCH</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:#FAF6EF;border-top:1px solid rgba(26,26,26,0.06);font-family:'JetBrains Mono',monospace;font-size:10px;color:#6B6660;letter-spacing:0.05em;">
+          <span>MENAMPILKAN 4 DARI 1.247 · 1.218 MATCH · 19 MISS · 10 EXTRA</span>
+          <span style="display:flex;align-items:center;gap:14px;">‹ 1 <span style="color:#1A1A1A;font-weight:700;">2</span> 3 4 5 ›</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Struktur</h3>
+  <ol>
+    <li><b>In-app header</b> (sama): KKD + "Master Data &amp; Recouncil" + Reconciliation Engine + BARCODE CHECKER</li>
+    <li><b>Tab strip</b>: Consolidation (non-aktif) | Recouncil (aktif charcoal)</li>
+    <li><b>Page header</b>: display title + 2 tombol (Reset + Proses Recouncil terracotta)</li>
+    <li><b>3 upload zone</b>: Opname multi-file (1.4fr) + Master (1fr) + ASPx opsional (1fr). Zone yang sudah dimuat = border + bg hijau pucat. Hover = border terracotta.</li>
+    <li><b>Summary 4-kolom</b>: Match (hijau) / Missing (merah) / Extra (amber) / Total</li>
+    <li><b>Recouncil table</b>: Barcode + Nama + Master (✓/✗) + Opname (✓/✗) + Status pill</li>
+  </ol>
+  <h3 style="margin-top:18px;">Animasi</h3>
+  <ul>
+    <li>Upload zone loaded: hijau pucat dengan border hijau, hover = terracotta</li>
+    <li>Row matched: hijau tint, missing: merah, extra: amber (3px strip kiri)</li>
+    <li>Status pill: dot warna solid + label uppercase</li>
+    <li>Tombol Proses Recouncil: terracotta primary dengan lift animation</li>
+    <li>Card lift on hover (220ms)</li>
+  </ul>
+</div>
+
+<p class="subtitle" style="margin-top:20px;">Hover zone, row, dan tombol. Balas di terminal.</p>

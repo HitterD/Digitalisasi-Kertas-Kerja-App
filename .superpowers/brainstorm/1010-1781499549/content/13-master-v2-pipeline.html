@@ -1,0 +1,207 @@
+<style>
+  .md2-card { transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1), border-color 220ms ease; }
+  .md2-card:hover { transform: translateY(-2px); border-color: rgba(26,26,26,0.14) !important; box-shadow: 0 2px 4px rgba(45,45,45,0.04), 0 14px 30px rgba(45,45,45,0.08) !important; }
+
+  .md2-tab { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .md2-tab:hover { background: rgba(26,26,26,0.04); }
+  .md2-tab.active { background: #1A1A1A; color: #FDFCF7; }
+  .md2-tab.active .md2-tab-num { background: #C96442; color: #FDFCF7; }
+  .md2-tab-num { transition: background 200ms ease; }
+
+  .md2-cta { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .md2-cta:hover { background: #2A2A2A !important; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+  .md2-cta:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .md2-terracotta { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .md2-terracotta:hover { background: #D87554 !important; transform: translateY(-1px); box-shadow: 0 6px 14px rgba(201,100,66,0.30); }
+  .md2-terracotta:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .md2-ghost { transition: all 180ms ease; cursor: pointer; }
+  .md2-ghost:hover { background: #FDFCF7 !important; border-color: #1A1A1A !important; color: #1A1A1A !important; }
+
+  .md2-barcode-btn { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .md2-barcode-btn:hover { background: #C96442 !important; color: #FDFCF7 !important; transform: translateY(-1px); box-shadow: 0 6px 14px rgba(201,100,66,0.25); }
+
+  .md2-zone { transition: all 220ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; position: relative; }
+  .md2-zone:hover { border-color: #C96442 !important; background: #FDFCF7 !important; transform: translateY(-3px); box-shadow: 0 4px 8px rgba(45,45,45,0.04), 0 10px 24px rgba(201,100,66,0.08) !important; }
+  .md2-zone:hover .md2-zone-icon { background: rgba(201,100,66,0.10); color: #C96442; transform: scale(1.1); }
+  .md2-zone-icon { transition: all 220ms ease; }
+  .md2-zone.loaded { border-color: rgba(22,163,74,0.5) !important; background: rgba(22,163,74,0.04) !important; }
+  .md2-zone.loaded .md2-zone-icon { background: rgba(22,163,74,0.10); color: #16a34a; }
+  .md2-zone.optional { border-color: rgba(26,26,26,0.08) !important; }
+  .md2-zone.optional:hover { border-color: #C96442 !important; }
+</style>
+
+<h2>App3 v2 — Tahap 1 (Pipeline Ingestion) + Consolidation Result</h2>
+<p class="subtitle">Menjawab: "upload file-nya di sisi mana?" — Jawab: ada di <b>atas halaman, sebagai step 1 Pipeline Ingestion</b>. Setelah klik "Ekstrak Filter Kategori", ganti jadi tabel Consolidation. Mockup ini tampilkan step 1 (upload), step 2 (result) adalah mockup sebelumnya (v11).</p>
+
+<div class="mockup">
+  <div class="mockup-header">Preview: /app3 Tahap 1 — Pipeline Ingestion (state: 3 file dimuat, 1 opsional)</div>
+  <div class="mockup-body" style="background:#F5EFE6;padding:0;font-family:'Sora',system-ui,sans-serif;">
+
+    <!-- In-app header (sama) -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:rgba(253,251,247,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(26,26,26,0.06);">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <button style="background:transparent;border:none;cursor:pointer;padding:4px;color:#6B6660;display:flex;align-items:center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        </button>
+        <div style="width:1px;height:18px;background:rgba(26,26,26,0.1);"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:26px;height:26px;background:#1A1A1A;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#C96442;letter-spacing:0.05em;">KKD</div>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Master Data &amp; Recouncil</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.1em;text-transform:uppercase;">Pipeline &amp; Consolidation</div>
+          </div>
+        </div>
+      </div>
+      <div class="md2-barcode-btn" style="display:flex;align-items:center;gap:8px;background:#1A1A1A;color:#FDFCF7;border-radius:8px;padding:8px 14px;font-size:11px;font-weight:600;letter-spacing:0.05em;border:none;font-family:inherit;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        BARCODE CHECKER
+      </div>
+    </div>
+
+    <!-- Tab strip -->
+    <div style="display:flex;align-items:center;gap:0;padding:14px 24px 0;background:#F5EFE6;">
+      <div class="md2-tab active" style="display:flex;align-items:center;gap:10px;padding:10px 18px;border-radius:10px 10px 0 0;font-size:12px;font-weight:600;letter-spacing:0.02em;font-family:inherit;">
+        <div class="md2-tab-num" style="width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,0.15);color:inherit;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;">1</div>
+        Consolidation
+      </div>
+      <div style="width:1px;height:18px;background:rgba(26,26,26,0.1);margin:0 4px;"></div>
+      <div class="md2-tab" style="display:flex;align-items:center;gap:10px;padding:10px 18px;border-radius:10px 10px 0 0;font-size:12px;font-weight:600;letter-spacing:0.02em;color:#8B8580;font-family:inherit;">
+        <div class="md2-tab-num" style="width:22px;height:22px;border-radius:6px;background:rgba(26,26,26,0.06);color:inherit;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;">2</div>
+        Recouncil
+      </div>
+      <div style="flex:1;border-bottom:1px solid rgba(26,26,26,0.08);"></div>
+    </div>
+
+    <div style="padding:14px 24px 24px;background:#F5EFE6;">
+
+      <!-- Page header -->
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px;">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.2em;text-transform:uppercase;">Modul 03 · Database</div>
+          <div style="font-size:22px;font-weight:600;color:#1A1A1A;letter-spacing:-0.02em;margin-top:4px;">Master Data <span style="color:#C96442;">Consolidation</span></div>
+          <div style="font-size:12px;color:#6B6660;margin-top:6px;max-width:560px;line-height:1.5;">Harmonisasi dokumen EXA, ADD, dan INV menjadi satu <i>single source of truth</i>. Mendukung smart multi-barcode dan auto-archive.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="md2-ghost" style="display:flex;align-items:center;gap:6px;background:transparent;color:#1A1A1A;border:1px solid rgba(26,26,26,0.12);border-radius:8px;padding:9px 14px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;">Bersihkan</button>
+          <button class="md2-terracotta" style="display:flex;align-items:center;gap:6px;background:#C96442;color:#FDFCF7;border:none;border-radius:8px;padding:9px 18px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;box-shadow:0 2px 6px rgba(201,100,66,0.2);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            Ekstrak Filter Kategori
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 1: PIPELINE INGESTION CARD -->
+      <div class="md2-card" style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:14px;padding:0;box-shadow:0 1px 2px rgba(45,45,45,0.03),0 6px 18px rgba(45,45,45,0.04);margin-bottom:16px;overflow:hidden;">
+        <!-- Card header -->
+        <div style="display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid rgba(26,26,26,0.06);">
+          <div style="width:28px;height:28px;background:#1A1A1A;color:#FDFCF7;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;">1</div>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Pipeline Ingestion</div>
+            <div style="font-size:11px;color:#6B6660;margin-top:2px;">Unggah file sumber untuk diekstrak filternya.</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;letter-spacing:0.08em;">3 DIMUAT · 1 OPSIONAL</div>
+            <div style="width:6px;height:6px;background:#16a34a;border-radius:50%;"></div>
+          </div>
+        </div>
+
+        <!-- Upload zones (4) -->
+        <div style="padding:18px 22px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+
+          <!-- Zone 1: Master Eksisting (loaded) -->
+          <div class="md2-zone loaded" style="border:1.5px dashed rgba(26,26,26,0.12);border-radius:10px;padding:18px;text-align:center;background:transparent;">
+            <div class="md2-zone-icon" style="width:42px;height:42px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(26,26,26,0.04);color:#1A1A1A;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+            </div>
+            <div style="font-size:12.5px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Master Eksisting</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#16a34a;font-weight:600;letter-spacing:0.08em;margin-top:5px;">✓ ARSIP_DB_2025Q4</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.05em;margin-top:2px;">opsional · arsip</div>
+          </div>
+
+          <!-- Zone 2: Sumber EXA (loaded) -->
+          <div class="md2-zone loaded" style="border:1.5px dashed rgba(26,26,26,0.12);border-radius:10px;padding:18px;text-align:center;background:transparent;">
+            <div class="md2-zone-icon" style="width:42px;height:42px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(26,26,26,0.04);color:#1A1A1A;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            </div>
+            <div style="font-size:12.5px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Sumber EXA</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#16a34a;font-weight:600;letter-spacing:0.08em;margin-top:5px;">✓ EXA_2026_JUNI.xlsx</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.05em;margin-top:2px;">412 record</div>
+          </div>
+
+          <!-- Zone 3: Sumber ADD (loaded) -->
+          <div class="md2-zone loaded" style="border:1.5px dashed rgba(26,26,26,0.12);border-radius:10px;padding:18px;text-align:center;background:transparent;">
+            <div class="md2-zone-icon" style="width:42px;height:42px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(26,26,26,0.04);color:#1A1A1A;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+            </div>
+            <div style="font-size:12.5px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Sumber ADD</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#16a34a;font-weight:600;letter-spacing:0.08em;margin-top:5px;">✓ ADD_2026.xlsx</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.05em;margin-top:2px;">238 record</div>
+          </div>
+
+        </div>
+
+        <!-- Second row: INV (not loaded) — full width below -->
+        <div style="padding:0 22px 18px 22px;">
+          <div class="md2-zone" style="border:1.5px dashed rgba(26,26,26,0.12);border-radius:10px;padding:18px 24px;background:transparent;display:flex;align-items:center;gap:18px;">
+            <div class="md2-zone-icon" style="width:42px;height:42px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(26,26,26,0.04);color:#1A1A1A;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+            </div>
+            <div style="flex:1;">
+              <div style="font-size:12.5px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Sumber INV</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.08em;margin-top:3px;">DRAG &amp; DROP ATAU KLIK UNTUK UPLOAD FILE INV</div>
+            </div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.1em;padding:4px 10px;background:rgba(26,26,26,0.04);border-radius:999px;">BELUM DIMUAT</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary strip (akan terisi setelah Ekstrak) -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">
+        <div style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:10px;padding:12px 16px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;">File Dimuat</div>
+          <div style="font-size:20px;font-weight:700;color:#1A1A1A;letter-spacing:-0.01em;margin-top:3px;">3<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B8580;font-weight:500;margin-left:4px;">/ 4</span></div>
+        </div>
+        <div style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:10px;padding:12px 16px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;">Total Record</div>
+          <div style="font-size:20px;font-weight:700;color:#1A1A1A;letter-spacing:-0.01em;margin-top:3px;display:flex;align-items:baseline;gap:4px;">650<span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;font-weight:500;">siap</span></div>
+        </div>
+        <div style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:10px;padding:12px 16px;opacity:0.55;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;">Duplikat</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;font-weight:500;margin-top:6px;letter-spacing:0.05em;">SETELAH PROSES</div>
+        </div>
+        <div style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:10px;padding:12px 16px;opacity:0.55;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;">Unik Bersih</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;font-weight:500;margin-top:6px;letter-spacing:0.05em;">SETELAH PROSES</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Jawaban: upload file di sisi mana?</h3>
+  <p style="font-size:13px;line-height:1.6;color:#1A1A1A;margin:8px 0 14px 0;">
+    Di desain baru App3 (Tahap 1 — Consolidation), upload file ada di <b style="color:#C96442;">card "Pipeline Ingestion" di atas halaman</b>, di bawah page header. Setelah klik "Ekstrak Filter Kategori", card ini collapse (sticky minimized) dan tabel Consolidation muncul di bawahnya.
+  </p>
+  <h3>Struktur upload card</h3>
+  <ol>
+    <li><b>Card header</b> (1 baris): nomor step 01 + "Pipeline Ingestion" + sub-descripsi + status count (3 dimuat, 1 opsional) + dot hijau</li>
+    <li><b>Upload zones</b> (3 kolom: Master Eksisting, Sumber EXA, Sumber ADD) — 1.5px dashed border, icon-wrap dengan transition, hover = border terracotta + lift -3px</li>
+    <li><b>Sumber INV</b> (full-width baris ke-2) — zona horizontal lebih lebar untuk file besar, dengan status pill "BELUM DIMUAT"</li>
+    <li>Loaded state: border hijau 50%, bg hijau pucat 4%, icon stroke hijau</li>
+  </ol>
+  <h3 style="margin-top:18px;">Animasi</h3>
+  <ul>
+    <li>Zone hover: border terracotta, bg cream, lift -3px, soft shadow oranye pucat, icon scale 1.1</li>
+    <li>Loaded zone: pulse halus pada dot hijau (seperti RECENT dot di bento)</li>
+    <li>Tombol "Ekstrak Filter Kategori" terracotta: lift -1px + shadow oranye 6px saat hover, scale 0.97 saat click</li>
+    <li>Setelah proses: card ini collapse jadi strip kecil sticky di atas, tabel muncul dengan fade-in 250ms</li>
+  </ul>
+</div>
+
+<p class="subtitle" style="margin-top:20px;">Hover ke upload zone yang sudah dimuat (hijau) dan yang belum (abu-abu). Balas di terminal.</p>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, ArrowRight, AlertTriangle } from 'lucide-react';
 import { fetchMatHistory } from '../utils/matApi';
 import './MatHistoryModal.css';
@@ -28,6 +29,7 @@ function formatDate(value) {
 export default function MatHistoryModal({ barcode, namaAset, isOpen, onClose }) {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
+    const [approvalTemplates, setApprovalTemplates] = useState([]);
     const [hasActiveMAT, setHasActiveMAT] = useState(false);
     const [error, setError] = useState(null);
 
@@ -44,6 +46,7 @@ export default function MatHistoryModal({ barcode, namaAset, isOpen, onClose }) 
             .then((res) => {
                 if (cancelled) return;
                 setData(res.data || []);
+                setApprovalTemplates(res.approvalTemplates || []);
                 setHasActiveMAT(res.hasActiveMAT || false);
             })
             .catch((err) => {
@@ -59,7 +62,7 @@ export default function MatHistoryModal({ barcode, namaAset, isOpen, onClose }) 
 
     if (!isOpen) return null;
 
-    return (
+    const modalContent = (
         <div className="mhm-overlay" onClick={onClose} role="presentation">
             <div
                 className="mhm-modal"
@@ -109,94 +112,184 @@ export default function MatHistoryModal({ barcode, namaAset, isOpen, onClose }) 
                     )}
 
                     {!loading && !error && data.length > 0 && (
-                        <div className="mhm-timeline">
+                        <div className="mhm-timeline-container">
                             {data.map((item, idx) => {
-                                const isActive = !INACTIVE_STATUSES.includes(
-                                    (item.STATUS || '').toUpperCase()
-                                );
+                                const isActive = !INACTIVE_STATUSES.includes((item.STATUS || '').toUpperCase());
+                                const isCompleted = (item.STATUS || '').toUpperCase() === 'COMPLETED';
+                                const isRejected = (item.STATUS || '').toUpperCase() === 'REJECTED';
+
+                                const steps = [];
+
+                                // 1. Dibuat (Pembuat)
+                                steps.push({
+                                    id: 'step-maker',
+                                    title: `Dibuat (Ruang ${item.ASAL_RUANGAN_ID || '-'})`,
+                                    subtitle: item.ASAL_RUANGAN_NAME || '-',
+                                    description: `Pembuat: ${item.NAME_MAKER || '-'}`,
+                                    date: item.CREATED_DATE,
+                                    status: 'done',
+                                    icon: '✓'
+                                });
+
+                                // Get templates for this JENIS_MAT and DEPT
+                                const matJenis = (item.JENIS_MAT || '').trim().toUpperCase();
+                                const matDept = (item.DEPT || '').trim().toUpperCase();
+
+                                const templates = approvalTemplates.filter(t => 
+                                    (t.JENIS_MAT || '').trim().toUpperCase() === matJenis && 
+                                    (t.DEPT || '').trim().toUpperCase().includes(matDept)
+                                ).sort((a, b) => a.STEP_APPROVAL - b.STEP_APPROVAL);
+
+                                const completedSteps = item.approvalSteps || [];
+
+                                if (templates.length > 0) {
+                                    let cIndex = 0;
+                                    let activeConsumed = false;
+
+                                    templates.forEach((tmplStep, tIdx) => {
+                                        const cStep = completedSteps[cIndex];
+
+                                        if (cStep) {
+                                            const stepRejected = (cStep.STATUS || '').toUpperCase() === 'REJECTED';
+                                            steps.push({
+                                                id: `step-appr-${tIdx}`,
+                                                title: `Verifikasi oleh ${cStep.VERIFIED_BY || '-'}`,
+                                                subtitle: `Role: ${tmplStep.ROLE || cStep.NEXT_ROLE || '-'}`,
+                                                description: cStep.NOTE ? `Catatan: ${cStep.NOTE}` : '',
+                                                date: cStep.VERIFIED_DATE,
+                                                status: stepRejected ? 'rejected' : 'done',
+                                                icon: stepRejected ? '✕' : '✓'
+                                            });
+                                            cIndex++;
+                                        } else {
+                                            const isNextStep = (cIndex === completedSteps.length) && !activeConsumed;
+
+                                            if (isNextStep && isActive) {
+                                                steps.push({
+                                                    id: `step-active-${tIdx}`,
+                                                    title: `Menunggu Approval ${item.NEXT_ROLE_VERIFICATOR || tmplStep.ROLE || '-'}`,
+                                                    subtitle: `Oleh: ${item.NEXT_VERIFICATOR || '-'}`,
+                                                    description: item.PENJELASAN ? `Penjelasan: ${item.PENJELASAN}` : '',
+                                                    date: null,
+                                                    status: 'active',
+                                                    icon: (tIdx + 1).toString()
+                                                });
+                                                activeConsumed = true;
+                                            } else if (!isCompleted && !isRejected) {
+                                                steps.push({
+                                                    id: `step-pending-${tIdx}`,
+                                                    title: `Menunggu Approval ${tmplStep.ROLE || '-'}`,
+                                                    subtitle: '',
+                                                    description: '',
+                                                    date: null,
+                                                    status: 'pending',
+                                                    icon: (tIdx + 1).toString()
+                                                });
+                                            }
+                                        }
+                                    });
+
+                                    // Fallback for trailing completed steps
+                                    while (cIndex < completedSteps.length) {
+                                        const cStep = completedSteps[cIndex];
+                                        const stepRejected = (cStep.STATUS || '').toUpperCase() === 'REJECTED';
+                                        steps.push({
+                                            id: `step-appr-fb-${cIndex}`,
+                                            title: `Verifikasi oleh ${cStep.VERIFIED_BY || '-'}`,
+                                            subtitle: `Role: ${cStep.NEXT_ROLE || '-'}`,
+                                            description: cStep.NOTE ? `Catatan: ${cStep.NOTE}` : '',
+                                            date: cStep.VERIFIED_DATE,
+                                            status: stepRejected ? 'rejected' : 'done',
+                                            icon: stepRejected ? '✕' : '✓'
+                                        });
+                                        cIndex++;
+                                    }
+
+                                    // Fallback for trailing active step
+                                    if (isActive && !activeConsumed) {
+                                        steps.push({
+                                            id: `step-active-fb`,
+                                            title: `Menunggu Approval ${item.NEXT_ROLE_VERIFICATOR || '-'}`,
+                                            subtitle: `Oleh: ${item.NEXT_VERIFICATOR || '-'}`,
+                                            description: item.PENJELASAN ? `Penjelasan: ${item.PENJELASAN}` : '',
+                                            date: null,
+                                            status: 'active',
+                                            icon: (steps.length).toString()
+                                        });
+                                    }
+                                } else {
+                                    // Fallback if no templates found
+                                    completedSteps.forEach((step, sIdx) => {
+                                        const stepRejected = (step.STATUS || '').toUpperCase() === 'REJECTED';
+                                        steps.push({
+                                            id: `step-appr-fb-${sIdx}`,
+                                            title: `Verifikasi oleh ${step.VERIFIED_BY || '-'}`,
+                                            subtitle: `Role: ${step.NEXT_ROLE || '-'}`,
+                                            description: step.NOTE ? `Catatan: ${step.NOTE}` : '',
+                                            date: step.VERIFIED_DATE,
+                                            status: stepRejected ? 'rejected' : 'done',
+                                            icon: stepRejected ? '✕' : '✓'
+                                        });
+                                    });
+
+                                    if (isActive) {
+                                        steps.push({
+                                            id: 'step-active-fb',
+                                            title: `Menunggu Approval ${item.NEXT_ROLE_VERIFICATOR || '-'}`,
+                                            subtitle: `Oleh: ${item.NEXT_VERIFICATOR || '-'}`,
+                                            description: item.PENJELASAN ? `Penjelasan: ${item.PENJELASAN}` : '',
+                                            date: null,
+                                            status: 'active',
+                                            icon: (completedSteps.length + 1).toString()
+                                        });
+                                    }
+                                }
+
+                                // 4. Diterima (Tujuan)
+                                steps.push({
+                                    id: 'step-dest',
+                                    title: `Diterima (Ruang ${item.TUJUAN_RUANGAN_ID || '-'})`,
+                                    subtitle: item.TUJUAN_RUANGAN_NAME || '-',
+                                    description: '',
+                                    date: null,
+                                    status: isCompleted ? 'done' : (isActive ? 'pending' : 'rejected'),
+                                    icon: isCompleted ? '✓' : (isRejected ? '✕' : '')
+                                });
+
                                 return (
-                                    <div key={item.TRXID ?? idx} className="mhm-timeline-item">
-                                        <div className="mhm-timeline-left">
-                                            <div className={`mhm-dot${isActive ? ' active' : ''}`} />
-                                            <div className="mhm-line" />
+                                    <div key={item.TRXID ?? idx} className="mhm-transaction-block">
+                                        <div className="mhm-trx-header">
+                                            <div className="mhm-trx-info">
+                                                <div className="mhm-trx-date">{formatDate(item.CREATED_DATE)}</div>
+                                                <div className="mhm-trx-no">{item.NO_MAT || '-'}</div>
+                                            </div>
+                                            <div className={`mhm-status-badge ${getStatusClass(item.STATUS)}`}>
+                                                {item.STATUS || '-'}
+                                            </div>
                                         </div>
 
-                                        <div className="mhm-card">
-                                            <div className="mhm-card-header">
-                                                <div>
-                                                    <div className="mhm-card-date">
-                                                        {formatDate(item.CREATED_DATE)}
+                                        <div className="mhm-steps">
+                                            <div className="mhm-steps-line" />
+                                            {steps.map((step, sIdx) => {
+                                                const isLast = sIdx === steps.length - 1;
+                                                return (
+                                                    <div key={step.id} className={`mhm-step mhm-step-${step.status}`}>
+                                                        <div className="mhm-step-icon">
+                                                            {step.icon}
+                                                        </div>
+                                                        <div className="mhm-step-content">
+                                                            <div className="mhm-step-title">{step.title}</div>
+                                                            {step.subtitle && <div className="mhm-step-subtitle">{step.subtitle}</div>}
+                                                            {step.description && (
+                                                                <div className="mhm-step-desc">
+                                                                    {step.description}
+                                                                </div>
+                                                            )}
+                                                            {step.date && <div className="mhm-step-date">{formatDate(step.date)}</div>}
+                                                        </div>
                                                     </div>
-                                                    <div className="mhm-card-no-mat">
-                                                        {item.NO_MAT || '-'}
-                                                    </div>
-                                                </div>
-                                                <div className={`mhm-status-badge ${getStatusClass(item.STATUS)}`}>
-                                                    {item.STATUS || '-'}
-                                                </div>
-                                            </div>
-
-                                            <div className="mhm-movement">
-                                                <div className="mhm-movement-from">
-                                                    <span className="mhm-movement-label">Dari</span>
-                                                    {item.ASAL_RUANGAN_ID || '-'}
-                                                </div>
-                                                <ArrowRight
-                                                    className="mhm-movement-arrow"
-                                                    size={16}
-                                                    strokeWidth={2.5}
-                                                />
-                                                <div className="mhm-movement-to">
-                                                    <span className="mhm-movement-label">Ke</span>
-                                                    {item.TUJUAN_RUANGAN_ID || '-'}
-                                                </div>
-                                            </div>
-
-                                            <div className="mhm-fields">
-                                                <div className="mhm-field">
-                                                    <span className="mhm-field-label">Jenis MAT</span>
-                                                    <span className="mhm-field-value">{item.JENIS_MAT || '-'}</span>
-                                                </div>
-                                                <div className="mhm-field">
-                                                    <span className="mhm-field-label">LPB</span>
-                                                    <span className="mhm-field-value">{item.LPB || '-'}</span>
-                                                </div>
-                                                <div className="mhm-field">
-                                                    <span className="mhm-field-label">Kondisi</span>
-                                                    <span className="mhm-field-value">{item.KONDISI_ID || '-'}</span>
-                                                </div>
-                                                <div className="mhm-field">
-                                                    <span className="mhm-field-label">Dept</span>
-                                                    <span className="mhm-field-value">{item.DEPT || '-'}</span>
-                                                </div>
-                                                <div className="mhm-field">
-                                                    <span className="mhm-field-label">Pembuat</span>
-                                                    <span className="mhm-field-value">{item.NAME_MAKER || '-'}</span>
-                                                </div>
-                                                <div className="mhm-field">
-                                                    <span className="mhm-field-label">Step Approval</span>
-                                                    <span className="mhm-field-value">
-                                                        {item.COUNTER_NUM != null && item.STEP_APPROVAL != null
-                                                            ? `${item.COUNTER_NUM} / ${item.STEP_APPROVAL}`
-                                                            : '-'}
-                                                    </span>
-                                                </div>
-                                                <div className="mhm-field full-width">
-                                                    <span className="mhm-field-label">Penjelasan</span>
-                                                    <span className="mhm-field-value">{item.PENJELASAN || '-'}</span>
-                                                </div>
-                                                {item.NEXT_VERIFICATOR && (
-                                                    <div className="mhm-field full-width">
-                                                        <span className="mhm-field-label">Next Verificator</span>
-                                                        <span className="mhm-field-value">
-                                                            {item.NEXT_VERIFICATOR}
-                                                            {item.NEXT_ROLE_VERIFICATOR
-                                                                ? ` (${item.NEXT_ROLE_VERIFICATOR})`
-                                                                : ''}
-                                                        </span>
-                                                    </div>
-                                                )}
-                                            </div>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 );
@@ -212,4 +305,6 @@ export default function MatHistoryModal({ barcode, namaAset, isOpen, onClose }) 
             </div>
         </div>
     );
+
+    return createPortal(modalContent, document.body);
 }

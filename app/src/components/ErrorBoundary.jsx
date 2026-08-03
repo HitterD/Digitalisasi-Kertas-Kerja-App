@@ -55,8 +55,10 @@ export default class ErrorBoundary extends Component {
                         borderRadius: '6px',
                         maxWidth: '90vw',
                         overflow: 'auto',
+                        whiteSpace: 'pre-wrap',
+                        textAlign: 'left'
                     }}>
-                        {this.state.error?.message || 'Unknown error'}
+                        {this.state.error?.stack || this.state.error?.message || 'Unknown error'}
                     </code>
                     <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
                         <button

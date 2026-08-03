@@ -1,0 +1,68 @@
+<h2>Desain final — Bagian 3: Filter, Export Bar, States</h2>
+<p class="subtitle">Sisa komponen: kartu filter, sticky export bar, dan loading/empty. Setujui atau revisi di terminal.</p>
+
+<div class="mockup">
+  <div class="mockup-header">Light — filter + export bar</div>
+  <div class="mockup-body" style="background:#FAF9F5;padding:16px;font-family:system-ui;">
+
+    <!-- filter card refined -->
+    <div style="border:1px solid #E8E5DE;border-radius:12px;background:#FFF;padding:16px;margin-bottom:12px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div><div style="font-family:monospace;font-size:9px;color:#8B8580;letter-spacing:.12em;margin-bottom:5px;">PERIODE OPNAME</div><div style="height:40px;border:1px solid #E8E5DE;border-radius:9px;background:#F5F4EF;display:flex;align-items:center;padding:0 12px;font-size:12px;color:#262624;">JUN2026 — ICT &nbsp;⌄</div></div>
+        <div><div style="font-family:monospace;font-size:9px;color:#8B8580;letter-spacing:.12em;margin-bottom:5px;">FILTER DEPARTEMEN</div><div style="height:40px;border:1px solid #E8E5DE;border-radius:9px;background:#F5F4EF;display:flex;align-items:center;padding:0 12px;font-size:12px;color:#262624;">Semua Departemen &nbsp;⌄</div></div>
+      </div>
+      <div style="padding-top:14px;border-top:1px solid #F0EDE8;">
+        <div style="font-family:monospace;font-size:9px;color:#8B8580;letter-spacing:.12em;margin-bottom:8px;">MASTER DATA ASSET (OPSIONAL)</div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <div style="flex:1;display:flex;align-items:center;gap:10px;background:#F5F4EF;border:1px solid #E8E5DE;border-radius:9px;padding:10px 12px;">
+            <div style="width:30px;height:30px;border-radius:8px;background:rgba(34,197,94,.10);display:flex;align-items:center;justify-content:center;color:#16a34a;">▦</div>
+            <div><div style="font-size:11.5px;font-weight:600;color:#262624;">master_aset.xlsx</div><div style="font-family:monospace;font-size:9px;color:#16a34a;font-weight:600;">✓ MASTER DATA DIMUAT</div></div>
+          </div>
+          <button class="mock-button" style="background:#FFF;border:1px solid #E8E5DE;color:#262624;border-radius:9px;padding:9px 14px;font-size:12px;">Pilih File</button>
+          <button class="mock-button" style="background:#D97757;border:none;color:#FFF;border-radius:9px;padding:9px 16px;font-size:12px;font-weight:600;">↻ Sinkron Data</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- sticky export bar -->
+    <div style="border:1px solid #E8E5DE;border-radius:12px;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 -2px 12px rgba(0,0,0,.06);">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:34px;height:34px;border-radius:9px;background:#F0EDE8;display:flex;align-items:center;justify-content:center;color:#262624;">▦</div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:#262624;">12 file Excel <span style="color:#595755;font-weight:500;">(340 terscan + 58 tidak)</span></div>
+          <div style="font-family:monospace;font-size:9px;color:#16a34a;font-weight:700;margin-top:2px;">✓ 1 HASIL_MAT</div>
+        </div>
+      </div>
+      <button class="mock-button" style="background:#262624;border:none;color:#FFF;border-radius:9px;padding:10px 18px;font-size:12px;font-weight:600;">⬇ Export Semua Excel</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">Loading state</div>
+    <div class="mockup-body" style="background:#FAF9F5;padding:24px;font-family:system-ui;text-align:center;">
+      <div style="width:34px;height:34px;border:3px solid #E8E5DE;border-top-color:#D97757;border-radius:50%;margin:0 auto 12px;"></div>
+      <div style="font-size:12px;color:#595755;">Mengambil data dari database…</div>
+    </div>
+  </div>
+  <div class="mockup">
+    <div class="mockup-header">Empty state</div>
+    <div class="mockup-body" style="background:#FAF9F5;padding:24px;font-family:system-ui;text-align:center;">
+      <div style="font-size:30px;opacity:.4;margin-bottom:8px;">▦</div>
+      <div style="font-size:13px;font-weight:600;color:#262624;margin-bottom:4px;">Belum ada data</div>
+      <div style="font-size:11px;color:#8B8580;">Pilih periode & klik Sinkron Data untuk melihat ruangan.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <p class="label">Detail bagian 3 + cleanup</p>
+  <ul style="font-size:13px;line-height:1.7;color:#444;">
+    <li><b>Filter card</b>: radius & spacing konsisten dengan ringkasan/kartu ruangan; tinggi field seragam 40px.</li>
+    <li><b>Export bar</b> tetap sticky-bottom, glass blur, tombol gelap (token charcoal). Tidak berubah fungsi.</li>
+    <li><b>Loading & empty</b> didesain rapi (sebelumnya seadanya).</li>
+    <li><b>Cleanup</b>: pindahkan inline-style berulang ke class di <code>extract-opname.css</code>, hapus ~400 baris dead code <code>.extract-*</code> yang tak terpakai. Dark mode lewat token, tanpa hardcode warna.</li>
+  </ul>
+</div>

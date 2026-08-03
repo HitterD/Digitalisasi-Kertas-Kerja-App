@@ -98,7 +98,7 @@ export async function fetchWithAuth(url, options = {}) {
         ...(options.headers || {})
     };
 
-    const res = await fetch(url, { ...options, headers });
+    const res = await fetch(url, { cache: 'no-store', ...options, headers });
 
     if (res.status === 401 && !isRedirecting) {
         isRedirecting = true;

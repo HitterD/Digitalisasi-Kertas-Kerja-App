@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { fetchFolders, fetchPeriods, downloadWorkbook } from '../utils/fileServerApi';
-import { FolderOpen, RefreshCw, FileSpreadsheet, Download, AlertCircle, Calendar, HardDrive, Folder } from 'lucide-react';
+import { FolderOpen, RefreshCw, FileSpreadsheet, Download, AlertCircle, Calendar, Server, ChevronDown } from 'lucide-react';
 
 /**
  * ServerFileBrowser — Browse & load kertas kerja Excel files
@@ -120,184 +120,101 @@ export default function ServerFileBrowser({ onFileLoaded }) {
 
             {/* Initial loading folders */}
             {loadingFolders && !folders && (
-                <div className="py-5" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
-                    <div className="spinner" style={{ width: 32, height: 32 }}></div>
-                    <p style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(26, 26, 26, 0.6)' }}>Menghubungi server...</p>
+                <div style={{ padding: '64px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
+                    <div className="spinner" style={{ width: 40, height: 40, borderTopColor: 'var(--accent)', borderWidth: 3 }}></div>
+                    <p style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-secondary)' }}>Menghubungkan ke server tersentralisasi...</p>
                 </div>
             )}
 
             {/* Folders Selection */}
             {folders && (
-                <div style={{
-                    padding: '24px',
-                }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                        <label style={{
-                            display: 'flex', alignItems: 'center', gap: '8px',
-                            fontSize: '12px',
-                            fontWeight: 600, color: 'var(--charcoal-900)',
-                        }}>
-                            <Folder size={16} color="var(--charcoal-900)" strokeWidth={2.5} />
-                            Pilih divisi / lokasi server
-                        </label>
-                        <button
-                            onClick={handleLoadFolders}
-                            title="Refresh daftar folder"
-                            disabled={loading || loadingFolders}
-                            style={{
-                                background: 'transparent', border: '1px solid rgba(26, 26, 26, 0.12)',
-                                borderRadius: '10px', cursor: 'pointer', padding: '6px',
-                                display: 'flex', alignItems: 'center', color: 'var(--charcoal-900)',
-                                transition: 'all 0.15s'
-                            }}
-                            onMouseOver={e => { e.currentTarget.style.backgroundColor = 'rgba(26,26,26,0.05)'; }}
-                            onMouseOut={e => { e.currentTarget.style.backgroundColor = 'transparent'; }}
-                        >
-                            <RefreshCw size={14} strokeWidth={2.5} className={loadingFolders ? 'animate-spin' : ''} />
-                        </button>
+                <div style={{ padding: '24px 24px 16px' }}>
+                    <div className="app1-home__field">
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <label className="app1-home__field-label">
+                                <Server size={16} color="var(--accent)" strokeWidth={2.5} /> Pilih Divisi / Lokasi Server
+                            </label>
+                            <button 
+                                className="app1-home__button app1-home__button--ghost" 
+                                onClick={handleLoadFolders} 
+                                disabled={loading || loadingFolders} 
+                                style={{ padding: '6px', minHeight: 'auto', borderRadius: '8px' }}
+                                title="Refresh Folder List"
+                            >
+                                <RefreshCw size={14} strokeWidth={2.5} className={loadingFolders ? 'spin' : ''} />
+                            </button>
+                        </div>
+                        <div style={{ position: 'relative' }}>
+                            <select className="app1-home__select" value={selectedFolder} onChange={handleSelectFolder} disabled={loading} style={{ appearance: 'none', paddingRight: '40px' }}>
+                                <option value="">— Silakan pilih folder —</option>
+                                {folders.map(f => <option key={f} value={f}>{f}</option>)}
+                            </select>
+                            <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--text-tertiary)' }}>
+                                <ChevronDown size={18} />
+                            </div>
+                        </div>
                     </div>
-                    <select
-                        style={{
-                            width: '100%', padding: '12px 16px',
-                            fontSize: '14px',
-                            borderRadius: '10px', border: '1px solid rgba(26, 26, 26, 0.12)',
-                            outline: 'none', background: '#fff',
-                            color: 'var(--charcoal-900)', fontWeight: 500,
-                            boxShadow: '0 1px 2px rgba(45, 45, 45, 0.04)',
-                            cursor: 'pointer', appearance: 'none'
-                        }}
-                        value={selectedFolder}
-                        onChange={handleSelectFolder}
-                        disabled={loading}
-                    >
-                        <option value="">— Silakan pilih folder —</option>
-                        {folders.map(f => (
-                            <option key={f} value={f}>{f}</option>
-                        ))}
-                    </select>
                 </div>
             )}
 
             {/* Empty State when no folder selected */}
             {!selectedFolder && folders && !loadingFolders && (
-                <div className="wa-card" style={{ margin: '0 24px 24px 24px', padding: '40px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                    <div style={{ width: 56, height: 56, background: 'rgba(201, 100, 66, 0.10)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--terracotta-500)', marginBottom: '16px' }}>
-                        <FolderOpen size={28} strokeWidth={2.5} />
+                <div className="app1-home__empty">
+                    <div className="app1-home__icon-box" style={{ width: 56, height: 56, borderRadius: 16, background: 'var(--bg-input)' }}>
+                        <FolderOpen size={28} strokeWidth={1.5} color="var(--text-secondary)" />
                     </div>
-                    <p style={{
-                        fontSize: '15px', fontWeight: 700,
-                        color: 'var(--charcoal-900)', margin: 0
-                    }}>
-                        Belum ada folder terpilih
-                    </p>
-                    <p style={{ fontSize: '13px', fontWeight: 500, color: 'rgba(26, 26, 26, 0.6)', marginTop: '8px' }}>
-                        Pilih folder di atas untuk melihat daftar kertas kerja opname.
-                    </p>
+                    <div>
+                        <p style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 4px' }}>Belum Ada Folder Terpilih</p>
+                        <p style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-secondary)', margin: 0 }}>Pilih divisi di atas untuk melihat daftar kertas kerja.</p>
+                    </div>
                 </div>
             )}
 
             {/* Loading Periods state */}
             {loading && (
-                <div style={{ padding: '48px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <div className="spinner" style={{ width: 36, height: 36, borderTopColor: 'var(--terracotta-500)' }}></div>
-                    <p style={{ fontSize: '13px', fontWeight: 600, color: 'rgba(26, 26, 26, 0.6)', marginTop: '16px' }}>Mencari kertas kerja opname...</p>
+                <div style={{ padding: '64px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
+                    <div className="spinner" style={{ width: 40, height: 40, borderTopColor: 'var(--accent)', borderWidth: 3 }}></div>
+                    <p style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-secondary)' }}>Mencari kertas kerja opname...</p>
                 </div>
             )}
 
             {/* Flat File list */}
             {selectedFolder && availableFiles && availableFiles.length > 0 && !loading && (
                 <div>
-                    <div style={{
-                        padding: '20px 24px 12px',
-                        display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-                    }}>
-                        <p style={{
-                            fontSize: '13px',
-                            fontWeight: 600,
-                            color: 'var(--charcoal-900)',
-                            margin: 0
-                        }}>
-                            File Excel Tersedia
-                        </p>
-                        <span style={{
-                                background: 'rgba(201, 100, 66, 0.10)', color: 'var(--terracotta-500)',
-                                padding: '3px 8px', fontSize: '11px', fontWeight: 600,
-                                borderRadius: '6px',
-                        }}>
-                            {availableFiles.length} file
-                        </span>
+                    <div style={{ padding: '16px 24px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <p style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>File Excel Tersedia</p>
+                        <span className="app1-home__badge app1-home__badge--secondary" style={{ padding: '4px 10px', fontSize: '12px' }}>{availableFiles.length} File</span>
                     </div>
-                    <div style={{ padding: '0 24px 24px 24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div className="app1-home__file-list">
                         {availableFiles.map((file) => {
                             const dlId = `${file.periodName}-${file.filename}`;
                             const isDownloading = downloading === dlId;
 
                             return (
-                                <button
-                                    key={dlId}
-                                    onClick={() => handleDownloadFile(file.periodName, file.filename)}
-                                    disabled={downloading !== null}
-                                    className="wa-card"
-                                    style={{
-                                        display: 'flex', alignItems: 'center', gap: '12px',
-                                        width: '100%', textAlign: 'left',
-                                        padding: '12px 14px',
-                                        background: isDownloading ? 'rgba(201, 100, 66, 0.06)' : 'var(--cream-surface, #FDFCF7)',
-                                        border: '1px solid rgba(26, 26, 26, 0.06)',
-                                        borderRadius: '10px',
-                                        cursor: downloading !== null ? 'not-allowed' : 'pointer',
-                                        opacity: (downloading !== null && !isDownloading) ? 0.5 : 1,
-                                        transition: 'all 200ms cubic-bezier(0.2, 0.8, 0.2, 1)',
-                                        fontFamily: 'inherit', fontSize: '12px',
-                                        color: 'var(--charcoal-900)',
-                                    }}
-                                    onMouseOver={e => { if(!downloading) { e.currentTarget.style.borderColor = 'var(--terracotta-500)'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
-                                    onMouseOut={e => { if(!downloading) { e.currentTarget.style.borderColor = 'rgba(26, 26, 26, 0.06)'; e.currentTarget.style.transform = 'translateY(0)'; } }}
+                                <button 
+                                    key={dlId} 
+                                    onClick={() => handleDownloadFile(file.periodName, file.filename)} 
+                                    disabled={downloading !== null} 
+                                    className="app1-home__file-row"
                                 >
-                                    <div style={{
-                                        flexShrink: 0, width: 40, height: 40,
-                                        background: 'rgba(201, 100, 66, 0.10)',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        borderRadius: '10px', color: 'var(--terracotta-500)',
-                                    }}>
-                                        {isDownloading ? (
-                                            <div className="spinner" style={{ width: 18, height: 18, borderTopColor: 'var(--terracotta-500)' }}></div>
-                                        ) : (
-                                            <FileSpreadsheet size={18} strokeWidth={2.5} />
-                                        )}
+                                    <div className="app1-home__icon-box" style={{ width: 44, height: 44, borderRadius: 12, background: isDownloading ? 'var(--accent-soft)' : 'var(--bg-input)' }}>
+                                        {isDownloading ? <div className="spinner" style={{ width: 20, height: 20, borderTopColor: 'var(--accent)', borderWidth: 2.5 }}></div> : <FileSpreadsheet size={20} strokeWidth={2} color={isDownloading ? 'var(--accent)' : 'currentColor'} />}
                                     </div>
-                                    <div style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
-                                        <span style={{
-                                            display: 'block',
-                                            fontSize: '13px',
-                                            fontWeight: 600, color: 'var(--charcoal-900)',
-                                            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
-                                        }}>
-                                            {file.filename}
-                                        </span>
-                                        <span style={{
-                                            display: 'inline-flex', alignItems: 'center', gap: '10px',
-                                            fontSize: '11px',
-                                            fontWeight: 500, color: 'rgba(26, 26, 26, 0.6)', marginTop: '4px',
-                                        }}>
-                                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'rgba(201, 100, 66, 0.10)', color: 'var(--terracotta-500)', padding: '2px 6px', borderRadius: '5px', fontWeight: 600 }}>
-                                                <Calendar size={11} strokeWidth={2.5} />
-                                                {parsePeriodLabel(file.periodName)}
+                                    <div style={{ flex: 1, minWidth: 0, textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                        <span style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{file.filename}</span>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <span className="app1-home__badge app1-home__badge--primary" style={{ padding: '2px 6px', fontSize: 10, letterSpacing: '0.02em', background: 'var(--bg-input)' }}>
+                                                <Calendar size={10} style={{ marginRight: 4 }} /> {parsePeriodLabel(file.periodName).toUpperCase()}
                                             </span>
-                                            {file.modifiedDate && (
-                                                <span>Modif: {formatDate(file.modifiedDate)}</span>
-                                            )}
-                                        </span>
+                                            {file.modifiedDate && <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-tertiary)' }}>Modif: {formatDate(file.modifiedDate)}</span>}
+                                        </div>
                                     </div>
                                     <div style={{ flexShrink: 0 }}>
                                         {isDownloading ? (
-                                            <span style={{
-                                                fontSize: '11px', fontWeight: 600,
-                                                color: 'var(--terracotta-500)'
-                                            }}>Loading...</span>
+                                            <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--accent)' }}>Mengunduh...</span>
                                         ) : (
-                                            <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(26, 26, 26, 0.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--charcoal-900)' }}>
-                                                <Download size={16} strokeWidth={2.5} />
+                                            <div className="app1-home__button app1-home__button--ghost" style={{ padding: 10, borderRadius: '50%' }}>
+                                                <Download size={18} />
                                             </div>
                                         )}
                                     </div>
@@ -311,23 +228,11 @@ export default function ServerFileBrowser({ onFileLoaded }) {
             {/* Error state */}
             {error && (
                 <div style={{ padding: '0 24px 24px 24px' }}>
-                    <div style={{
-                        display: 'flex', alignItems: 'center', gap: '12px',
-                        padding: '12px 16px',
-                        background: 'rgba(220, 38, 38, 0.06)',
-                        border: '1px solid rgba(220, 38, 38, 0.15)',
-                        borderRadius: '10px',
-                    }}>
-                        <AlertCircle size={20} color="#991B1B" strokeWidth={2.5} style={{ flexShrink: 0 }} />
+                    <div className="app1-home__alert" style={{ background: 'var(--danger-50)', borderColor: 'var(--danger-200)', borderRadius: '16px', padding: '16px' }}>
+                        <AlertCircle size={22} color="var(--danger-600)" style={{ flexShrink: 0 }} />
                         <div>
-                            <p style={{
-                                fontWeight: 700, fontSize: '12px',
-                                color: '#991B1B', margin: '0 0 2px 0'
-                            }}>Gagal memuat data server</p>
-                            <p style={{
-                                fontSize: '12px', fontWeight: 500,
-                                color: '#7F1D1D', margin: 0
-                            }}>{error}</p>
+                            <p style={{ fontWeight: 700, fontSize: '13px', color: 'var(--danger-700)', margin: '0 0 4px 0' }}>Gagal memuat data server</p>
+                            <p style={{ fontSize: '13px', fontWeight: 500, color: 'var(--danger-600)', margin: 0, lineHeight: 1.4 }}>{error}</p>
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,311 @@
+<style>
+  .s3-card { transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1), border-color 220ms ease; }
+  .s3-card:hover { transform: translateY(-2px); border-color: rgba(26,26,26,0.14) !important; box-shadow: 0 2px 4px rgba(45,45,45,0.04), 0 14px 30px rgba(45,45,45,0.08) !important; }
+
+  .s3-zone { transition: all 220ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; position: relative; }
+  .s3-zone:hover { border-color: #C96442 !important; background: #FDFCF7 !important; transform: translateY(-3px); box-shadow: 0 4px 8px rgba(45,45,45,0.04), 0 10px 24px rgba(201,100,66,0.10) !important; }
+  .s3-zone:hover .s3-zone-icon { background: rgba(201,100,66,0.10); color: #C96442; transform: scale(1.08); }
+  .s3-zone-icon { transition: all 220ms ease; }
+  .s3-zone.loaded { border-color: rgba(22,163,74,0.4) !important; background: rgba(22,163,74,0.04) !important; }
+  .s3-zone.loaded .s3-zone-icon { background: rgba(22,163,74,0.10); color: #16a34a; }
+  .s3-zone.loaded:hover { border-color: rgba(22,163,74,0.6) !important; }
+
+  .s3-step { transition: all 220ms ease; }
+  .s3-step-line { background: rgba(26,26,26,0.08); transition: background 400ms ease; }
+  .s3-step.active .s3-step-num { background: #1A1A1A; color: #FDFCF7; }
+  .s3-step.active .s3-step-label { color: #1A1A1A; }
+  .s3-step.done .s3-step-num { background: #16a34a; color: #FDFCF7; }
+  .s3-step.done .s3-step-line { background: #16a34a; }
+  .s3-step-num { transition: all 220ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+  .s3-filter { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; user-select: none; }
+  .s3-filter:hover { border-color: rgba(26,26,26,0.3) !important; transform: translateY(-1px); }
+  .s3-filter.selected { background: #1A1A1A !important; border-color: #1A1A1A !important; color: #FDFCF7 !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .s3-filter.selected .s3-filter-count { background: #C96442; color: #FDFCF7; }
+  .s3-filter-count { transition: all 200ms ease; }
+
+  .s3-cta { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .s3-cta:hover { background: #2A2A2A !important; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+  .s3-cta:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .s3-terracotta { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .s3-terracotta:hover { background: #D87554 !important; transform: translateY(-1px); box-shadow: 0 6px 14px rgba(201,100,66,0.30); }
+  .s3-terracotta:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .s3-ghost { transition: all 180ms ease; cursor: pointer; }
+  .s3-ghost:hover { background: #FDFCF7 !important; border-color: #1A1A1A !important; color: #1A1A1A !important; }
+
+  .s3-barcode-btn { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .s3-barcode-btn:hover { background: #C96442 !important; color: #FDFCF7 !important; transform: translateY(-1px); box-shadow: 0 6px 14px rgba(201,100,66,0.25); }
+
+  .s3-tab { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .s3-tab:hover { background: rgba(26,26,26,0.04); }
+  .s3-tab.active { background: #1A1A1A; color: #FDFCF7; }
+  .s3-tab.active .s3-tab-num { background: #C96442; color: #FDFCF7; }
+
+  .s3-pulse { animation: s3pulse 2.4s ease-in-out infinite; }
+  @keyframes s3pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.55; } }
+</style>
+
+<h2>App3 v3 — Stepper Pattern dengan Filter Step Eksplisit</h2>
+<p class="subtitle">3 step eksplisit di top: <b>① Upload 4 file → ② Pilih filter (BAT/ENG/HRGA/ICT/kosong, multi-select dengan count) → ③ Generate Excel</b>. Step aktif = charcoal, selesai = hijau + line hijau. Step yang belum waktunya disabled (low opacity).</p>
+
+<div class="mockup">
+  <div class="mockup-header">Preview: /app3 (Tahap 1 Consolidation) — state di Step 2 (filter dipilih)</div>
+  <div class="mockup-body" style="background:#F5EFE6;padding:0;font-family:'Sora',system-ui,sans-serif;">
+
+    <!-- In-app header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:rgba(253,251,247,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(26,26,26,0.06);">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <button style="background:transparent;border:none;cursor:pointer;padding:4px;color:#6B6660;display:flex;align-items:center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        </button>
+        <div style="width:1px;height:18px;background:rgba(26,26,26,0.1);"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:26px;height:26px;background:#1A1A1A;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#C96442;letter-spacing:0.05em;">KKD</div>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Master Data &amp; Recouncil</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.1em;text-transform:uppercase;">Pipeline &amp; Consolidation</div>
+          </div>
+        </div>
+      </div>
+      <div class="s3-barcode-btn" style="display:flex;align-items:center;gap:8px;background:#1A1A1A;color:#FDFCF7;border-radius:8px;padding:8px 14px;font-size:11px;font-weight:600;letter-spacing:0.05em;border:none;font-family:inherit;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        BARCODE CHECKER
+      </div>
+    </div>
+
+    <!-- Tab strip -->
+    <div style="display:flex;align-items:center;gap:0;padding:14px 24px 0;background:#F5EFE6;">
+      <div class="s3-tab active" style="display:flex;align-items:center;gap:10px;padding:10px 18px;border-radius:10px 10px 0 0;font-size:12px;font-weight:600;font-family:inherit;">
+        <div class="s3-tab-num" style="width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,0.15);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;">1</div>
+        Consolidation
+      </div>
+      <div style="width:1px;height:18px;background:rgba(26,26,26,0.1);margin:0 4px;"></div>
+      <div class="s3-tab" style="display:flex;align-items:center;gap:10px;padding:10px 18px;border-radius:10px 10px 0 0;font-size:12px;font-weight:600;color:#8B8580;font-family:inherit;">
+        <div class="s3-tab-num" style="width:22px;height:22px;border-radius:6px;background:rgba(26,26,26,0.06);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;">2</div>
+        Recouncil
+      </div>
+      <div style="flex:1;border-bottom:1px solid rgba(26,26,26,0.08);"></div>
+    </div>
+
+    <div style="padding:18px 24px 24px;background:#F5EFE6;">
+
+      <!-- Page header + stepper inline -->
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid rgba(26,26,26,0.08);">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.2em;text-transform:uppercase;">Modul 03 · Database</div>
+          <div style="font-size:22px;font-weight:600;color:#1A1A1A;letter-spacing:-0.02em;margin-top:4px;">Master Data <span style="color:#C96442;">Consolidation</span></div>
+          <div style="font-size:12px;color:#6B6660;margin-top:6px;max-width:560px;line-height:1.5;">Harmonisasi dokumen menjadi satu <i>single source of truth</i>. Pilih kategori departemen untuk filter hasil.</div>
+        </div>
+
+        <!-- STEPPER -->
+        <div style="display:flex;align-items:center;gap:0;">
+          <div class="s3-step done" style="display:flex;align-items:center;gap:10px;">
+            <div class="s3-step-num" style="width:28px;height:28px;border-radius:50%;background:#16a34a;color:#FDFCF7;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.15em;text-transform:uppercase;">STEP 1</div>
+              <div style="font-size:11px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Upload 4 File</div>
+            </div>
+          </div>
+          <div class="s3-step-line" style="width:60px;height:2px;background:#16a34a;margin:0 8px;"></div>
+          <div class="s3-step active" style="display:flex;align-items:center;gap:10px;">
+            <div class="s3-step-num" style="width:28px;height:28px;border-radius:50%;background:#1A1A1A;color:#FDFCF7;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;">2</div>
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#C96442;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;">STEP 2 · AKTIF</div>
+              <div style="font-size:11px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Pilih Filter</div>
+            </div>
+          </div>
+          <div class="s3-step-line" style="width:60px;height:2px;background:rgba(26,26,26,0.08);margin:0 8px;"></div>
+          <div class="s3-step" style="display:flex;align-items:center;gap:10px;opacity:0.55;">
+            <div class="s3-step-num" style="width:28px;height:28px;border-radius:50%;background:rgba(26,26,26,0.08);color:#8B8580;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;">3</div>
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.15em;text-transform:uppercase;">STEP 3</div>
+              <div style="font-size:11px;font-weight:600;color:#8B8580;letter-spacing:-0.01em;">Generate Excel</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 1 card (collapsible setelah selesai) -->
+      <details style="margin-bottom:14px;">
+        <summary style="cursor:pointer;list-style:none;outline:none;">
+          <div class="s3-card" style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:14px;padding:14px 22px;box-shadow:0 1px 2px rgba(45,45,45,0.03);display:flex;align-items:center;gap:14px;">
+            <div style="width:28px;height:28px;background:#16a34a;color:#FDFCF7;border-radius:7px;display:flex;align-items:center;justify-content:center;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div style="flex:1;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="font-size:13.5px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Pipeline Ingestion</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;padding:2px 8px;background:rgba(22,163,74,0.10);color:#16a34a;border-radius:999px;font-weight:700;">4/4 DIMUAT</div>
+              </div>
+              <div style="font-size:11px;color:#6B6660;margin-top:2px;">Master Eksisting + EXA + ADD + INV. Klik untuk expand.</div>
+            </div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.1em;">650 RECORD TOTAL</div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B6660" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 200ms ease;"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </summary>
+
+        <div style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-top:none;border-radius:0 0 14px 14px;padding:18px 22px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;">
+          <div class="s3-zone loaded" style="border:1.5px dashed rgba(26,26,26,0.12);border-radius:10px;padding:14px;text-align:center;background:transparent;">
+            <div class="s3-zone-icon" style="width:36px;height:36px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:rgba(26,26,26,0.04);color:#1A1A1A;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+            </div>
+            <div style="font-size:12px;font-weight:600;color:#1A1A1A;">Master</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#16a34a;font-weight:600;letter-spacing:0.08em;margin-top:4px;">✓ ARSIP</div>
+          </div>
+          <div class="s3-zone loaded" style="border:1.5px dashed rgba(26,26,26,0.12);border-radius:10px;padding:14px;text-align:center;background:transparent;">
+            <div class="s3-zone-icon" style="width:36px;height:36px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:rgba(26,26,26,0.04);color:#1A1A1A;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            </div>
+            <div style="font-size:12px;font-weight:600;color:#1A1A1A;">EXA</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#16a34a;font-weight:600;letter-spacing:0.08em;margin-top:4px;">✓ 412 REC</div>
+          </div>
+          <div class="s3-zone loaded" style="border:1.5px dashed rgba(26,26,26,0.12);border-radius:10px;padding:14px;text-align:center;background:transparent;">
+            <div class="s3-zone-icon" style="width:36px;height:36px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:rgba(26,26,26,0.04);color:#1A1A1A;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+            </div>
+            <div style="font-size:12px;font-weight:600;color:#1A1A1A;">ADD</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#16a34a;font-weight:600;letter-spacing:0.08em;margin-top:4px;">✓ 238 REC</div>
+          </div>
+          <div class="s3-zone loaded" style="border:1.5px dashed rgba(26,26,26,0.12);border-radius:10px;padding:14px;text-align:center;background:transparent;">
+            <div class="s3-zone-icon" style="width:36px;height:36px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:rgba(26,26,26,0.04);color:#1A1A1A;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+            </div>
+            <div style="font-size:12px;font-weight:600;color:#1A1A1A;">INV</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#16a34a;font-weight:600;letter-spacing:0.08em;margin-top:4px;">✓ BERHASIL</div>
+          </div>
+        </div>
+      </details>
+
+      <!-- STEP 2 card: FILTER (AKTIF) -->
+      <div class="s3-card" style="background:#FDFCF7;border:2px solid #C96442;border-radius:14px;padding:0;box-shadow:0 1px 2px rgba(45,45,45,0.03),0 8px 24px rgba(201,100,66,0.10);margin-bottom:14px;overflow:hidden;">
+        <div style="display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid rgba(26,26,26,0.06);background:rgba(201,100,66,0.04);">
+          <div style="width:28px;height:28px;background:#1A1A1A;color:#FDFCF7;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;">2</div>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Pilih Filter Departemen</div>
+            <div style="font-size:11px;color:#6B6660;margin-top:2px;">Centang kategori yang ingin disertakan di Excel. Bisa lebih dari satu.</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="s3-pulse" style="width:6px;height:6px;background:#C96442;border-radius:50%;"></div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#C96442;font-weight:700;letter-spacing:0.1em;">PILIH MINIMAL 1</div>
+          </div>
+        </div>
+
+        <div style="padding:18px 22px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;letter-spacing:0.1em;text-transform:uppercase;">5 KATEGORI TERDETEKSI · 650 RECORD</div>
+            <div style="display:flex;gap:6px;">
+              <button class="s3-ghost" style="background:transparent;color:#6B6660;border:1px solid rgba(26,26,26,0.12);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;">Pilih Semua</button>
+              <button class="s3-ghost" style="background:transparent;color:#6B6660;border:1px solid rgba(26,26,26,0.12);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;">Reset</button>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;">
+
+            <div class="s3-filter selected" style="background:#1A1A1A;border:1.5px solid #1A1A1A;border-radius:10px;padding:14px 12px;text-align:center;">
+              <div style="font-size:14px;font-weight:600;color:#FDFCF7;letter-spacing:-0.01em;">ICT</div>
+              <div class="s3-filter-count" style="display:inline-block;margin-top:6px;padding:2px 8px;background:#C96442;color:#FDFCF7;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.05em;">234</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(255,255,255,0.6);letter-spacing:0.08em;margin-top:6px;">RECORD</div>
+            </div>
+
+            <div class="s3-filter selected" style="background:#1A1A1A;border:1.5px solid #1A1A1A;border-radius:10px;padding:14px 12px;text-align:center;">
+              <div style="font-size:14px;font-weight:600;color:#FDFCF7;letter-spacing:-0.01em;">ENG</div>
+              <div class="s3-filter-count" style="display:inline-block;margin-top:6px;padding:2px 8px;background:#C96442;color:#FDFCF7;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.05em;">156</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(255,255,255,0.6);letter-spacing:0.08em;margin-top:6px;">RECORD</div>
+            </div>
+
+            <div class="s3-filter" style="background:#FDFCF7;border:1.5px solid rgba(26,26,26,0.12);border-radius:10px;padding:14px 12px;text-align:center;">
+              <div style="font-size:14px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">BAT</div>
+              <div style="display:inline-block;margin-top:6px;padding:2px 8px;background:rgba(26,26,26,0.06);color:#6B6660;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.05em;">145</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.08em;margin-top:6px;">RECORD</div>
+            </div>
+
+            <div class="s3-filter" style="background:#FDFCF7;border:1.5px solid rgba(26,26,26,0.12);border-radius:10px;padding:14px 12px;text-align:center;">
+              <div style="font-size:14px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">HRGA</div>
+              <div style="display:inline-block;margin-top:6px;padding:2px 8px;background:rgba(26,26,26,0.06);color:#6B6660;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.05em;">97</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.08em;margin-top:6px;">RECORD</div>
+            </div>
+
+            <div class="s3-filter" style="background:#FDFCF7;border:1.5px dashed rgba(26,26,26,0.18);border-radius:10px;padding:14px 12px;text-align:center;">
+              <div style="font-size:14px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;font-style:italic;">Kosong</div>
+              <div style="display:inline-block;margin-top:6px;padding:2px 8px;background:rgba(217,119,6,0.10);color:#d97706;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.05em;">18</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.08em;margin-top:6px;">TANPA DEPT</div>
+            </div>
+
+          </div>
+
+          <!-- Live summary -->
+          <div style="margin-top:16px;padding:12px 16px;background:#F5EFE6;border-radius:10px;display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;letter-spacing:0.1em;text-transform:uppercase;">Filter Terpilih</div>
+              <div style="display:flex;gap:5px;">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.05em;padding:2px 8px;background:#1A1A1A;color:#FDFCF7;border-radius:999px;">ICT</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.05em;padding:2px 8px;background:#1A1A1A;color:#FDFCF7;border-radius:999px;">ENG</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:6px;">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;letter-spacing:0.08em;text-transform:uppercase;">Total</span>
+              <span style="font-size:18px;font-weight:700;color:#C96442;letter-spacing:-0.01em;">390</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;letter-spacing:0.05em;">record</span>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;margin-top:18px;gap:8px;">
+            <button class="s3-ghost" style="display:flex;align-items:center;gap:6px;background:transparent;color:#6B6660;border:1px solid rgba(26,26,26,0.12);border-radius:8px;padding:10px 16px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;">← Kembali</button>
+            <button class="s3-terracotta" style="display:flex;align-items:center;gap:6px;background:#C96442;color:#FDFCF7;border:none;border-radius:8px;padding:10px 20px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;box-shadow:0 2px 6px rgba(201,100,66,0.2);">
+              Generate Excel
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 card: PREVIEW OUTPUT (disabled/empty) -->
+      <div class="s3-card" style="background:#FDFCF7;border:1px dashed rgba(26,26,26,0.12);border-radius:14px;padding:18px 22px;opacity:0.55;">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:28px;height:28px;background:rgba(26,26,26,0.08);color:#8B8580;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;">3</div>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:600;color:#8B8580;letter-spacing:-0.01em;">Hasil &amp; Unduh</div>
+            <div style="font-size:11px;color:#8B8580;margin-top:2px;font-style:italic;">Akan tersedia setelah Step 2 selesai diproses.</div>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.1em;padding:4px 10px;background:rgba(26,26,26,0.04);border-radius:999px;">MENUNGGU</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Flow user-friendly (3 step eksplisit)</h3>
+  <ol>
+    <li><b>Step 1 — Pipeline Ingestion</b>: upload 4 file (Master, EXA, ADD, INV). Sudah selesai = card collapse jadi ringkasan, klik untuk expand.</li>
+    <li><b>Step 2 — Pilih Filter</b> (AKTIF): 5 kategori (ICT, ENG, BAT, HRGA, Kosong) muncul sebagai card dengan <b>count per kategori</b>. Multi-select. Live summary di bawah: "Filter Terpilih: ICT, ENG — Total 390 record".</li>
+    <li><b>Step 3 — Generate Excel</b>: disabled sampai Step 2 diproses. Setelah Excel ter-generate, card jadi hijau dengan tombol unduh + statistik.</li>
+  </ol>
+  <h3 style="margin-top:18px;">Kenapa lebih user-friendly</h3>
+  <ul>
+    <li><b>Stepper visual</b> di header: user selalu tahu "saya di mana". Tidak ada hidden step.</li>
+    <li><b>Count per filter</b> SEBELUM klik — user bisa putuskan "saya mau ICT + ENG (390)" tanpa harus pilih buta. Sebelumnya: klik tombol "Ekstrak", baru tahu ada filter apa.</li>
+    <li><b>Live summary</b> di bawah filter: "Total 390 record" update real-time saat user centang/uncentang.</li>
+    <li><b>"Pilih Semua" / "Reset"</b>: tidak perlu klik 5 kali kalau mau semua atau tidak ada.</li>
+    <li><b>Step 1 collapsible</b> setelah selesai: tidak hilang dari pandangan, tapi tidak makan ruang.</li>
+    <li><b>Disabled state</b> jelas di Step 3 — tidak bisa diproses sebelum waktunya.</li>
+    <li><b>Tombol "Kembali"</b> di Step 2: kalau salah upload, user bisa balik ke Step 1 tanpa reset semua.</li>
+  </ul>
+  <h3 style="margin-top:18px;">Animasi</h3>
+  <ul>
+    <li>Stepper line hijau mengalir saat step selesai (400ms)</li>
+    <li>Filter card hover: border gelap, lift -1px</li>
+    <li>Filter selected: bg charcoal + shadow + count pill terracotta (200ms)</li>
+    <li>Live summary: angka "390" update halus saat toggle filter</li>
+    <li>Tombol "Generate Excel" terracotta: lift -1px + shadow oranye hover, scale 0.97 click</li>
+  </ul>
+</div>
+
+<p class="subtitle" style="margin-top:20px;">Hover ke filter card (selected vs unselected), klik stepper card, hover button. Balas di terminal.</p>

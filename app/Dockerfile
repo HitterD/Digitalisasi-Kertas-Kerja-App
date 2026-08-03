@@ -31,8 +31,7 @@ RUN npm ci --ignore-scripts
 COPY --from=builder /app/dist ./dist
 
 # Copy backend plugins and configuration needed for preview server
-COPY --from=builder /app/src/server ./src/server
-COPY --from=builder /app/src/utils ./src/utils
+COPY --from=builder /app/server ./server
 COPY --from=builder /app/data ./data
 COPY --from=builder /app/vite.config.js ./vite.config.js
 
@@ -47,4 +46,4 @@ EXPOSE 5181
 ENV NODE_OPTIONS=--openssl-legacy-provider
 
 # Run Vite in preview mode
-CMD ["npm", "run", "preview"]
+CMD ["npm", "run", "serve"]

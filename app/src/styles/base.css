@@ -22,17 +22,18 @@ html {
 body {
   font-family: var(--font-sora, 'Sora', sans-serif);
   font-size: var(--font-size-base);
-  color: var(--charcoal-900, #0D1117);
-  background-color: var(--warm-100, #F5F1EB);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
   background-image:
-    linear-gradient(rgba(212, 146, 74, 0.12) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(212, 146, 74, 0.12) 1px, transparent 1px);
+    linear-gradient(var(--accent-ring) 1px, transparent 1px),
+    linear-gradient(90deg, var(--accent-ring) 1px, transparent 1px);
   background-size: 48px 48px;
   background-attachment: fixed;
   line-height: 1.6;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 code, pre, .mono-text, .col-barcode, .form-label {

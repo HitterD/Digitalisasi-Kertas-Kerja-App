@@ -129,7 +129,7 @@ const PreviewModal = ({ isOpen, onClose, previewData, onDownload }) => {
     );
 
     const activeTabStyle = {
-        padding: '10px 16px', borderBottom: '2px solid var(--terracotta-500)', color: 'var(--charcoal-900)', fontWeight: 600, cursor: 'pointer'
+        padding: '10px 16px', borderBottom: '2px solid var(--terracotta-500)', color: 'var(--text-primary)', fontWeight: 600, cursor: 'pointer'
     };
     const inactiveTabStyle = {
         padding: '10px 16px', color: 'rgba(26, 26, 26, 0.55)', cursor: 'pointer', borderBottom: '2px solid transparent'
@@ -141,7 +141,7 @@ const PreviewModal = ({ isOpen, onClose, previewData, onDownload }) => {
                 {/* Header */}
                 <div style={{ padding: '16px 24px', borderBottom: '1px solid rgba(26, 26, 26, 0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
-                        <h2 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, color: 'var(--charcoal-900)' }}>Preview Excel - Ruangan {previewData.room}</h2>
+                        <h2 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>Preview Excel - Ruangan {previewData.room}</h2>
                         <span style={{ fontSize: '0.875rem', color: 'rgba(26, 26, 26, 0.6)' }}>PIC: {previewData.pic || '-'} | Tgl Opname: {previewData.tglOpname || '-'}</span>
                     </div>
                 </div>

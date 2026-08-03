@@ -1,0 +1,63 @@
+<h2>Dark Mode Contrast — Current State</h2>
+<p class="subtitle">Text colors on <code>--bg-primary: #262624</code>. WCAG AA requires 4.5:1 for body text, 3:1 for large text.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="primary" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#262624; padding:24px; border-radius:8px;">
+      <div style="font-family:var(--font-sora); font-size:18px; font-weight:600; color:#F5F4EF; line-height:1.4;">--text-primary</div>
+      <div style="font-family:var(--font-mono); font-size:10px; color:#F5F4EF; opacity:0.6; margin-top:4px;">#F5F4EF on #262624</div>
+    </div>
+    <div class="card-body">
+      <h3 style="color:#3D8C5F;">✅ 14.2:1 — Pass AAA</h3>
+      <p>Headings &amp; primary body text. Crisp, readable.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="secondary" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#262624; padding:24px; border-radius:8px;">
+      <div style="font-family:var(--font-sora); font-size:14px; color:#BCB8B1; line-height:1.4;">--text-secondary</div>
+      <div style="font-family:var(--font-mono); font-size:10px; color:#BCB8B1; opacity:0.6; margin-top:4px;">#BCB8B1 on #262624</div>
+    </div>
+    <div class="card-body">
+      <h3 style="color:#3D8C5F;">✅ 8.4:1 — Pass AAA</h3>
+      <p>Descriptions, secondary labels. Comfortable to read.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="tertiary" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#262624; padding:24px; border-radius:8px;">
+      <div style="font-family:var(--font-sora); font-size:12px; color:#8B8580; line-height:1.4;">--text-tertiary · used for hints &amp; timestamps</div>
+      <div style="font-family:var(--font-mono); font-size:10px; color:#8B8580; opacity:0.6; margin-top:4px;">#8B8580 on #262624</div>
+    </div>
+    <div class="card-body">
+      <h3 style="color:#C28B1A;">⚠ 4.0:1 — Fail AA</h3>
+      <p>Hints, timestamps, metadata. Hard to read in dim lighting.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="muted" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#262624; padding:24px; border-radius:8px;">
+      <div style="font-family:var(--font-sora); font-size:11px; color:#595755; line-height:1.4;">--text-muted · used for disabled labels &amp; footer text</div>
+      <div style="font-family:var(--font-mono); font-size:10px; color:#595755; opacity:0.6; margin-top:4px;">#595755 on #262624</div>
+    </div>
+    <div class="card-body">
+      <h3 style="color:#C44545;">❌ 2.4:1 — Fail AA badly</h3>
+      <p>Disabled states, footer copy. Almost invisible.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="section" style="margin-top:32px;">
+  <h3>Where is this visible in the app?</h3>
+  <p>These colors appear in:</p>
+  <ul style="line-height:1.8; font-size:13px; color:var(--text-secondary);">
+    <li><b>tertiary</b> — BentoMenu module codes, LoginPage labels, AssetTable timestamps</li>
+    <li><b>muted</b> — Footer ("V1.0.4 · BUILD 2026.06"), disabled checkbox labels, dimmed status pills</li>
+  </ul>
+</div>
+
+<div class="section" style="margin-top:32px;">
+  <p class="subtitle">Reply in the terminal with which direction you want for the fix. Then we'll design the toggle.</p>
+</div>

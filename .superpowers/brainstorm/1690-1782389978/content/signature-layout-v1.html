@@ -1,0 +1,42 @@
+<h2>Desain section tanda tangan APP1/opname</h2>
+<p class="subtitle">Layout rekomendasi: default 3 kolom, bisa jadi 2–4 kolom per ruangan. Klik jika visual ini cocok.</p>
+
+<div class="card" data-choice="signature-layout-a" onclick="toggleSelect(this)">
+  <div class="card-body">
+    <div class="label">Rekomendasi</div>
+    <h3>Signature grid fleksibel per ruangan</h3>
+    <p>Header kecil + kontrol tambah/kurangi. Tiap kartu punya label jabatan editable, canvas, tombol Kunci/Unlock, Bersihkan, dan nama terang.</p>
+  </div>
+  <div class="mockup">
+    <div class="mockup-header">Tanda Tangan & Nama Terang</div>
+    <div class="mockup-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px;flex-wrap:wrap">
+        <div style="font-size:12px;color:#64748b">3/4 kolom aktif · minimal 2</div>
+        <div style="display:flex;gap:8px">
+          <button class="mock-button" style="padding:8px 12px">− Kurangi</button>
+          <button class="mock-button" style="padding:8px 12px;background:#0f172a;color:white">+ Tambah PIC</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px">
+        <div style="border:1px solid #e2e8f0;border-radius:14px;padding:14px;background:white">
+          <input class="mock-input" value="PETUGAS OPNAME 1" style="text-align:center;font-weight:700;font-size:12px;margin-bottom:10px">
+          <div style="height:92px;border:1px dashed #cbd5e1;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#94a3b8;background:#f8fafc">canvas ttd</div>
+          <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end"><button class="mock-button" style="padding:7px 10px">Kunci</button></div>
+          <input class="mock-input" placeholder="Nama Terang..." style="text-align:center;margin-top:10px">
+        </div>
+        <div style="border:1px solid #e2e8f0;border-radius:14px;padding:14px;background:white">
+          <input class="mock-input" value="PETUGAS OPNAME 2" style="text-align:center;font-weight:700;font-size:12px;margin-bottom:10px">
+          <div style="height:92px;border:1px dashed #cbd5e1;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#94a3b8;background:#f8fafc">canvas ttd</div>
+          <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end"><button class="mock-button" style="padding:7px 10px">Kunci</button></div>
+          <input class="mock-input" placeholder="Nama Terang..." style="text-align:center;margin-top:10px">
+        </div>
+        <div style="border:1px solid #e2e8f0;border-radius:14px;padding:14px;background:white">
+          <input class="mock-input" value="PIC RUANGAN" style="text-align:center;font-weight:700;font-size:12px;margin-bottom:10px">
+          <div style="height:92px;border:1px solid #cbd5e1;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#475569;background:white">TTD terkunci</div>
+          <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end"><button class="mock-button" style="padding:7px 10px;background:#334155;color:white">Unlock</button></div>
+          <input class="mock-input" value="BUDI" style="text-align:center;margin-top:10px;font-weight:600">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

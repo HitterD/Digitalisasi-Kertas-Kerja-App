@@ -1,4 +1,4 @@
-# APP1 Opname — MAT Process Badge Design Spec
+lanjP1 Opname — MAT Process Badge Design Spec
 
 **Tanggal:** 2026-06-25  
 **Scope:** Tampilkan indikator kecil `proses MAT` di setiap aset pada halaman APP1 opname jika barcode aset sedang memiliki transaksi MAT aktif di `ASSET_MANAGEMENT.dbo.V_TRX_MAT`.

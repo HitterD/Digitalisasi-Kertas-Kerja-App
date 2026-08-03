@@ -1,10 +1,13 @@
 import { useNavigate, Navigate } from 'react-router-dom';
+import ThemeToggle from '../components/ThemeToggle';
 
 const MODULE_META = [
     { code: '01', category: 'OPERATIONAL' },
     { code: '02', category: 'REPORTING' },
     { code: '03', category: 'DATABASE' },
     { code: '04', category: 'INTELLIGENCE' },
+    { code: '05', category: 'ADMINISTRATION' },
+    { code: '06', category: 'DOCUMENTATION' },
 ];
 
 const ALL_APPS = [
@@ -40,6 +43,22 @@ const ALL_APPS = [
         variant: 'accent',
         moduleIndex: 3,
     },
+    {
+        id: 'admin',
+        title: 'User Management',
+        description: 'Kelola akses akun pengguna, tambah akun, ubah password, dan konfigurasi sistem operasional.',
+        path: '/admin',
+        variant: 'light',
+        moduleIndex: 4,
+    },
+    {
+        id: 'bast',
+        title: 'Berita Acara Serah Terima (BAST)',
+        description: 'Buat, cetak, dan kelola dokumen resmi serah terima aset ICT lengkap dengan tanda tangan digital.',
+        path: '/bast',
+        variant: 'light',
+        moduleIndex: 5,
+    },
 ];
 
 /* SVG icons per module — simple, editorial */
@@ -74,6 +93,20 @@ const ModuleIcons = {
             <path d="M20 28v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
         </svg>
     ),
+    bast: () => (
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="36" height="36">
+            <rect x="8" y="4" width="24" height="32" rx="3" stroke="currentColor" strokeWidth="2"/>
+            <path d="M14 12h12M14 17h12M14 22h8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            <circle cx="27" cy="27" r="5" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="2"/>
+            <path d="M25 27l1.5 1.5 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+    ),
+    admin: () => (
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="36" height="36">
+            <circle cx="20" cy="14" r="6" stroke="currentColor" strokeWidth="2"/>
+            <path d="M10 32c0-5.5 4.5-10 10-10s10 4.5 10 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+        </svg>
+    ),
 };
 
 export default function BentoMenu() {
@@ -92,26 +125,28 @@ export default function BentoMenu() {
     }
 
     const isAdmin = auth.role === 'admin';
-    const visibleApps = ALL_APPS.filter(
-        app => isAdmin || (auth.access && auth.access.includes(app.id))
-    );
+    const visibleApps = ALL_APPS.filter(app => {
+        if (app.id === 'admin') return isAdmin;
+        return isAdmin || (auth.access && auth.access.includes(app.id));
+    });
 
     return (
-        <div style={{ minHeight: '100vh', background: 'var(--cream-bg)', fontFamily: 'var(--font-sora)' }}>
+        <div style={{ minHeight: '100vh', fontFamily: 'var(--font-sora)' }}>
             {/* Top bar */}
             <div className="wa-app-header">
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <div style={{ width: 30, height: 30, background: 'var(--charcoal-900)', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 700, color: 'var(--terracotta-500)', letterSpacing: '0.05em' }}>KKD</div>
+                    <div style={{ width: 30, height: 30, background: 'var(--bg-input)', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.05em' }}>KKD</div>
                     </div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--charcoal-900)', letterSpacing: '-0.01em' }}>Kertas Kerja Digital</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>Kertas Kerja Digital</div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                     <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: 'var(--charcoal-400)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Logged in as</div>
-                        <div style={{ fontSize: 12, color: 'var(--charcoal-900)', fontWeight: 600 }}>{auth.user || 'User'}</div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: 'var(--text-tertiary)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Logged in as</div>
+                        <div style={{ fontSize: 12, color: 'var(--text-primary)', fontWeight: 600 }}>{auth.user || 'User'}</div>
                     </div>
                     <button onClick={handleLogout} className="wa-btn-ghost">Logout</button>
+                    <ThemeToggle />
                 </div>
             </div>
 
@@ -119,10 +154,10 @@ export default function BentoMenu() {
             <div style={{ padding: '24px 28px' }}>
                 <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 24 }}>
                     <div>
-                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--text-tertiary)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
                             {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
                         </div>
-                        <div style={{ fontSize: 26, fontWeight: 600, color: 'var(--charcoal-900)', letterSpacing: '-0.02em', marginTop: 6 }}>
+                        <div style={{ fontSize: 26, fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.02em', marginTop: 6 }}>
                             Selamat datang, {auth.user || 'User'}.
                         </div>
                     </div>
@@ -152,7 +187,7 @@ export default function BentoMenu() {
                                 </div>
                                 <div style={{ fontSize: 17, fontWeight: 600, color: 'var(--charcoal-900)', letterSpacing: '-0.01em' }}>{app.title}</div>
                                 <div style={{ marginTop: 8, fontSize: 12, color: 'var(--charcoal-500)', lineHeight: 1.5 }}>{app.description}</div>
-                                <div style={{ marginTop: 18, display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 14, borderTop: '1px solid rgba(26,26,26,0.06)' }}>
+                                <div style={{ marginTop: 18, display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 14, borderTop: '1px solid var(--border)' }}>
                                     <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.1em' }}>AKTIF</div>
                                     <div style={{ fontSize: 11, color: 'var(--charcoal-900)', fontWeight: 600 }}>Buka →</div>
                                 </div>
@@ -161,7 +196,7 @@ export default function BentoMenu() {
                     })}
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 18, borderTop: '1px solid rgba(26,26,26,0.08)', fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 18, borderTop: '1px solid var(--border)', fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em' }}>
                     <span>V1.0.4 · BUILD 2026.06</span>
                     <span>PT SANTOS JAYA ABADI · INTERNAL</span>
                     <span>◆ PRODUCTION</span>

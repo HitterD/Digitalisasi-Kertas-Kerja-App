@@ -1,0 +1,299 @@
+<style>
+  .ad-card { transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1), border-color 220ms ease; }
+  .ad-card:hover { transform: translateY(-2px); border-color: rgba(26,26,26,0.14) !important; box-shadow: 0 2px 4px rgba(45,45,45,0.04), 0 14px 30px rgba(45,45,45,0.08) !important; }
+
+  .ad-row { transition: background 140ms ease; }
+  .ad-row:hover { background: rgba(201,100,66,0.04) !important; }
+
+  .ad-tab { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .ad-tab:hover { background: rgba(26,26,26,0.04); }
+  .ad-tab.active { background: #FDFCF7; color: #1A1A1A !important; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .ad-tab.active .ad-tab-ic { color: #C96442; }
+  .ad-tab-ic { transition: color 200ms ease; color: #8B8580; }
+
+  .ad-cta { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .ad-cta:hover { background: #2A2A2A !important; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+  .ad-cta:active { transform: translateY(0) scale(0.98); }
+
+  .ad-terracotta { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .ad-terracotta:hover { background: #D87554 !important; transform: translateY(-1px); box-shadow: 0 6px 14px rgba(201,100,66,0.30); }
+  .ad-terracotta:active { transform: translateY(0) scale(0.97); }
+
+  .ad-ghost { transition: all 180ms ease; cursor: pointer; }
+  .ad-ghost:hover { background: #FDFCF7 !important; border-color: #1A1A1A !important; color: #1A1A1A !important; }
+
+  .ad-danger { transition: all 180ms ease; cursor: pointer; }
+  .ad-danger:hover { background: #FDF2F2 !important; border-color: #dc2626 !important; color: #dc2626 !important; }
+
+  .ad-barcode-btn { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .ad-barcode-btn:hover { background: #C96442 !important; color: #FDFCF7 !important; transform: translateY(-1px); box-shadow: 0 6px 14px rgba(201,100,66,0.25); }
+
+  .ad-input, .ad-select { background: #FDFCF7; border: 1px solid rgba(26,26,26,0.08); border-radius: 8px; padding: 8px 12px; font-size: 11.5px; color: #1A1A1A; font-family: inherit; outline: none; width: 100%; transition: all 160ms ease; }
+  .ad-input:hover, .ad-select:hover { border-color: rgba(26,26,26,0.16); }
+  .ad-input:focus, .ad-select:focus { border-color: #C96442; box-shadow: 0 0 0 3px rgba(201,100,66,0.12); }
+
+  .ad-toggle { width:36px; height:20px; background:rgba(26,26,26,0.12); border-radius:999px; position:relative; cursor:pointer; transition:all 180ms ease; }
+  .ad-toggle.on { background:#16a34a; }
+  .ad-toggle-knob { position:absolute; top:2px; left:2px; width:16px; height:16px; background:#FDFCF7; border-radius:50%; transition:all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+  .ad-toggle.on .ad-toggle-knob { left:18px; }
+
+  .ad-role-pill { display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:700; letter-spacing:0.1em; }
+  .ad-role-pill.admin { background:rgba(201,100,66,0.10); color:#C96442; }
+  .ad-role-pill.user { background:rgba(26,26,26,0.06); color:#6B6660; }
+</style>
+
+<h2>AdminPage — System Configuration</h2>
+<p class="subtitle">Halaman admin (admin role only). 4 tab: Users · Audit Trail · Backup · System Info. Bahasa visual sama. Default tab: Users.</p>
+
+<div class="mockup">
+  <div class="mockup-header">Preview: /admin (User Management tab)</div>
+  <div class="mockup-body" style="background:#F5EFE6;padding:0;font-family:'Sora',system-ui,sans-serif;">
+
+    <!-- In-app header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:rgba(253,251,247,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(26,26,26,0.06);">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <button style="background:transparent;border:none;cursor:pointer;padding:4px;color:#6B6660;display:flex;align-items:center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        </button>
+        <div style="width:1px;height:18px;background:rgba(26,26,26,0.1);"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:26px;height:26px;background:#1A1A1A;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#C96442;letter-spacing:0.05em;">KKD</div>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">System Configuration</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.1em;text-transform:uppercase;">Admin · PT Santos Jaya Abadi</div>
+          </div>
+        </div>
+      </div>
+      <div class="ad-barcode-btn" style="display:flex;align-items:center;gap:8px;background:#1A1A1A;color:#FDFCF7;border-radius:8px;padding:8px 14px;font-size:11px;font-weight:600;letter-spacing:0.05em;border:none;font-family:inherit;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        BARCODE CHECKER
+      </div>
+    </div>
+
+    <div style="padding:18px 24px 24px;background:#F5EFE6;">
+
+      <!-- Page header -->
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(26,26,26,0.08);">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.2em;text-transform:uppercase;">System · Administrator</div>
+          <div style="font-size:22px;font-weight:600;color:#1A1A1A;letter-spacing:-0.02em;margin-top:4px;">Konfigurasi Sistem</div>
+          <div style="font-size:12px;color:#6B6660;margin-top:6px;max-width:520px;line-height:1.5;">Kelola user, audit log, backup, dan informasi sistem. Akses terbatas untuk role admin.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;letter-spacing:0.05em;padding:6px 12px;background:rgba(22,163,74,0.08);color:#16a34a;border-radius:999px;font-weight:600;display:flex;align-items:center;gap:6px;">
+            <div style="width:6px;height:6px;background:#16a34a;border-radius:50%;"></div>
+            ADMINISTRATOR · andi.sja
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div style="display:flex;align-items:center;gap:0;padding:0;background:transparent;margin-bottom:14px;border-bottom:1px solid rgba(26,26,26,0.08);">
+        <div class="ad-tab active" style="display:flex;align-items:center;gap:8px;padding:10px 16px;font-size:12px;font-weight:600;color:#1A1A1A;border-bottom:2px solid #C96442;margin-bottom:-1px;font-family:inherit;">
+          <svg class="ad-tab-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Users
+        </div>
+        <div class="ad-tab" style="display:flex;align-items:center;gap:8px;padding:10px 16px;font-size:12px;font-weight:600;color:#6B6660;font-family:inherit;">
+          <svg class="ad-tab-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Audit Trail
+        </div>
+        <div class="ad-tab" style="display:flex;align-items:center;gap:8px;padding:10px 16px;font-size:12px;font-weight:600;color:#6B6660;font-family:inherit;">
+          <svg class="ad-tab-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Backup
+        </div>
+        <div class="ad-tab" style="display:flex;align-items:center;gap:8px;padding:10px 16px;font-size:12px;font-weight:600;color:#6B6660;font-family:inherit;">
+          <svg class="ad-tab-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+          System Info
+        </div>
+      </div>
+
+      <!-- USERS TAB CONTENT -->
+
+      <!-- Add user form (collapsible inline) -->
+      <div class="ad-card" style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:14px;padding:18px 22px;margin-bottom:14px;box-shadow:0 1px 2px rgba(45,45,45,0.03);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:24px;height:24px;background:rgba(201,100,66,0.10);color:#C96442;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+            </div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Tambah User Baru</div>
+              <div style="font-size:10.5px;color:#6B6660;margin-top:1px;">Buat akun dan atur hak akses per modul.</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end;">
+          <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;margin-bottom:6px;">Username</div>
+            <input class="ad-input" placeholder="nama.user" value=""/>
+          </div>
+          <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;margin-bottom:6px;">Password</div>
+            <input class="ad-input" type="password" placeholder="••••••••" value=""/>
+          </div>
+          <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;margin-bottom:6px;">Role</div>
+            <select class="ad-select"><option>user</option><option>admin</option></select>
+          </div>
+          <button class="ad-terracotta" style="background:#C96442;color:#FDFCF7;border:none;border-radius:8px;padding:9px 16px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;box-shadow:0 2px 6px rgba(201,100,66,0.2);height:36px;display:flex;align-items:center;gap:6px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Tambah
+          </button>
+        </div>
+      </div>
+
+      <!-- Users summary + filter -->
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+        <div style="font-size:13px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Daftar User</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#6B6660;letter-spacing:0.05em;">12 USER · 2 ADMIN</div>
+        <div style="flex:1;"></div>
+        <div style="position:relative;width:240px;">
+          <svg style="position:absolute;left:11px;top:50%;transform:translateY(-50%);" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8B8580" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input class="ad-input" style="padding-left:30px;" placeholder="Cari user…" value=""/>
+        </div>
+      </div>
+
+      <!-- Users table -->
+      <div class="ad-card" style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(45,45,45,0.03),0 6px 18px rgba(45,45,45,0.04);">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <thead>
+            <tr style="background:#FAF6EF;">
+              <th style="padding:11px 14px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">USERNAME</th>
+              <th style="padding:11px 12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">ROLE</th>
+              <th style="padding:11px 12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">APP1</th>
+              <th style="padding:11px 12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">APP2</th>
+              <th style="padding:11px 12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">APP3</th>
+              <th style="padding:11px 12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);width:100px;">STATUS</th>
+              <th style="padding:11px 12px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">AKSI</th>
+            </tr>
+          </thead>
+          <tbody style="font-family:'Sora',sans-serif;color:#1A1A1A;">
+            <tr class="ad-row">
+              <td style="padding:9px 14px;border-bottom:1px solid rgba(26,26,26,0.04);">
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div style="width:30px;height:30px;background:#1A1A1A;color:#C96442;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">AS</div>
+                  <div>
+                    <div style="font-size:12px;font-weight:600;">andi.sja</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.05em;">LOGIN TERAKHIR 15-JUN-26</div>
+                  </div>
+                </div>
+              </td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><span class="ad-role-pill admin">● ADMIN</span></td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="ad-toggle on"><div class="ad-toggle-knob"></div></div></td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="ad-toggle on"><div class="ad-toggle-knob"></div></div></td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="ad-toggle on"><div class="ad-toggle-knob"></div></div></td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);">
+                <div style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.1em;color:#16a34a;">
+                  <div style="width:6px;height:6px;background:#16a34a;border-radius:50%;"></div>AKTIF
+                </div>
+              </td>
+              <td style="padding:9px 12px;text-align:right;border-bottom:1px solid rgba(26,26,26,0.04);">
+                <button class="ad-ghost" style="background:transparent;color:#6B6660;border:1px solid rgba(26,26,26,0.12);border-radius:6px;padding:5px 10px;font-size:10px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;">Reset PW</button>
+              </td>
+            </tr>
+            <tr class="ad-row">
+              <td style="padding:9px 14px;border-bottom:1px solid rgba(26,26,26,0.04);">
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div style="width:30px;height:30px;background:rgba(26,26,26,0.08);color:#6B6660;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">DP</div>
+                  <div>
+                    <div style="font-size:12px;font-weight:600;">djoko.p</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.05em;">LOGIN 12-JUN-26 09:14</div>
+                  </div>
+                </div>
+              </td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><span class="ad-role-pill user">● USER</span></td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="ad-toggle on"><div class="ad-toggle-knob"></div></div></td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="ad-toggle"><div class="ad-toggle-knob"></div></div></td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="ad-toggle"><div class="ad-toggle-knob"></div></div></td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);">
+                <div style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.1em;color:#16a34a;">
+                  <div style="width:6px;height:6px;background:#16a34a;border-radius:50%;"></div>AKTIF
+                </div>
+              </td>
+              <td style="padding:9px 12px;text-align:right;border-bottom:1px solid rgba(26,26,26,0.04);">
+                <button class="ad-ghost" style="background:transparent;color:#6B6660;border:1px solid rgba(26,26,26,0.12);border-radius:6px;padding:5px 10px;font-size:10px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;">Reset PW</button>
+              </td>
+            </tr>
+            <tr class="ad-row">
+              <td style="padding:9px 14px;border-bottom:1px solid rgba(26,26,26,0.04);">
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div style="width:30px;height:30px;background:rgba(26,26,26,0.08);color:#6B6660;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">BS</div>
+                  <div>
+                    <div style="font-size:12px;font-weight:600;">bayu.s</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.05em;">LOGIN 10-JUN-26 16:42</div>
+                  </div>
+                </div>
+              </td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><span class="ad-role-pill user">● USER</span></td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="ad-toggle on"><div class="ad-toggle-knob"></div></div></td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="ad-toggle"><div class="ad-toggle-knob"></div></div></td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="ad-toggle"><div class="ad-toggle-knob"></div></div></td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);">
+                <div style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.1em;color:#8B8580;">
+                  <div style="width:6px;height:6px;background:#8B8580;border-radius:50%;"></div>OFFLINE
+                </div>
+              </td>
+              <td style="padding:9px 12px;text-align:right;border-bottom:1px solid rgba(26,26,26,0.04);">
+                <button class="ad-ghost" style="background:transparent;color:#6B6660;border:1px solid rgba(26,26,26,0.12);border-radius:6px;padding:5px 10px;font-size:10px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;">Reset PW</button>
+              </td>
+            </tr>
+            <tr class="ad-row">
+              <td style="padding:9px 14px;border-bottom:1px solid rgba(26,26,26,0.04);">
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div style="width:30px;height:30px;background:rgba(26,26,26,0.08);color:#6B6660;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;">MS</div>
+                  <div>
+                    <div style="font-size:12px;font-weight:600;">m.kusaeni</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.05em;">LOGIN 08-JUN-26 14:22</div>
+                  </div>
+                </div>
+              </td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><span class="ad-role-pill admin">● ADMIN</span></td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="ad-toggle on"><div class="ad-toggle-knob"></div></div></td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="ad-toggle on"><div class="ad-toggle-knob"></div></div></td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="ad-toggle on"><div class="ad-toggle-knob"></div></div></td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);">
+                <div style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.1em;color:#16a34a;">
+                  <div style="width:6px;height:6px;background:#16a34a;border-radius:50%;"></div>AKTIF
+                </div>
+              </td>
+              <td style="padding:9px 12px;text-align:right;border-bottom:1px solid rgba(26,26,26,0.04);">
+                <button class="ad-danger" style="background:transparent;color:#6B6660;border:1px solid rgba(26,26,26,0.12);border-radius:6px;padding:5px 10px;font-size:10px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;">Hapus</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:#FAF6EF;border-top:1px solid rgba(26,26,26,0.06);font-family:'JetBrains Mono',monospace;font-size:10px;color:#6B6660;letter-spacing:0.05em;">
+          <span>MENAMPILKAN 4 DARI 12 USER</span>
+          <span style="display:flex;align-items:center;gap:14px;">‹ 1 <span style="color:#1A1A1A;font-weight:700;">2</span> 3 ›</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Struktur</h3>
+  <ol>
+    <li><b>In-app header</b> (sama): KKD + "System Configuration" + role badge terracotta di kanan + BARCODE CHECKER</li>
+    <li><b>Page header</b>: meta uppercase + display title + admin badge "ADMINISTRATOR · andi.sja"</li>
+    <li><b>Tabs</b> (4): Users · Audit Trail · Backup · System Info. Aktif = charcoal text + 2px terracotta underline.</li>
+    <li><b>Tambah User form</b> (inline di atas tabel): Username + Password + Role + tombol Tambah terracotta. Tidak pakai modal — langsung inline, lebih cepat.</li>
+    <li><b>Users table</b>: Avatar monogram + Username + Last login + Role pill (admin terracotta / user abu-abu) + 3 toggle untuk akses App1/App2/App3 + Status (Aktif/Offline) + Aksi (Reset PW / Hapus)</li>
+  </ol>
+  <h3 style="margin-top:18px;">Animasi</h3>
+  <ul>
+    <li>Tab hover: bg charcoal 4% transparan, active: charcoal text + 2px terracotta bottom border</li>
+    <li>Toggle switch: knob slide 200ms cubic-bezier, bg charcoal ke hijau saat on</li>
+    <li>Row hover: cream pucat</li>
+    <li>Tombol Reset PW: ghost, hover border charcoal</li>
+    <li>Tombol Hapus: ghost merah, hover bg merah pucat + border merah + text merah</li>
+    <li>Avatar admin: charcoal bg + terracotta text (visual hierarchy: admin "terlihat")</li>
+    <li>Role pill admin: bg terracotta 10% + text terracotta (eye-catching)</li>
+  </ul>
+</div>
+
+<p class="subtitle" style="margin-top:20px;">Hover tab, row, toggle, dan button. Balas di terminal.</p>

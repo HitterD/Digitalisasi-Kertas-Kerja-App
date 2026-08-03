@@ -38,6 +38,7 @@ export function useOpnameSync({
                 fileName: state.fileName,
                 rooms: state.rooms,
                 currentRoomIndex: state.currentRoomIndex || 0,
+                sync: state.sync,
             },
             masterDb: {
                 fileName: masterDbFileName,

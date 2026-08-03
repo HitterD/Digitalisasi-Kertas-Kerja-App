@@ -2,18 +2,20 @@ import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOpname } from '../store/OpnameContext';
 import { parseExcelFile, splitExcelBySheets } from '../utils/excelParser';
-import { FileSpreadsheet, Scissors, ChevronRight, Save, Server, Layers, RefreshCw, Upload } from 'lucide-react';
+import { FileSpreadsheet, Scissors, ChevronRight, Save, Server, Upload } from 'lucide-react';
 import { saveAs } from 'file-saver';
 
 import SavedSessionCard from '../components/SavedSessionCard';
 import NetworkSyncHub from '../components/NetworkSyncHub';
 import DatabaseUploadGrid from '../components/DatabaseUploadGrid';
 import ServerFileBrowser from '../components/ServerFileBrowser';
-import SaveLoadModal from '../components/SaveLoadModal'; // NEW
+import SaveLoadModal from '../components/SaveLoadModal';
+
+import { getSavedSessionSummary, getDatabaseReadiness, getApp1HeroCta } from '../utils/app1HomeStatus';
 
 export default function UploadPage() {
     const navigate = useNavigate();
-    const { state, setData, resetData, mergeRooms, importData } = useOpname();
+    const { state, masterDb, historyDb, setData, resetData, mergeRooms, importData } = useOpname();
     const [isServerModalOpen, setIsServerModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [parsedData, setParsedData] = useState(null);
@@ -125,80 +127,95 @@ export default function UploadPage() {
         );
     }
 
+    const sessionSummary = getSavedSessionSummary(state);
+    const databaseReadiness = getDatabaseReadiness({ masterDb, historyDb });
+    const heroCta = getApp1HeroCta({ hasSession: sessionSummary.hasSession });
+
+    const handleHeroCtaClick = () => {
+        if (heroCta.target === 'opname') {
+            navigate('/app1/opname');
+        } else {
+            setIsServerModalOpen(true);
+        }
+    };
+
     // ═══════════════════════════════════════════
-    //  MAIN DASHBOARD VIEW (BENTO ASYMMETRICAL LAYOUT)
+    //  MAIN DASHBOARD VIEW (DARK MODE / SQL FIRST)
     // ═══════════════════════════════════════════
     return (
-        <div className="wa-app-body">
-            <div className="wa-page-header">
-                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                    <div className="wa-icon-wrap" style={{ background: 'rgba(26,26,26,0.06)' }}>
-                        <FileSpreadsheet size={20} color="var(--charcoal-900)" />
+        <div className="app1-home">
+            <div className="app1-home__shell">
+                <div className="app1-home__hero">
+                    <div className="app1-home__hero-main">
+                        <p className="app1-home__eyebrow">Modul 01 · Operasional</p>
+                        <h1 id="app1-home-title" className="app1-home__title">Mulai opname tanpa bingung.</h1>
+                        <p className="app1-home__subtitle">
+                            Siapkan data aset, sinkron dari SQL Server, lalu lanjutkan ke kertas kerja opname.
+                            Upload file tetap tersedia sebagai fallback saat jaringan tidak siap.
+                        </p>
+                        <div className="app1-home__actions">
+                            <button className="app1-home__button app1-home__button--primary" onClick={handleHeroCtaClick}>
+                                {heroCta.target === 'opname' ? <ChevronRight size={17} /> : <Server size={17} />}
+                                {heroCta.label}
+                            </button>
+                            <button className="app1-home__button app1-home__button--secondary" onClick={() => setIsServerModalOpen(true)}>
+                                <Server size={16} /> Ambil Data Server
+                            </button>
+                            <button className="app1-home__button app1-home__button--ghost" onClick={() => setIsSaveModalOpen(true)}>
+                                <Save size={16} /> Lanjutkan dari Lokal
+                            </button>
+                        </div>
                     </div>
-                    <div>
-                        <div className="eyebrow">Modul 01 · Operasional</div>
-                        <h1>Kertas Kerja Opname</h1>
-                        <div className="subtitle">Mulai opname baru, lanjutkan sesi sebelumnya, atau sinkronkan data dari jaringan.</div>
-                    </div>
-                </div>
-                <div style={{ display: 'flex', gap: 8 }}>
-                    <button className="wa-btn" onClick={() => setIsSaveModalOpen(true)}>
-                        <Save size={13} /> Lanjutkan dari Lokal (Save)
-                    </button>
-                    <button className="wa-btn-terracotta" onClick={() => setIsServerModalOpen(true)}>
-                        <Server size={13} /> Ambil Data Server (Baru)
-                    </button>
-                </div>
-            </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                {/* Card 1: Saved Session */}
-                <SavedSessionCard />
-                {/* Card 2: Network Sync Hub */}
-                <NetworkSyncHub />
-                {/* Card 3: Sumber Data Aset (full-width) */}
-                <div className="wa-card" style={{ gridColumn: 'span 2', padding: 22 }}>
-                    <DatabaseUploadGrid />
-                </div>
-                {/* Card 4: Database Master Aset (full-width) */}
-                <div className="wa-card" style={{ gridColumn: 'span 2', padding: 22 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
-                        <div className="wa-icon-wrap" style={{ background: 'rgba(22,163,74,0.10)' }}>
-                            <Layers size={20} color="var(--success-500)" />
+                    <div className="app1-home__side-stack">
+                        <div className="app1-home__panel">
+                            <p className="app1-home__label">Status Sesi</p>
+                            <h2 className="app1-home__panel-title">{sessionSummary.label}</h2>
+                            <p className="app1-home__text">
+                                {sessionSummary.hasSession
+                                    ? `${sessionSummary.assetCount.toLocaleString('id-ID')} aset tersimpan dari sesi lokal.`
+                                    : 'Belum ada sesi opname lokal yang aktif.'}
+                            </p>
                         </div>
-                        <div style={{ flex: 1 }}>
-                            <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--charcoal-900)' }}>Database Master Aset</div>
-                            <div style={{ fontSize: 11.5, color: 'var(--charcoal-500)', marginTop: 3 }}>Kamus utama barcode &amp; metadata aset perusahaan.</div>
+                        <div className="app1-home__panel">
+                            <p className="app1-home__label">Kesiapan Data</p>
+                            <h2 className="app1-home__panel-title">{databaseReadiness.label}</h2>
+                            <div className="app1-home__actions" style={{ marginTop: 12 }}>
+                                <span className={`app1-home__badge app1-home__badge--${masterDb ? 'success' : 'warning'}`}>
+                                    {databaseReadiness.masterLabel}
+                                </span>
+                                <span className={`app1-home__badge app1-home__badge--${historyDb ? 'success' : 'warning'}`}>
+                                    {databaseReadiness.historyLabel}
+                                </span>
+                            </div>
                         </div>
-                        <div className="wa-status success">✓ 98,837 ASET</div>
-                    </div>
-                    <div style={{ padding: 14, background: 'rgba(22,163,74,0.05)', border: '1px solid rgba(22,163,74,0.2)', borderRadius: 10 }}>
-                        <div style={{ fontSize: 12, color: 'var(--success-500)', fontWeight: 600 }}>SQL Server (98837 aset) — 98,837 barcode dimuat</div>
-                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--charcoal-400)', marginTop: 6 }}>⏱ Terakhir sync: 15 Jun 2026, 11:45</div>
-                    </div>
-                    <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
-                        <button className="wa-btn-ghost"><RefreshCw size={12} /> Sinkron Ulang</button>
-                        <button className="wa-btn-ghost"><Upload size={12} /> Upload File</button>
                     </div>
                 </div>
+
+                <div className="app1-home__grid">
+                    <SavedSessionCard />
+                    <NetworkSyncHub />
+                </div>
+
+                <DatabaseUploadGrid />
             </div>
 
             {/* ─── POPUP MODAL SERVER FILE ─── */}
             {isServerModalOpen && (
-                <div className="modal-overlay" style={{ zIndex: 9999, position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(2px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }} onClick={() => setIsServerModalOpen(false)}>
-                    <div style={{ backgroundColor: 'var(--warm-50)', width: '100%', maxWidth: '900px', boxShadow: '8px 8px 0px rgba(15,23,42,1)', maxHeight: '85vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', border: '3px solid var(--charcoal-900)', borderRadius: '0' }} onClick={e => e.stopPropagation()}>
-                        <div style={{ padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#ffffff', borderBottom: '3px solid var(--charcoal-900)' }}>
-                            <h2 style={{ fontSize: '18px', fontFamily: 'var(--font-sora)', fontWeight: 900, margin: 0, display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--charcoal-900)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                                <div className="wa-icon-wrap" style={{ background: 'rgba(201,100,66,0.10)', color: 'var(--terracotta-500)' }}>
-                                    <FileSpreadsheet size={18} strokeWidth={3} />
+                <div className="app1-home__modal-overlay" onClick={() => setIsServerModalOpen(false)}>
+                    <div className="app1-home__modal" onClick={e => e.stopPropagation()}>
+                        <div className="app1-home__modal-header">
+                            <h2 className="app1-home__modal-title">
+                                <div className="app1-home__icon-box">
+                                    <Server size={18} strokeWidth={2.5} />
                                 </div>
-                                BROWSE FILE SERVER
+                                Browse File Server
                             </h2>
-                            <button onClick={() => setIsServerModalOpen(false)} style={{ background: '#fff', border: '2px solid var(--charcoal-900)', cursor: 'pointer', padding: 0, width: 36, height: 36, color: 'var(--charcoal-900)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} onMouseOver={e => { e.currentTarget.style.backgroundColor='var(--charcoal-900)'; e.currentTarget.style.color='#fff' }} onMouseOut={e => { e.currentTarget.style.backgroundColor='#fff'; e.currentTarget.style.color='var(--charcoal-900)'}}>
-                                <span style={{ fontSize: '24px', lineHeight: '100%', fontWeight: 300, display: 'block' }}>&times;</span>
+                            <button className="app1-home__modal-close" onClick={() => setIsServerModalOpen(false)}>
+                                &times;
                             </button>
                         </div>
-                        <div style={{ padding: '0', overflowY: 'auto' }}>
+                        <div className="app1-home__modal-body">
                             <ServerFileBrowser onFileLoaded={handleServerFile} />
                         </div>
                     </div>

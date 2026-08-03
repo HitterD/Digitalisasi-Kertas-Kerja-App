@@ -168,103 +168,61 @@ export default function SaveLoadModal({ isOpen, onClose, currentFileName, onSave
     if (!isOpen) return null;
 
     return (
-        <div className="modal-overlay" style={{ zIndex: 9999, position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-            <div className="wa-card" style={{ width: '100%', maxWidth: '600px', maxHeight: '85vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div className="modal-overlay" style={{ zIndex: 9999, position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
+            <div className="app1-home__panel" style={{ width: '100%', maxWidth: '600px', maxHeight: '85vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: 0, background: 'var(--bg-surface)', borderColor: 'var(--border)', boxShadow: 'var(--shadow-lg)' }}>
 
                 {/* Header */}
-                <div style={{ padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(26, 26, 26, 0.06)' }}>
-                    <h2 style={{ fontSize: '17px', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--charcoal-900)' }}>
-                        <div style={{ width: 36, height: 36, background: 'rgba(201, 100, 66, 0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--terracotta-500)', borderRadius: '10px' }}>
-                            <Save size={18} strokeWidth={2.5} />
-                        </div>
-                        Data Opname
+                <div style={{ padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border)' }}>
+                    <h2 style={{ fontSize: '17px', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--text-primary)' }}>
+                        <div className="app1-home__icon-box app1-home__icon-box--sm"><Save size={16} /></div> Data Opname
                     </h2>
-                    <button onClick={onClose} aria-label="Close" style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '0', width: 36, height: 36, color: 'var(--charcoal-900)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', transition: 'all 0.2s' }} onMouseOver={e => { e.currentTarget.style.backgroundColor='rgba(26,26,26,0.05)'; }} onMouseOut={e => { e.currentTarget.style.backgroundColor='transparent'; }}>
-                        <X size={20} strokeWidth={2.5}/>
+                    <button className="app1-home__button app1-home__button--ghost" onClick={onClose} style={{ width: 36, height: 36, padding: 0, borderRadius: '50%', justifyContent: 'center' }}>
+                        <X size={20} />
                     </button>
                 </div>
 
                 {/* Soft Tabs */}
-                <div style={{ display: 'flex', borderBottom: '1px solid rgba(26, 26, 26, 0.06)', backgroundColor: 'transparent' }}>
-                    <button
-                        style={{ flex: 1, padding: '14px 16px', fontWeight: 600, fontSize: '13px', outline: 'none', cursor: 'pointer', border: 'none', background: 'transparent', color: activeTab === 'save' ? 'var(--charcoal-900)' : 'rgba(26, 26, 26, 0.55)', transition: 'all 0.15s ease', borderBottom: activeTab === 'save' ? '2px solid var(--terracotta-500)' : '2px solid transparent' }}
-                        onClick={() => setActiveTab('save')}
-                    >
-                        Simpan (Save)
-                    </button>
-                    <button
-                        style={{ flex: 1, padding: '14px 16px', fontWeight: 600, fontSize: '13px', outline: 'none', cursor: 'pointer', border: 'none', background: 'transparent', color: activeTab === 'load' ? 'var(--charcoal-900)' : 'rgba(26, 26, 26, 0.55)', transition: 'all 0.15s ease', borderBottom: activeTab === 'load' ? '2px solid var(--terracotta-500)' : '2px solid transparent' }}
-                        onClick={() => setActiveTab('load')}
-                    >
-                        Muat Ulang (Load)
-                    </button>
+                <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', backgroundColor: 'transparent' }}>
+                    <button style={{ flex: 1, padding: '14px 16px', fontWeight: 600, fontSize: '13px', outline: 'none', cursor: 'pointer', border: 'none', background: 'transparent', color: activeTab === 'save' ? 'var(--accent)' : 'var(--text-secondary)', transition: 'all 0.15s ease', borderBottom: activeTab === 'save' ? '2px solid var(--accent)' : '2px solid transparent' }} onClick={() => setActiveTab('save')}>Simpan (Save)</button>
+                    <button style={{ flex: 1, padding: '14px 16px', fontWeight: 600, fontSize: '13px', outline: 'none', cursor: 'pointer', border: 'none', background: 'transparent', color: activeTab === 'load' ? 'var(--accent)' : 'var(--text-secondary)', transition: 'all 0.15s ease', borderBottom: activeTab === 'load' ? '2px solid var(--accent)' : '2px solid transparent' }} onClick={() => setActiveTab('load')}>Muat Ulang (Load)</button>
                 </div>
 
                 {/* Body */}
                 <div style={{ padding: '24px', overflowY: 'auto', flex: 1, minHeight: '300px' }}>
                     
-                    {error && (
-                        <div style={{ marginBottom: '20px', padding: '12px 16px', backgroundColor: 'rgba(220, 38, 38, 0.06)', color: '#991B1B', border: '1px solid rgba(220, 38, 38, 0.15)', borderRadius: 'var(--radius-md, 10px)', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 600 }}>
-                            <AlertCircle size={18} strokeWidth={2.5} style={{ flexShrink: 0 }} />
-                            <span>{error}</span>
-                        </div>
-                    )}
+                    {error && <div className="app1-home__alert" style={{ marginBottom: 20 }}><AlertCircle size={18} /><span>{error}</span></div>}
 
                     {activeTab === 'save' && (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-
-                            {/* New Save Input */}
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--charcoal-900)' }}>Simpan sebagai file baru</label>
+                            <div className="app1-home__field">
+                                <label className="app1-home__field-label">Simpan sebagai file baru</label>
                                 <div style={{ display: 'flex', gap: '8px', alignItems: 'stretch' }}>
-                                    <input
-                                        type="text"
-                                        value={saveName}
-                                        onChange={e => setSaveName(e.target.value)}
-                                        placeholder="Ketik nama untuk di-save..."
-                                        style={{ flex: 1, padding: '10px 14px', border: '1px solid rgba(26, 26, 26, 0.12)', borderRadius: 'var(--radius-md, 10px)', fontSize: '14px', outline: 'none', backgroundColor: '#fff', color: 'var(--charcoal-900)', fontWeight: 500 }}
-                                        disabled={loading}
-                                    />
-                                    <button
-                                        onClick={handleSaveNew}
-                                        disabled={loading || !saveName.trim()}
-                                        className="wa-btn wa-btn-terracotta"
-                                        style={{ padding: '0 20px', fontSize: '13px', cursor: (loading || !saveName.trim()) ? 'not-allowed' : 'pointer', opacity: (loading || !saveName.trim()) ? 0.6 : 1 }}
-                                    >
-                                        Save
-                                    </button>
+                                    <input type="text" value={saveName} onChange={e => setSaveName(e.target.value)} placeholder="Ketik nama untuk di-save..." className="app1-home__input" style={{ flex: 1 }} disabled={loading} />
+                                    <button onClick={handleSaveNew} disabled={loading || !saveName.trim()} className="app1-home__button app1-home__button--primary" style={{ padding: '0 20px', fontSize: '13px', justifyContent: 'center' }}>Save</button>
                                 </div>
                             </div>
 
-                            <div style={{ height: '1px', backgroundColor: 'rgba(26, 26, 26, 0.06)', width: '100%' }}></div>
+                            <div style={{ height: '1px', backgroundColor: 'var(--border)', width: '100%' }}></div>
 
-                            {/* Overwrite List */}
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                <h3 style={{ fontSize: '12px', fontWeight: 600, color: 'var(--charcoal-900)', margin: 0 }}>Timpa (overwrite) file tersimpan</h3>
+                                <h3 style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>Timpa (overwrite) file tersimpan</h3>
                                 {loading && saves.length === 0 ? (
-                                    <div style={{ textAlign: 'center', padding: '32px 0', fontSize: '13px', color: 'rgba(26, 26, 26, 0.55)' }}>Mengambil data...</div>
+                                    <div style={{ textAlign: 'center', padding: '32px 0', fontSize: '13px', color: 'var(--text-secondary)' }}>Mengambil data...</div>
                                 ) : saves.length === 0 ? (
-                                    <div style={{ textAlign: 'center', padding: '32px 0', fontSize: '13px', color: 'rgba(26, 26, 26, 0.55)', backgroundColor: '#fff', border: '1px dashed rgba(26, 26, 26, 0.12)', borderRadius: 'var(--radius-md, 10px)' }}>Belum ada data tersimpan.</div>
+                                    <div style={{ textAlign: 'center', padding: '32px 0', fontSize: '13px', color: 'var(--text-secondary)', border: '1px dashed var(--border)', borderRadius: '10px' }}>Belum ada data tersimpan.</div>
                                 ) : (
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                         {saves.map(save => (
-                                            <div key={save.id} className="wa-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', gap: '12px' }}>
+                                            <div key={save.id} className="app1-home__panel" style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', gap: '12px', background: 'var(--bg-input)' }}>
                                                 <div style={{ minWidth: 0, flex: 1 }}>
-                                                    <div style={{ fontWeight: 600, fontSize: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--charcoal-900)' }}>{save.name}</div>
-                                                    <div style={{ fontSize: '11px', color: 'rgba(26, 26, 26, 0.55)', marginTop: '4px', display: 'flex', gap: '8px', alignItems: 'center', fontWeight: 500 }}>
+                                                    <div style={{ fontWeight: 600, fontSize: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--text-primary)' }}>{save.name}</div>
+                                                    <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '4px', display: 'flex', gap: '8px', alignItems: 'center', fontWeight: 500 }}>
                                                         <span>{new Date(save.updatedAt).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})} • {new Date(save.updatedAt).toLocaleDateString('id-ID', {day:'2-digit', month:'short'})}</span>
-                                                        <span style={{width: 4, height: 4, background: 'rgba(26, 26, 26, 0.4)', borderRadius: '50%'}}></span>
+                                                        <span style={{width: 4, height: 4, background: 'var(--text-tertiary)', borderRadius: '50%'}}></span>
                                                         <span>{save.roomCount} Area</span>
                                                     </div>
                                                 </div>
-                                                <button
-                                                    onClick={() => handleOverwrite(save)}
-                                                    disabled={loading}
-                                                    className="wa-btn"
-                                                    style={{ flexShrink: 0, fontSize: '12px', padding: '8px 14px', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.5 : 1 }}
-                                                >
-                                                    Timpa
-                                                </button>
+                                                <button onClick={() => handleOverwrite(save)} disabled={loading} className="app1-home__button app1-home__button--secondary" style={{ flexShrink: 0, fontSize: '12px', padding: '8px 14px' }}>Timpa</button>
                                             </div>
                                         ))}
                                     </div>
@@ -276,56 +234,36 @@ export default function SaveLoadModal({ isOpen, onClose, currentFileName, onSave
                     {activeTab === 'load' && (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                             {loading && saves.length === 0 ? (
-                                <div style={{ textAlign: 'center', padding: '40px 0', fontSize: '13px', color: 'rgba(26, 26, 26, 0.55)' }}>Memuat data...</div>
+                                <div style={{ textAlign: 'center', padding: '40px 0', fontSize: '13px', color: 'var(--text-secondary)' }}>Memuat data...</div>
                             ) : saves.length === 0 ? (
-                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', color: 'var(--charcoal-900)', backgroundColor: '#fff', border: '1px dashed rgba(26, 26, 26, 0.12)', borderRadius: 'var(--radius-md, 10px)', textAlign: 'center' }}>
-                                    <div style={{ width: 48, height: 48, background: 'rgba(201, 100, 66, 0.10)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px', color: 'var(--terracotta-500)' }}>
-                                        <Download size={24} strokeWidth={2.5} />
-                                    </div>
-                                    <p style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: 'var(--charcoal-900)' }}>Belum ada data</p>
-                                    <p style={{ margin: '6px 0 0 0', fontSize: '12px', lineHeight: 1.6, maxWidth: '240px', color: 'rgba(26, 26, 26, 0.6)' }}>Simpan progres di tab "Simpan" agar tidak hilang.</p>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', border: '1px dashed var(--border)', borderRadius: '10px', textAlign: 'center' }}>
+                                    <div className="app1-home__icon-box app1-home__icon-box--lg" style={{ marginBottom: 16 }}><Download size={24} /></div>
+                                    <p style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)' }}>Belum ada data</p>
+                                    <p style={{ margin: '6px 0 0 0', fontSize: '12px', lineHeight: 1.6, maxWidth: '240px', color: 'var(--text-secondary)' }}>Simpan progres di tab "Simpan" agar tidak hilang.</p>
                                 </div>
                             ) : (
                                 saves.map(save => (
-                                    <div key={save.id} className="wa-card" style={{ display: 'flex', alignItems: 'center', padding: '12px 14px', gap: '12px' }}>
-                                        <div style={{ width: 40, height: 40, background: 'rgba(201, 100, 66, 0.10)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--terracotta-500)', flexShrink: 0 }}>
-                                            <Save size={18} strokeWidth={2.5} />
-                                        </div>
+                                    <div key={save.id} className="app1-home__panel" style={{ flexDirection: 'row', alignItems: 'center', padding: '12px 14px', gap: '12px', background: 'var(--bg-input)' }}>
+                                        <div className="app1-home__icon-box" style={{ width: 40, height: 40, borderRadius: 10, flexShrink: 0 }}><Save size={18} /></div>
 
                                         <div style={{ minWidth: 0, flex: 1 }}>
-                                            <h4 style={{ margin: 0, fontWeight: 600, fontSize: '14px', color: 'var(--charcoal-900)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{save.name}</h4>
+                                            <h4 style={{ margin: 0, fontWeight: 600, fontSize: '14px', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{save.name}</h4>
 
-                                            <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', fontSize: '11px', color: 'rgba(26, 26, 26, 0.6)', marginTop: '6px', fontWeight: 500 }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', fontSize: '11px', color: 'var(--text-secondary)', marginTop: '6px', fontWeight: 500 }}>
                                                 <span>{new Date(save.updatedAt).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'})} • {new Date(save.updatedAt).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})}</span>
-                                                {save.periode && (
-                                                    <span style={{ backgroundColor: 'rgba(201, 100, 66, 0.10)', color: 'var(--terracotta-500)', padding: '2px 8px', borderRadius: '6px', fontWeight: 600 }}>{save.periode}</span>
-                                                )}
+                                                {save.periode && <span className="app1-home__badge app1-home__badge--primary" style={{ padding: '2px 8px' }}>{save.periode}</span>}
                                             </div>
 
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'rgba(26, 26, 26, 0.6)', marginTop: '4px', fontWeight: 600 }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--text-secondary)', marginTop: '4px', fontWeight: 600 }}>
                                                 <span>{save.roomCount} R</span>
-                                                <span style={{width: 3, height: 3, background: 'rgba(26, 26, 26, 0.4)', borderRadius: '50%'}}></span>
+                                                <span style={{width: 3, height: 3, background: 'var(--text-tertiary)', borderRadius: '50%'}}></span>
                                                 <span>{save.assetCount} A</span>
                                             </div>
                                         </div>
 
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flexShrink: 0 }}>
-                                            <button
-                                                onClick={() => handleLoad(save)}
-                                                disabled={loading}
-                                                className="wa-btn wa-btn-terracotta"
-                                                style={{ fontSize: '12px', padding: '6px 12px', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.5 : 1 }}
-                                            >
-                                                Load
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(save)}
-                                                disabled={loading}
-                                                title="Hapus permanen"
-                                                style={{ fontSize: '11px', fontWeight: 600, padding: '4px', color: 'rgba(220, 38, 38, 0.85)', backgroundColor: 'transparent', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.5 : 1 }}
-                                            >
-                                                Hapus data
-                                            </button>
+                                            <button onClick={() => handleLoad(save)} disabled={loading} className="app1-home__button app1-home__button--primary" style={{ fontSize: '12px', padding: '6px 12px', justifyContent: 'center' }}>Load</button>
+                                            <button onClick={() => handleDelete(save)} disabled={loading} className="app1-home__button app1-home__button--ghost" style={{ fontSize: '11px', padding: '4px', color: 'var(--danger-500)', justifyContent: 'center' }}>Hapus data</button>
                                         </div>
                                     </div>
                                 ))

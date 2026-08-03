@@ -1,0 +1,141 @@
+<h2>App1 Full Preview — Home + Sumber Data Aset SQL</h2>
+<p class="subtitle">Gambaran penuh App1 selain <strong>/app1/opname</strong>. Fokus: alur jelas, SQL utama, upload fallback, dark mode terbaca.</p>
+
+<div class="mockup">
+  <div class="mockup-header">Full Dark Mode Mockup</div>
+  <div class="mockup-body">
+    <div style="background:#262624;color:#F5F4EF;border:1px solid #4A4A48;border-radius:24px;padding:18px;font-family:system-ui;box-shadow:0 24px 70px rgba(0,0,0,.35)">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;background:#2D2D2B;border:1px solid #3D3D3B;border-radius:16px;padding:10px 12px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <button style="width:34px;height:34px;border:1px solid #4A4A48;border-radius:10px;background:#1F1F1D;color:#BCB8B1">←</button>
+          <div style="width:1px;height:22px;background:#4A4A48"></div>
+          <div style="width:34px;height:34px;border-radius:10px;background:rgba(217,119,87,.16);color:#E58A6A;display:grid;place-items:center;font-weight:900">▣</div>
+          <div>
+            <div style="font-size:13px;font-weight:800;color:#F5F4EF">Opname Aset</div>
+            <div style="font-size:11px;color:#B5B0A8">Home Operasional</div>
+          </div>
+          <div style="display:flex;background:#1F1F1D;border:1px solid #4A4A48;border-radius:999px;padding:3px;margin-left:8px">
+            <span style="background:#D97757;color:#1F1F1D;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:900">Home</span>
+            <span style="color:#BCB8B1;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:700">Kertas Kerja</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button style="background:#F5F4EF;color:#262624;border:0;border-radius:999px;padding:9px 12px;font-size:11px;font-weight:900;letter-spacing:.04em">BARCODE CHECKER</button>
+          <button style="background:#1F1F1D;color:#F5F4EF;border:1px solid #4A4A48;border-radius:999px;padding:9px 12px;font-size:11px;font-weight:800">Dark</button>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-bottom:16px">
+        <section style="background:linear-gradient(135deg,#2D2D2B 0%,#42301A 100%);border:1px solid #8A6133;border-radius:22px;padding:22px;min-height:190px">
+          <div style="font-size:11px;color:#F4C47A;font-weight:900;letter-spacing:.1em;text-transform:uppercase">Modul 01 · Operasional</div>
+          <h3 style="font-size:28px;line-height:1.08;margin:12px 0 8px;color:#F5F4EF">Mulai opname tanpa bingung.</h3>
+          <p style="margin:0 0 18px;color:#BCB8B1;line-height:1.5;max-width:520px">Urutan kerja dibuat jelas: siapkan data, sinkron SQL, lalu mulai/lanjutkan kertas kerja.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button style="background:#E8A94A;color:#1F1F1D;border:0;border-radius:12px;padding:12px 15px;font-weight:900">Mulai / Lanjutkan Opname</button>
+            <button style="background:rgba(245,244,239,.08);color:#F5F4EF;border:1px solid #4A4A48;border-radius:12px;padding:12px 15px;font-weight:800">Ambil Data Server</button>
+          </div>
+        </section>
+
+        <aside style="display:grid;gap:12px">
+          <div style="background:#2D2D2B;border:1px solid #3D3D3B;border-radius:18px;padding:16px">
+            <div style="font-size:11px;color:#B5B0A8;font-weight:800;text-transform:uppercase">Status Sesi</div>
+            <div style="font-size:24px;font-weight:900;margin-top:6px;color:#F5F4EF">12 Ruangan</div>
+            <div style="font-size:12px;color:#BCB8B1;margin-top:4px">Data lokal tersimpan</div>
+          </div>
+          <div style="background:#2D2D2B;border:1px solid #3D3D3B;border-radius:18px;padding:16px">
+            <div style="font-size:11px;color:#B5B0A8;font-weight:800;text-transform:uppercase">Kesiapan Data</div>
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+              <span style="background:rgba(34,197,94,.18);color:#86EFAC;border:1px solid rgba(134,239,172,.28);border-radius:999px;padding:6px 9px;font-size:12px;font-weight:800">Master OK</span>
+              <span style="background:rgba(245,158,11,.18);color:#FCD34D;border:1px solid rgba(252,211,77,.28);border-radius:999px;padding:6px 9px;font-size:12px;font-weight:800">History perlu sync</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+        <div style="background:#2D2D2B;border:1px solid #3D3D3B;border-radius:18px;padding:16px">
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:start;margin-bottom:12px">
+            <div>
+              <div style="font-size:11px;color:#B5B0A8;font-weight:900;letter-spacing:.08em;text-transform:uppercase">Lanjutkan</div>
+              <h4 style="margin:6px 0;color:#F5F4EF;font-size:18px">Opname Tersimpan</h4>
+              <p style="margin:0;color:#BCB8B1;font-size:13px;line-height:1.45">Buka lagi sesi terakhir tanpa mencari file ulang.</p>
+            </div>
+            <span style="background:rgba(217,119,87,.16);color:#E58A6A;border:1px solid rgba(229,138,106,.28);border-radius:999px;padding:6px 9px;font-size:11px;font-weight:900">12 RUANGAN</span>
+          </div>
+          <button style="width:100%;background:#F5F4EF;color:#262624;border:0;border-radius:12px;padding:11px 14px;font-weight:900">Lanjutkan Opname →</button>
+        </div>
+
+        <div style="background:#2D2D2B;border:1px solid #3D3D3B;border-radius:18px;padding:16px">
+          <div style="font-size:11px;color:#B5B0A8;font-weight:900;letter-spacing:.08em;text-transform:uppercase">Sinkron Jaringan</div>
+          <h4 style="margin:6px 0;color:#F5F4EF;font-size:18px">PC ↔ Tablet</h4>
+          <p style="margin:0 0 12px;color:#BCB8B1;font-size:13px;line-height:1.45">Arah transfer dibuat eksplisit agar tidak salah tekan.</p>
+          <div style="display:grid;gap:8px">
+            <button style="display:flex;justify-content:space-between;align-items:center;background:#1F1F1D;color:#F5F4EF;border:1px solid #4A4A48;border-radius:12px;padding:11px 13px;font-weight:800"><span>Bagikan Sesi</span><span style="color:#B5B0A8;font-size:11px">PC → Jaringan</span></button>
+            <button style="display:flex;justify-content:space-between;align-items:center;background:#1F1F1D;color:#F5F4EF;border:1px solid #4A4A48;border-radius:12px;padding:11px 13px;font-weight:800"><span>Tarik Hasil</span><span style="color:#B5B0A8;font-size:11px">Tablet → PC</span></button>
+          </div>
+        </div>
+      </div>
+
+      <section style="background:#2D2D2B;border:1px solid #3D3D3B;border-radius:22px;overflow:hidden">
+        <div style="padding:18px 20px;border-bottom:1px solid #3D3D3B;display:flex;justify-content:space-between;align-items:center;gap:12px">
+          <div>
+            <div style="font-size:11px;color:#B5B0A8;font-weight:900;letter-spacing:.08em;text-transform:uppercase">Sumber Data Aset</div>
+            <h3 style="margin:6px 0 0;color:#F5F4EF;font-size:22px">Sinkron SQL Server dulu, upload kalau offline.</h3>
+          </div>
+          <span style="background:rgba(34,197,94,.18);color:#86EFAC;border:1px solid rgba(134,239,172,.28);border-radius:999px;padding:8px 10px;font-size:12px;font-weight:900">SQL READY</span>
+        </div>
+
+        <div style="padding:18px 20px;border-bottom:1px solid #3D3D3B;background:#1F1F1D">
+          <button style="width:100%;background:#D97757;color:#1F1F1D;border:0;border-radius:14px;padding:14px 16px;font-size:14px;font-weight:950;letter-spacing:.02em">↻ Sinkron Semua dari SQL Server</button>
+          <p style="margin:10px 0 0;text-align:center;color:#B5B0A8;font-size:12px">Mengambil Master Aset + History sekaligus. Data tersimpan offline setelah sinkron.</p>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:18px 20px">
+          <div style="background:#1F1F1D;border:1px solid #4A4A48;border-radius:18px;padding:16px">
+            <div style="display:flex;justify-content:space-between;align-items:start;gap:10px;margin-bottom:12px">
+              <div>
+                <div style="font-size:11px;color:#B5B0A8;font-weight:900;letter-spacing:.08em;text-transform:uppercase">Master Aset</div>
+                <h4 style="margin:6px 0;color:#F5F4EF;font-size:18px">Database utama</h4>
+              </div>
+              <span style="background:rgba(34,197,94,.18);color:#86EFAC;border:1px solid rgba(134,239,172,.28);border-radius:999px;padding:6px 9px;font-size:11px;font-weight:900">8.240 ASET</span>
+            </div>
+            <div style="background:#2D2D2B;border:1px solid #3D3D3B;border-radius:12px;padding:12px;margin-bottom:12px">
+              <div style="color:#86EFAC;font-size:13px;font-weight:900">✓ SQL Server tersinkron</div>
+              <div style="color:#BCB8B1;font-size:12px;margin-top:4px">Terakhir sync: 24 Jun 2026, 13:58</div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button style="background:#2D2D2B;color:#F5F4EF;border:1px solid #4A4A48;border-radius:10px;padding:9px 11px;font-weight:800">Sinkron Ulang</button>
+              <button style="background:transparent;color:#BCB8B1;border:1px dashed #4A4A48;border-radius:10px;padding:9px 11px;font-weight:800">Upload File Fallback</button>
+            </div>
+          </div>
+
+          <div style="background:#1F1F1D;border:1px solid #4A4A48;border-radius:18px;padding:16px">
+            <div style="display:flex;justify-content:space-between;align-items:start;gap:10px;margin-bottom:12px">
+              <div>
+                <div style="font-size:11px;color:#B5B0A8;font-weight:900;letter-spacing:.08em;text-transform:uppercase">History Aset</div>
+                <h4 style="margin:6px 0;color:#F5F4EF;font-size:18px">Riwayat transaksi</h4>
+              </div>
+              <span style="background:rgba(245,158,11,.18);color:#FCD34D;border:1px solid rgba(252,211,77,.28);border-radius:999px;padding:6px 9px;font-size:11px;font-weight:900">PERLU SYNC</span>
+            </div>
+            <div style="background:#2D2D2B;border:1px solid #6B4B22;border-radius:12px;padding:12px;margin-bottom:12px">
+              <div style="color:#FCD34D;font-size:13px;font-weight:900">! Belum tersinkron hari ini</div>
+              <div style="color:#BCB8B1;font-size:12px;margin-top:4px">Tekan sinkron untuk memperbarui riwayat dari SQL Server.</div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button style="background:#D97757;color:#1F1F1D;border:0;border-radius:10px;padding:9px 11px;font-weight:900">Sinkron History</button>
+              <button style="background:transparent;color:#BCB8B1;border:1px dashed #4A4A48;border-radius:10px;padding:9px 11px;font-weight:800">Upload File Fallback</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:0 20px 18px">
+          <div style="background:rgba(239,68,68,.14);border:1px solid rgba(248,113,113,.30);color:#FCA5A5;border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.45">
+            <strong>Contoh error state:</strong> Gagal terhubung ke SQL Server. Pastikan jaringan tersedia, lalu coba sinkron ulang.
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle">Lihat full mockup di browser. Kalau sudah cocok, balas <strong>setuju</strong> untuk saya tulis spec desain.</p>

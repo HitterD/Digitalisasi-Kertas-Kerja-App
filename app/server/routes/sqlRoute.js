@@ -490,6 +490,8 @@ function sqlServerMiddleware(req, res, next) {
               SELECT
                 TRXID, NO_MAT, JENIS_MAT,
                 ASAL_RUANGAN_ID, TUJUAN_RUANGAN_ID,
+                (SELECT TOP 1 NAMA_RUANGAN FROM [dbo].[RUANGAN] WHERE CAST(NOINDEX AS VARCHAR(50)) = LTRIM(RTRIM(CAST(V_TRX_MAT.ASAL_RUANGAN_ID AS VARCHAR(50))))) AS ASAL_RUANGAN_NAME,
+                (SELECT TOP 1 NAMA_RUANGAN FROM [dbo].[RUANGAN] WHERE CAST(NOINDEX AS VARCHAR(50)) = LTRIM(RTRIM(CAST(V_TRX_MAT.TUJUAN_RUANGAN_ID AS VARCHAR(50))))) AS TUJUAN_RUANGAN_NAME,
                 LPB, KONDISI_ID, CREATED_DATE,
                 USER_MAKER, NAME_MAKER,
                 STATUS, PENJELASAN,
@@ -501,6 +503,37 @@ function sqlServerMiddleware(req, res, next) {
               ORDER BY CREATED_DATE DESC
             `);
 
+          const stepsResult = await pool.request()
+            .input('barcode', sql.NVarChar, barcode.trim())
+            .query(`
+              SELECT
+                ID, TRXID, VERIFIED_BY, NEXT_VERIFICATOR, STATUS, NOTE, VERIFIED_DATE, CREATED_DATE, NEXT_ROLE
+              FROM [dbo].[T_VERIFIED_STEP]
+              WHERE TRXID IN (
+                SELECT TRXID FROM [dbo].[V_TRX_MAT]
+                WHERE LTRIM(RTRIM(BARCODE_ASSET)) = @barcode
+              )
+              ORDER BY TRXID, ID ASC
+            `);
+
+          const stepsByTrx = {};
+          for (const step of stepsResult.recordset) {
+            if (!stepsByTrx[step.TRXID]) stepsByTrx[step.TRXID] = [];
+            stepsByTrx[step.TRXID].push(step);
+          }
+
+          const dataWithSteps = result.recordset.map(r => ({
+            ...r,
+            approvalSteps: stepsByTrx[r.TRXID] || []
+          }));
+
+          const apprResult = await pool.request().query(`
+            SELECT JENIS_MAT, ROLE, STEP_APPROVAL, DEPT 
+            FROM [dbo].[T_APPROVAL]
+            ORDER BY JENIS_MAT, DEPT, STEP_APPROVAL ASC
+          `);
+          const approvalTemplates = apprResult.recordset;
+
           const INACTIVE_STATUSES = ['COMPLETED', 'REJECTED'];
           const hasActiveMAT = result.recordset.some(
             (r) => !INACTIVE_STATUSES.includes((r.STATUS || '').toUpperCase())
@@ -509,8 +542,9 @@ function sqlServerMiddleware(req, res, next) {
           return {
             barcode: barcode.trim(),
             hasActiveMAT,
-            count: result.recordset.length,
-            data: result.recordset,
+            count: dataWithSteps.length,
+            data: dataWithSteps,
+            approvalTemplates,
             timestamp: new Date().toISOString(),
           };
         }, { timeoutMs: SQL_REQUEST_TIMEOUT_MS });

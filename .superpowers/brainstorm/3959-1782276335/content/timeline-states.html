@@ -1,0 +1,77 @@
+<h2>Timeline & State — versi warm</h2>
+<p class="subtitle">Riwayat + tombol Cari + empty state, diselaraskan oranye/cream. Lihat saja, lalu konfirmasi di terminal.</p>
+
+<style>
+  .t-demo{font-family:ui-sans-serif,system-ui,sans-serif;background:#FAF9F5;padding:22px;border-radius:14px;display:grid;gap:22px}
+  .t-card{background:#fff;border:1px solid #E8E5DE;border-radius:14px;padding:18px}
+
+  /* search */
+  .s-row{display:flex;gap:12px}
+  .s-input{flex:1;height:52px;border:2px solid #E8E5DE;border-radius:12px;padding:0 16px;display:flex;align-items:center;color:#8B8580;font-size:15px;background:#F5F4EF}
+  .s-btn{height:52px;padding:0 28px;border-radius:12px;background:#D97757;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center}
+
+  /* timeline */
+  .t-head{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:#262624;margin-bottom:16px}
+  .t-ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px}
+  .t-ic.mv{background:rgba(217,119,87,.12);color:#C26A4D}
+  .t-ic.op{background:rgba(34,197,94,.14);color:#15803d}
+  .t-list{position:relative;padding-left:18px}
+  .t-list::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:2px;background:#E8E5DE;border-radius:9px}
+  .t-item{position:relative;padding-left:22px;margin-bottom:14px}
+  .t-item:last-child{margin-bottom:0}
+  .t-item::before{content:'';position:absolute;left:-23px;top:14px;width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid #D97757;box-shadow:0 0 0 3px #FAF9F5}
+  .op .t-item::before{border-color:#22c55e}
+  .t-box{background:#FAF9F5;border:1px solid #E8E5DE;border-radius:12px;padding:14px 16px}
+  .op .t-box{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.22)}
+  .t-meta{display:flex;justify-content:space-between;gap:12px;margin-bottom:8px}
+  .t-loc{font-size:14px;font-weight:700;color:#262624;display:flex;align-items:center;gap:6px}
+  .t-date{font-size:11px;font-weight:700;color:#8B8580;background:#F0EEE8;padding:4px 9px;border-radius:7px}
+  .t-desc{font-size:13px;color:#595755;margin:0;line-height:1.55}
+
+  /* empty */
+  .e-box{text-align:center;padding:36px 20px;background:#FAF9F5;border:2px dashed #D4D0C8;border-radius:14px}
+  .e-ic{width:60px;height:60px;border-radius:50%;background:#F0EEE8;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px;color:#8B8580}
+  .e-t{font-size:16px;font-weight:700;color:#262624;margin:0 0 6px}
+  .e-p{font-size:13px;color:#8B8580;margin:0;line-height:1.55}
+</style>
+
+<div class="t-demo">
+
+  <div class="t-card">
+    <div class="s-row">
+      <div class="s-input">🔍&nbsp; Scan atau ketik barcode…</div>
+      <div class="s-btn">Cari</div>
+    </div>
+  </div>
+
+  <div class="t-card">
+    <div class="t-head"><span class="t-ic mv">⇄</span> Riwayat Keterangan &amp; Perpindahan</div>
+    <div class="t-list">
+      <div class="t-item"><div class="t-box">
+        <div class="t-meta"><span class="t-loc">📍 Gudang Pusat</span><span class="t-date">2024</span></div>
+        <p class="t-desc">Pindah dari Lt.2 ke Gudang Pusat untuk perbaikan.</p>
+      </div></div>
+      <div class="t-item"><div class="t-box">
+        <div class="t-meta"><span class="t-loc">📍 Lt.2 — R. Staff</span><span class="t-date">2023</span></div>
+        <p class="t-desc">Penempatan awal pengadaan.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="t-card">
+    <div class="t-head"><span class="t-ic op">✓</span> Riwayat Opname</div>
+    <div class="t-list op">
+      <div class="t-item"><div class="t-box">
+        <div class="t-meta"><span class="t-loc">📍 Lt.3 — R. Meeting</span><span class="t-date">2025</span></div>
+        <p class="t-desc">Kondisi baik, sesuai lokasi. Diverifikasi opname tahunan.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="e-box">
+    <div class="e-ic">📦</div>
+    <p class="e-t">Aset Tidak Ditemukan</p>
+    <p class="e-p">Barcode <b>"9999"</b> belum terdaftar di Master Aset.<br>Periksa input atau sinkronkan data terbaru.</p>
+  </div>
+
+</div>

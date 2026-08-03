@@ -1,6 +1,7 @@
-import { Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Trash2, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import React, { useMemo, useState, useEffect } from 'react';
 import { fetchActiveMatByBarcodes } from '../utils/matApi';
+import MatHistoryModal from './MatHistoryModal';
 
 const KONDISI_OPTIONS = ['Baik', 'Rusak', 'Cetak Ulang', 'Salah Ruangan', 'Pending'];
 
@@ -111,7 +112,7 @@ const areAssetPropsEqual = (prevProps, nextProps) => {
     );
 };
 
-const AssetRow = React.memo(({ asset, roomIndex, onToggleCheck, onUpdateField, matInfo }) => {
+const AssetRow = React.memo(({ asset, roomIndex, onToggleCheck, onUpdateField, matInfo, onShowMatHistory }) => {
     const i = asset.originalIndex;
     const [isCopied, setIsCopied] = useState(false);
 
@@ -175,8 +176,15 @@ const AssetRow = React.memo(({ asset, roomIndex, onToggleCheck, onUpdateField, m
                     )}
                 </div>
             </td>
-            <td className="col-nama">
-                <div>{asset.namaAset}</div>
+            <td 
+                className="col-nama"
+                onClick={() => matInfo && onShowMatHistory({ barcode: asset.barcode, namaAset: asset.namaAset })}
+                style={{ cursor: matInfo ? 'pointer' : 'default' }}
+                title={matInfo ? "Klik untuk melihat riwayat MAT" : undefined}
+            >
+                <div style={{ color: matInfo ? 'var(--primary-600)' : 'inherit', textDecoration: matInfo ? 'underline' : 'none', textUnderlineOffset: '2px' }}>
+                    {asset.namaAset}
+                </div>
                 <MatProcessBadge matInfo={matInfo} />
             </td>
             <td className="col-po">{asset.noPO}</td>
@@ -212,7 +220,7 @@ const AssetRow = React.memo(({ asset, roomIndex, onToggleCheck, onUpdateField, m
 }, areAssetPropsEqual);
 
 // Mobile layout component
-const AssetCard = React.memo(({ asset, roomIndex, onToggleCheck, onUpdateField, matInfo }) => {
+const AssetCard = React.memo(({ asset, roomIndex, onToggleCheck, onUpdateField, matInfo, onShowMatHistory }) => {
     const i = asset.originalIndex;
     return (
         <div className="wa-card" style={{ padding: 12, marginBottom: 8 }}>
@@ -224,9 +232,14 @@ const AssetCard = React.memo(({ asset, roomIndex, onToggleCheck, onUpdateField, 
                     aria-checked={!!asset.isChecked}
                     tabIndex={0}
                 />
-                <div style={{ flex: 1, minWidth: 0 }}>
+                <div 
+                    style={{ flex: 1, minWidth: 0, cursor: matInfo ? 'pointer' : 'default' }}
+                    onClick={() => matInfo && onShowMatHistory({ barcode: asset.barcode, namaAset: asset.namaAset })}
+                >
                     <div className="asset-card-barcode">{asset.barcode}</div>
-                    <div style={{ fontSize: 12.5, fontWeight: 500, color: 'var(--charcoal-900)', marginTop: 2, lineHeight: 1.3 }}>{asset.namaAset}</div>
+                    <div style={{ fontSize: 12.5, fontWeight: 500, color: matInfo ? 'var(--primary-600)' : 'var(--charcoal-900)', marginTop: 2, lineHeight: 1.3, textDecoration: matInfo ? 'underline' : 'none' }}>
+                        {asset.namaAset}
+                    </div>
                     <MatProcessBadge matInfo={matInfo} />
                 </div>
                 <AdaToggle
@@ -257,6 +270,7 @@ export default function AssetTable({ assets, roomIndex, onToggleCheck, onUpdateF
     const ITEMS_PER_PAGE = 20;
     const [currentPage, setCurrentPage] = useState(1);
     const [activeMatByBarcode, setActiveMatByBarcode] = useState({});
+    const [matModalData, setMatModalData] = useState(null);
 
     // Reset page whenever room changes or search query changes
     useEffect(() => {
@@ -348,6 +362,7 @@ export default function AssetTable({ assets, roomIndex, onToggleCheck, onUpdateF
                             onToggleCheck={onToggleCheck}
                             onUpdateField={onUpdateField}
                             matInfo={activeMatByBarcode[String(asset.barcode || '').trim()]}
+                            onShowMatHistory={setMatModalData}
                         />
                     ))}
                     {filteredAssets.length === 0 && (
@@ -370,6 +385,7 @@ export default function AssetTable({ assets, roomIndex, onToggleCheck, onUpdateF
                         onToggleCheck={onToggleCheck}
                         onUpdateField={onUpdateField}
                         matInfo={activeMatByBarcode[String(asset.barcode || '').trim()]}
+                        onShowMatHistory={setMatModalData}
                     />
                 ))}
             </div>
@@ -399,6 +415,13 @@ export default function AssetTable({ assets, roomIndex, onToggleCheck, onUpdateF
                     </button>
                 </div>
             )}
+
+            <MatHistoryModal
+                barcode={matModalData?.barcode}
+                namaAset={matModalData?.namaAset}
+                isOpen={!!matModalData}
+                onClose={() => setMatModalData(null)}
+            />
         </div>
     );
 }
@@ -412,6 +435,7 @@ export function EditableAssetTable({
     sectionType,
     masterDb,
     onCrossRoomCheck,
+    onAdd,
 }) {
 
     const handleBarcodeBlur = (i, barcode) => {
@@ -554,7 +578,30 @@ export function EditableAssetTable({
                     {assets.length === 0 && (
                         <tr>
                             <td colSpan={10} style={{ textAlign: 'center', padding: 'var(--space-4)', color: 'var(--text-muted)' }}>
-                                Belum ada data. Klik tombol tambah di atas.
+                                Belum ada data. Klik tombol tambah di bawah.
+                            </td>
+                        </tr>
+                    )}
+                    {onAdd && (
+                        <tr>
+                            <td colSpan={10} style={{ padding: 0 }}>
+                                <button
+                                    className="wa-btn"
+                                    style={{
+                                        width: '100%',
+                                        justifyContent: 'center',
+                                        background: sectionType === 'noBarcode' ? 'rgba(234,179,8,0.08)' : 'rgba(220,38,38,0.05)',
+                                        color: sectionType === 'noBarcode' ? 'var(--warning-600)' : 'var(--danger-600)',
+                                        border: 'none',
+                                        borderTop: sectionType === 'noBarcode' ? '1px dashed rgba(234,179,8,0.4)' : '1px dashed rgba(220,38,38,0.3)',
+                                        borderRadius: 0,
+                                        boxShadow: 'none',
+                                        padding: '12px'
+                                    }}
+                                    onClick={onAdd}
+                                >
+                                    <Plus size={16} /> {sectionType === 'noBarcode' ? 'Tambah Aset Tanpa Barcode' : 'Tambah Aset Salah Ruangan'}
+                                </button>
                             </td>
                         </tr>
                     )}

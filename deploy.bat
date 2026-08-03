@@ -41,7 +41,10 @@ echo   [2] down    - Menghentikan dan menghapus container
 echo   [3] build   - Build ulang image tanpa cache
 echo   [4] restart - Restart container
 echo   [5] logs    - Menampilkan log berjalan (live)
-echo   [6] deploy  - Down, Build, dan Up secara berurutan (Rebuild Total)
+echo   [6] deploy  - Build dan Up untuk Rebuild modul tertentu (tanpa downtime DB)
+echo   [7] backup  - Backup data database dari container aktif
+echo   [8] restore - Restore data database dari backup
+echo   [9] merge   - Gabungkan dua folder backup (Lama ke Baru)
 echo   [0] Keluar
 echo.
 set /p "choice=Masukkan angka pilihan Anda: "
@@ -52,6 +55,9 @@ if "%choice%"=="3" set "COMMAND=build"
 if "%choice%"=="4" set "COMMAND=restart"
 if "%choice%"=="5" set "COMMAND=logs"
 if "%choice%"=="6" set "COMMAND=deploy"
+if "%choice%"=="7" set "COMMAND=backup"
+if "%choice%"=="8" set "COMMAND=restore"
+if "%choice%"=="9" set "COMMAND=merge"
 if "%choice%"=="0" exit /b 0
 
 if "%COMMAND%"=="" (
@@ -60,6 +66,15 @@ if "%COMMAND%"=="" (
     goto menu
 )
 
+if "%COMMAND%"=="backup" goto process_command
+if "%COMMAND%"=="down" goto process_command
+
+echo.
+echo Masukkan nama service/modul (contoh: app, db, redis). 
+echo Kosongkan jika ingin menerapkan ke SEMUA modul:
+set /p "MODULE_NAME="
+if "%MODULE_NAME%"=="" set "MODULE_NAME="
+
 :process_command
 if /I "%COMMAND%"=="up" goto up
 if /I "%COMMAND%"=="down" goto down
@@ -67,6 +82,9 @@ if /I "%COMMAND%"=="build" goto build
 if /I "%COMMAND%"=="restart" goto restart
 if /I "%COMMAND%"=="logs" goto logs
 if /I "%COMMAND%"=="deploy" goto deploy
+if /I "%COMMAND%"=="backup" goto backup
+if /I "%COMMAND%"=="restore" goto restore
+if /I "%COMMAND%"=="merge" goto merge
 
 echo Perintah "%COMMAND%" tidak dikenali.
 pause
@@ -104,7 +122,7 @@ exit /b 0
 call :check_env
 if errorlevel 1 goto menu
 echo [INFO] Starting containers in detached mode...
-cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env up -d"
+cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env up -d %MODULE_NAME%"
 echo.
 echo [SUCCESS] Containers started successfully.
 echo ============================================
@@ -127,7 +145,7 @@ goto :eof
 call :check_env
 if errorlevel 1 goto menu
 echo [INFO] Rebuilding image with no-cache...
-cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env build --no-cache"
+cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env build --no-cache %MODULE_NAME%"
 echo [SUCCESS] Image built successfully.
 echo.
 pause
@@ -137,7 +155,7 @@ goto :eof
 call :check_env
 if errorlevel 1 goto menu
 echo [INFO] Restarting containers...
-cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env restart"
+cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env restart %MODULE_NAME%"
 echo.
 echo [SUCCESS] Containers restarted.
 echo ============================================
@@ -149,22 +167,139 @@ pause
 goto :eof
 
 :logs
-cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env logs -f"
+cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env logs -f %MODULE_NAME%"
 pause
 goto :eof
+
+:backup
+set "NOPAUSE=%~1"
+echo [INFO] Membuat Backup Database...
+set "TIMESTAMP="
+for /f "tokens=*" %%a in ('powershell -NoProfile -Command "Get-Date -Format 'yyyyMMdd_HHmmss'"') do set "TIMESTAMP=%%a"
+set "BACKUP_DIR=backup\data_!TIMESTAMP!"
+
+docker ps | findstr "kertas-kerja-app" >nul
+if not errorlevel 1 (
+    echo [INFO] Menyalin data dari container ke !BACKUP_DIR!...
+    mkdir "!BACKUP_DIR!" 2>nul
+    cmd /c "docker cp kertas-kerja-app:/app/data ""!BACKUP_DIR!"""
+    if errorlevel 1 (
+        echo [WARNING] Gagal melakukan backup.
+    ) else (
+        echo [SUCCESS] Backup berhasil disimpan di folder !BACKUP_DIR!.
+    )
+) else (
+    echo [WARNING] Container kertas-kerja-app tidak berjalan! Tidak dapat mem-backup data.
+)
+echo.
+if not "!NOPAUSE!"=="nopause" pause
+goto :eof
+
+:restore
+echo [INFO] Daftar Backup yang Tersedia:
+if not exist "backup" (
+    echo [WARNING] Belum ada folder backup.
+    pause
+    goto menu
+)
+dir /ad /b backup\data_* 2>nul
+echo.
+set /p "BACKUP_NAME=Ketik nama folder backup yang ingin di-restore (cth: data_20260702_123456) atau Kosongkan untuk batal: "
+if "%BACKUP_NAME%"=="" goto menu
+
+if not exist "backup\!BACKUP_NAME!" (
+    echo [ERROR] Folder backup "backup\!BACKUP_NAME!" tidak ditemukan.
+    pause
+    goto menu
+)
+
+echo [WARNING] Proses ini akan MENIMPA data saat ini dengan data dari backup!
+set /p "CONFIRM=Ketik 'y' untuk melanjutkan: "
+if /I not "%CONFIRM%"=="y" goto menu
+
+docker ps | findstr "kertas-kerja-app" >nul
+if not errorlevel 1 (
+    echo [INFO] Mematikan container sementara untuk menghindari database corrupt...
+    cmd /c "docker stop kertas-kerja-app"
+    
+    echo [INFO] Me-restore data ke container...
+    cmd /c "docker cp ""backup\!BACKUP_NAME!\data"" kertas-kerja-app:/app/"
+    if errorlevel 1 (
+        echo [WARNING] Gagal melakukan restore.
+        cmd /c "docker start kertas-kerja-app"
+    ) else (
+        echo [SUCCESS] Restore berhasil! Data dari !BACKUP_NAME! telah dikembalikan.
+        echo [INFO] Menyalakan kembali container...
+        cmd /c "docker start kertas-kerja-app"
+    )
+) else (
+    echo [WARNING] Container kertas-kerja-app tidak berjalan! Tidak dapat me-restore data.
+)
+echo.
+pause
+goto menu
+
+:merge
+echo [INFO] Daftar Backup yang Tersedia:
+if not exist "backup" (
+    echo [WARNING] Belum ada folder backup.
+    pause
+    goto menu
+)
+dir /ad /b backup\data_* 2>nul
+echo.
+set /p "NEW_BACKUP=Ketik nama folder backup BARU (Target/Basis) (cth: data_20260702_092122) atau Kosongkan untuk batal: "
+if "!NEW_BACKUP!"=="" goto menu
+if not exist "backup\!NEW_BACKUP!" (
+    echo [ERROR] Folder backup "backup\!NEW_BACKUP!" tidak ditemukan.
+    pause
+    goto menu
+)
+
+set /p "OLD_BACKUP=Ketik nama folder backup LAMA (Sumber) (cth: data_20260702_102428) atau Kosongkan untuk batal: "
+if "!OLD_BACKUP!"=="" goto menu
+if not exist "backup\!OLD_BACKUP!" (
+    echo [ERROR] Folder backup "backup\!OLD_BACKUP!" tidak ditemukan.
+    pause
+    goto menu
+)
+
+echo [INFO] Memulai proses merge menggunakan script Node.js...
+node merge_backup.js "!NEW_BACKUP!" "!OLD_BACKUP!"
+if errorlevel 1 (
+    echo [ERROR] Terjadi kesalahan saat menjalankan script merge.
+) else (
+    echo [SUCCESS] Merge selesai! Anda bisa melakukan restore menggunakan opsi [8] restore dan memilih folder: !NEW_BACKUP!_merged
+)
+echo.
+pause
+goto menu
+
 
 :deploy
 call :check_env
 if errorlevel 1 goto menu
-echo [INFO] Menjalankan proses Rebuild Total...
-echo [1/3] Menghentikan container aktif...
-cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env down"
-echo [2/3] Build ulang container (No Cache)...
-cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env build --no-cache"
-echo [3/3] Menjalankan container baru...
-cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env up -d"
+
+call :backup nopause
+
+if "%MODULE_NAME%"=="" (
+    echo [INFO] Menjalankan proses Rebuild Total Semua Modul...
+    echo [1/3] Menghentikan container aktif...
+    cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env down"
+    echo [2/3] Build ulang container - No Cache...
+    cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env build --no-cache"
+    echo [3/3] Menjalankan container baru...
+    cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env up -d"
+) else (
+    echo [INFO] Menjalankan proses Rebuild untuk modul: %MODULE_NAME%...
+    echo [1/2] Build ulang modul - No Cache...
+    cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env build --no-cache %MODULE_NAME%"
+    echo [2/2] Menjalankan ulang modul %MODULE_NAME%...
+    cmd /c "docker compose -f %COMPOSE_FILE% --env-file app\.env up -d --no-deps %MODULE_NAME%"
+)
+
 echo.
-echo [SUCCESS] Rebuild Total Selesai.
+echo [SUCCESS] Rebuild Selesai.
 echo ============================================
 echo   Aplikasi dapat diakses di:
 echo   http://%LOCAL_IP%:%APP_PORT%

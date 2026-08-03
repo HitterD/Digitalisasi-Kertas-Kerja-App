@@ -1,0 +1,317 @@
+<style>
+  .op-row { transition: background 140ms ease, box-shadow 140ms ease; }
+  .op-row:hover { background: rgba(201,100,66,0.04) !important; }
+  .op-row:hover td { border-bottom-color: rgba(201,100,66,0.15) !important; }
+  .op-row.checked { background: rgba(201,100,66,0.05) !important; }
+  .op-row.checked td:first-child { box-shadow: inset 3px 0 0 0 #C96442; }
+  .op-row.checked .op-barcode-text { color: #1A1A1A; }
+  .op-row .op-barcode-text { color: #C96442; }
+
+  .op-check { width: 18px; height: 18px; border: 1.5px solid #C9C2B5; border-radius: 4px; display: inline-block; position: relative; transition: all 160ms ease; background: #FDFCF7; cursor: pointer; }
+  .op-check:hover { border-color: #C96442; }
+  .op-check.on { background: #C96442; border-color: #C96442; }
+  .op-check.on::after { content: ''; position: absolute; left: 5px; top: 1px; width: 5px; height: 10px; border: solid #FDFCF7; border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
+
+  .op-pill { transition: all 180ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .op-pill:hover { background: rgba(26,26,26,0.05); }
+  .op-pill.active { background: #FDFCF7; color: #1A1A1A !important; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .op-pill.active .op-pill-ic { color: #C96442; }
+  .op-pill-ic { transition: color 180ms ease; color: #8B8580; }
+
+  .op-arrow { transition: all 180ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .op-arrow:hover:not(:disabled) { background: #1A1A1A; border-color: #1A1A1A; color: #FDFCF7; }
+  .op-arrow:active:not(:disabled) { transform: scale(0.92); }
+  .op-arrow:disabled { opacity: 0.25; cursor: not-allowed; }
+
+  .op-barcode-btn { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .op-barcode-btn:hover { background: #C96442 !important; color: #FDFCF7 !important; transform: translateY(-1px); box-shadow: 0 6px 14px rgba(201,100,66,0.25); }
+  .op-barcode-btn:active { transform: translateY(0) scale(0.97); transition-duration: 80ms; }
+
+  .op-cta { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .op-cta:hover { background: #2A2A2A !important; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+  .op-cta:active { transform: translateY(0) scale(0.98); transition-duration: 80ms; }
+
+  .op-ghost { transition: all 180ms ease; cursor: pointer; }
+  .op-ghost:hover { background: #FDFCF7 !important; border-color: #1A1A1A !important; color: #1A1A1A !important; }
+
+  .op-sync { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .op-sync:hover { background: #D87554 !important; transform: translateY(-1px); box-shadow: 0 6px 14px rgba(201,100,66,0.30); }
+  .op-sync:active { transform: translateY(0) scale(0.97); transition-duration: 80ms; }
+
+  .op-dot { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; position: relative; }
+  .op-dot:hover { transform: scale(1.5); z-index: 5; }
+  .op-dot:hover::after { opacity: 1; transform: translate(-50%, -2px); }
+  .op-dot::after { content: attr(data-name); position: absolute; bottom: 100%; left: 50%; transform: translate(-50%, 4px); background: #1A1A1A; color: #FDFCF7; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.05em; padding: 4px 8px; border-radius: 4px; white-space: nowrap; pointer-events: none; opacity: 0; transition: all 160ms ease; z-index: 10; }
+
+  .op-teropname { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .op-teropname:hover { background: #C96442 !important; color: #FDFCF7 !important; }
+
+  .op-toggle-pill { display:inline-flex; align-items:center; background:#FAF6EF; border:1px solid rgba(26,26,26,0.08); border-radius: 999px; padding: 2px; gap: 2px; }
+  .op-toggle-pill > span { font-family:'JetBrains Mono',monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 999px; cursor: pointer; transition: all 160ms ease; color: #8B8580; }
+  .op-toggle-pill > span.on { background: #C96442; color: #FDFCF7; }
+  .op-toggle-pill > span:not(.on):hover { color: #1A1A1A; }
+
+  .op-select, .op-text-input { background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 6px 10px; font-size: 11px; color: #1A1A1A; font-family: inherit; outline: none; width: 100%; transition: all 160ms ease; }
+  .op-row:hover .op-select, .op-row:hover .op-text-input { background: #FDFCF7; border-color: rgba(26,26,26,0.1); }
+  .op-select:focus, .op-text-input:focus { background: #FDFCF7; border-color: #C96442; box-shadow: 0 0 0 3px rgba(201,100,66,0.12); }
+  .op-row:hover .op-select, .op-row:hover .op-text-input { background: #FDFCF7; }
+
+  .op-card-lift { transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1), border-color 220ms ease; cursor: pointer; }
+  .op-card-lift:hover { transform: translateY(-2px); border-color: rgba(26,26,26,0.14) !important; box-shadow: 0 2px 4px rgba(45,45,45,0.04), 0 14px 30px rgba(45,45,45,0.08) !important; }
+  .op-card-lift:active { transform: translateY(0) scale(0.985); transition-duration: 80ms; }
+</style>
+
+<h2>Opname v3 — Layout Efisien & User-Friendly</h2>
+<p class="subtitle">3 masalah UX utama diatasi: (1) terlalu banyak baris info yang harus di-scroll, (2) status ruang & dot grid mengambil ruang berharga, (3) input kondisional table. Direstrukturisasi: sidebar kiri 280px (konteks), area kerja kanan (tabel & input langsung).</p>
+
+<div class="mockup">
+  <div class="mockup-header">Preview: /app1/opname (v3) — sidebar 280px + work area</div>
+  <div class="mockup-body" style="background:#F5EFE6;padding:0;font-family:'Sora',system-ui,sans-serif;">
+
+    <!-- In-app header (sticky, slim) -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:rgba(253,251,247,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(26,26,26,0.06);position:sticky;top:0;z-index:20;">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <button style="background:transparent;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;color:#6B6660;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        </button>
+        <div style="width:1px;height:18px;background:rgba(26,26,26,0.1);"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:26px;height:26px;background:#1A1A1A;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#C96442;letter-spacing:0.05em;">KKD</div>
+          </div>
+          <div style="font-size:13px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Opname Aset</div>
+        </div>
+        <div style="display:flex;background:rgba(26,26,26,0.04);border-radius:8px;padding:3px;gap:2px;margin-left:8px;">
+          <div class="op-pill" style="display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;color:#6B6660;">
+            <span class="op-pill-ic">⌂</span> Home
+          </div>
+          <div class="op-pill active" style="display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;color:#1A1A1A;">
+            <span class="op-pill-ic">✓</span> Kertas Kerja
+          </div>
+        </div>
+      </div>
+      <div class="op-barcode-btn" style="display:flex;align-items:center;gap:8px;background:#1A1A1A;color:#FDFCF7;border-radius:8px;padding:8px 14px;font-size:11px;font-weight:600;letter-spacing:0.05em;border:none;font-family:inherit;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        BARCODE CHECKER
+      </div>
+    </div>
+
+    <!-- Body: sidebar + main -->
+    <div style="display:grid;grid-template-columns:280px 1fr;gap:0;min-height:calc(100vh - 60px);">
+
+      <!-- ───── SIDEBAR KIRI ───── -->
+      <aside style="background:#FDFCF7;border-right:1px solid rgba(26,26,26,0.06);padding:18px 18px;overflow-y:auto;">
+
+        <!-- Section: Ruangan Aktif -->
+        <div style="margin-bottom:18px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#C96442;letter-spacing:0.18em;text-transform:uppercase;font-weight:600;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">
+            <span>Ruangan Aktif</span>
+            <span style="color:#8B8580;letter-spacing:0.05em;">1/79</span>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
+            <button class="op-arrow" style="background:transparent;border:1px solid rgba(26,26,26,0.1);border-radius:6px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:#1A1A1A;flex-shrink:0;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <select class="op-select" style="flex:1;font-size:11px;font-weight:600;background:#F5EFE6;border:1px solid rgba(26,26,26,0.08);">
+              <option>Ruang 801 — Packing Kaca</option>
+            </select>
+            <button class="op-arrow" style="background:transparent;border:1px solid rgba(26,26,26,0.1);border-radius:6px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:#1A1A1A;flex-shrink:0;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+
+          <!-- Progress ring + stat -->
+          <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#F5EFE6;border-radius:10px;">
+            <!-- Mini progress ring -->
+            <div style="position:relative;width:48px;height:48px;flex-shrink:0;">
+              <svg width="48" height="48" viewBox="0 0 48 48" style="transform:rotate(-90deg);">
+                <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(26,26,26,0.08)" stroke-width="4"/>
+                <circle cx="24" cy="24" r="20" fill="none" stroke="#C96442" stroke-width="4" stroke-dasharray="125.6" stroke-dashoffset="125.6" stroke-linecap="round" style="transition:stroke-dashoffset 400ms cubic-bezier(0.25,1,0.5,1);"/>
+              </svg>
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#1A1A1A;">0%</div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.1em;text-transform:uppercase;">Diproses</div>
+              <div style="font-size:14px;font-weight:700;color:#1A1A1A;letter-spacing:-0.01em;margin-top:2px;">0 / <span style="color:#C96442;">18</span> aset</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Meta -->
+        <div style="padding:14px;background:#F5EFE6;border-radius:10px;margin-bottom:18px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#C96442;letter-spacing:0.18em;text-transform:uppercase;font-weight:600;margin-bottom:10px;">Info Ruangan</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">PIC</div>
+              <div style="font-size:11px;font-weight:600;color:#1A1A1A;line-height:1.3;">Djoko Prayitno, F. Prima R., Bayu S. + 6</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Periode</div>
+                <div style="font-size:11px;font-weight:600;color:#1A1A1A;">Juni 2026</div>
+              </div>
+              <div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Tanggal</div>
+                <div style="font-size:11px;font-weight:600;color:#1A1A1A;">15-Jun-26</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Room quick nav -->
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#C96442;letter-spacing:0.18em;text-transform:uppercase;font-weight:600;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+            <span>79 Ruangan</span>
+            <span style="color:#8B8580;letter-spacing:0.05em;">LIHAT SEMUA ›</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(8,1fr);gap:5px;">
+            <div class="op-dot" data-name="Ruang 801 — Aktif" style="width:18px;height:18px;background:#FDFCF7;border:2px solid #C96442;border-radius:50%;"></div>
+            <div class="op-dot" data-name="Ruang 802" style="width:18px;height:18px;background:#1A1A1A;border-radius:50%;"></div>
+            <div class="op-dot" data-name="Ruang 803" style="width:18px;height:18px;background:#1A1A1A;border-radius:50%;"></div>
+            <div class="op-dot" data-name="Ruang 804" style="width:18px;height:18px;background:#1A1A1A;border-radius:50%;"></div>
+            <div class="op-dot" data-name="Ruang 805" style="width:18px;height:18px;background:#1A1A1A;border-radius:50%;"></div>
+            <div class="op-dot" data-name="Ruang 806" style="width:18px;height:18px;background:#1A1A1A;border-radius:50%;"></div>
+            <div class="op-dot" data-name="Ruang 807" style="width:18px;height:18px;background:#1A1A1A;border-radius:50%;"></div>
+            <div class="op-dot" data-name="Ruang 808" style="width:18px;height:18px;background:#C96442;border-radius:50%;"></div>
+            <div class="op-dot" data-name="Ruang 809" style="width:18px;height:18px;background:#FDFCF7;border:1.5px solid #C9C2B5;border-radius:50%;"></div>
+            <div class="op-dot" data-name="Ruang 810" style="width:18px;height:18px;background:#FDFCF7;border:1.5px solid #C9C2B5;border-radius:50%;"></div>
+            <div class="op-dot" data-name="Ruang 811" style="width:18px;height:18px;background:#FDFCF7;border:1.5px solid #C9C2B5;border-radius:50%;"></div>
+            <div class="op-dot" data-name="Ruang 812" style="width:18px;height:18px;background:#FDFCF7;border:1.5px solid #C9C2B5;border-radius:50%;"></div>
+            <div class="op-dot" data-name="Ruang 813" style="width:18px;height:18px;background:#FDFCF7;border:1.5px solid #C9C2B5;border-radius:50%;"></div>
+            <div class="op-dot" data-name="Ruang 814" style="width:18px;height:18px;background:#FDFCF7;border:1.5px solid #C9C2B5;border-radius:50%;"></div>
+            <div class="op-dot" data-name="Ruang 815" style="width:18px;height:18px;background:#FDFCF7;border:1.5px solid #C9C2B5;border-radius:50%;"></div>
+            <div class="op-dot" data-name="Ruang 816" style="width:18px;height:18px;background:#FDFCF7;border:1.5px solid #C9C2B5;border-radius:50%;"></div>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- ───── MAIN AREA KANAN ───── -->
+      <main style="padding:18px 24px;overflow-x:auto;">
+
+        <!-- Top: action bar -->
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+          <div style="font-size:14px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Daftar Aset</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#6B6660;letter-spacing:0.05em;">18 ITEM</div>
+          <button class="op-teropname" style="background:rgba(201,100,66,0.10);color:#C96442;border:none;border-radius:6px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;">
+            ◉ TEROPNAME
+          </button>
+          <div style="flex:1;"></div>
+          <button class="op-ghost" style="display:flex;align-items:center;gap:6px;background:transparent;color:#1A1A1A;border:1px solid rgba(26,26,26,0.12);border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;">+ Ruang Custom</button>
+          <button class="op-ghost" style="display:flex;align-items:center;gap:6px;background:transparent;color:#1A1A1A;border:1px solid rgba(26,26,26,0.12);border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;">Save / Load</button>
+          <button class="op-cta" style="display:flex;align-items:center;gap:6px;background:#1A1A1A;color:#FDFCF7;border:none;border-radius:8px;padding:8px 14px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;">↓ Export PDF</button>
+          <button class="op-sync" style="display:flex;align-items:center;gap:6px;background:#C96442;color:#FDFCF7;border:none;border-radius:8px;padding:8px 14px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;box-shadow:0 2px 6px rgba(201,100,66,0.2);">↻ Sync Server</button>
+        </div>
+
+        <!-- Search (di atas tabel, prominent karena kerja utama) -->
+        <div style="position:relative;margin-bottom:14px;max-width:380px;">
+          <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B8580" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input style="width:100%;background:#FDFCF7;border:1px solid rgba(26,26,26,0.1);border-radius:10px;padding:11px 14px 11px 38px;font-size:12px;color:#1A1A1A;font-family:inherit;outline:none;letter-spacing:0.02em;box-shadow:0 1px 2px rgba(45,45,45,0.02);" placeholder="Scan atau ketik barcode aset…" value=""/>
+        </div>
+
+        <!-- Tabel utama -->
+        <div class="op-card-lift" style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(45,45,45,0.03),0 6px 18px rgba(45,45,45,0.04);">
+          <table style="width:100%;border-collapse:collapse;font-size:12px;">
+            <thead>
+              <tr style="background:#FAF6EF;">
+                <th style="width:42px;padding:11px 12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">✓</th>
+                <th style="width:42px;padding:11px 12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">NO</th>
+                <th style="padding:11px 12px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">BARCODE</th>
+                <th style="padding:11px 12px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">NAMA ASET</th>
+                <th style="padding:11px 12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">TIPE</th>
+                <th style="padding:11px 12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">PRL</th>
+                <th style="padding:11px 12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">ADA/TDK</th>
+                <th style="padding:11px 12px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">KONDISI</th>
+                <th style="padding:11px 12px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">KETERANGAN</th>
+              </tr>
+            </thead>
+            <tbody style="font-family:'Sora',sans-serif;color:#1A1A1A;">
+              <tr class="op-row">
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="op-check"></div></td>
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;">1</td>
+                <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;" class="op-barcode-text">230300995</td>
+                <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-size:12px;font-weight:500;">XIAOMI REDMI PAD 6/128 GB</td>
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#6B6660;">INV</td>
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#6B6660;">03/23</td>
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);">
+                  <div class="op-toggle-pill"><span class="on">Ada</span><span>Tidak</span></div>
+                </td>
+                <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);"><select class="op-select"><option>— Pilih —</option><option>Baik</option></select></td>
+                <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);"><input class="op-text-input" placeholder="…" value=""/></td>
+              </tr>
+              <tr class="op-row">
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="op-check"></div></td>
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;">2</td>
+                <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;" class="op-barcode-text">2306003433</td>
+                <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-size:12px;font-weight:500;">BARCODE SCANNER ZEBRA MOBILE TC-210K</td>
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#6B6660;">INV</td>
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#6B6660;">06/23</td>
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);">
+                  <div class="op-toggle-pill"><span class="on">Ada</span><span>Tidak</span></div>
+                </td>
+                <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);"><select class="op-select"><option>— Pilih —</option><option>Baik</option></select></td>
+                <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);"><input class="op-text-input" placeholder="…" value=""/></td>
+              </tr>
+              <tr class="op-row">
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="op-check"></div></td>
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;">3</td>
+                <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;" class="op-barcode-text">240100149</td>
+                <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-size:12px;font-weight:500;">XIAOMI REDMI PAD SE 4/128GB</td>
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#6B6660;">INV</td>
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#6B6660;">01/24</td>
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);">
+                  <div class="op-toggle-pill"><span class="on">Ada</span><span>Tidak</span></div>
+                </td>
+                <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);"><select class="op-select"><option>— Pilih —</option><option>Baik</option></select></td>
+                <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);"><input class="op-text-input" placeholder="…" value=""/></td>
+              </tr>
+              <tr class="op-row">
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="op-check"></div></td>
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;">4</td>
+                <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;" class="op-barcode-text">240100166</td>
+                <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-size:12px;font-weight:500;">XIAOMI REDMI PAD SE 4/128GB</td>
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#6B6660;">INV</td>
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:10px;color:#6B6660;">01/24</td>
+                <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);">
+                  <div class="op-toggle-pill"><span class="on">Ada</span><span>Tidak</span></div>
+                </td>
+                <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);"><select class="op-select"><option>— Pilih —</option><option>Baik</option></select></td>
+                <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);"><input class="op-text-input" placeholder="…" value=""/></td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:#FAF6EF;border-top:1px solid rgba(26,26,26,0.06);font-family:'JetBrains Mono',monospace;font-size:10px;color:#6B6660;letter-spacing:0.05em;">
+            <span>0 DARI 18 DICATAT · 0 BELUM ADA BARCODE</span>
+            <span style="display:flex;align-items:center;gap:14px;">‹ 1 <span style="color:#1A1A1A;font-weight:700;">2</span> 3 4 5 ›</span>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Apa yang di-improve dari v2 → v3</h3>
+  <ol>
+    <li><b>Layout 2-kolom (sidebar + main)</b>: meta, status, room nav dipindah ke sidebar kiri. Area kerja utama jadi full-width, tabel lebih lega dan mudah di-scan.</li>
+    <li><b>Progress ring mini (48px)</b>: ganti progress bar panjang di header. Lebih ringkas, langsung terlihat di sidebar, tidak makan ruang horizontal.</li>
+    <li><b>Header sticky super slim (12px padding)</b>: turun 2px dari v2. Lebih banyak ruang vertikal untuk tabel.</li>
+    <li><b>Action bar dirampingkan</b>: hanya 4 tombol (Ruang Custom, Save/Load, Export PDF, Sync Server). Tidak ada room-nav di header — pindah ke sidebar.</li>
+    <li><b>Search dipromosikan</b>: lebar 380px, prominent, dengan padding lebih besar (11px 14px). Fungsi utama opname adalah scan barcode — harus paling gampang dijangkau.</li>
+    <li><b>Input di tabel transparan sampai hover row</b>: saat tidak di-hover, input "tak terlihat" — barcode/nama jadi fokus. Saat hover row, input muncul dengan background cream + border halus. Klik/focus: oranye ring.</li>
+    <li><b>Kolom PRL disingkat</b> (03/23 bukan 03/2023) untuk hemat ruang, tahun 2-digit cukup untuk konteks internal.</li>
+    <li><b>Footer tabel info digabung</b>: "0 dari 18 dicatat · 0 belum ada barcode" satu baris, tidak duplikat.</li>
+    <li><b>Sidebar collapsible-ready</b>: di mobile, sidebar bisa jadi drawer. Di desktop, sticky 280px. Dot grid 8-kolom pas untuk lebar 280px.</li>
+  </ol>
+  <h3 style="margin-top:20px;">Kenapa lebih efisien</h3>
+  <ul>
+    <li><b>Hierarki visual jelas</b>: mata langsung tahu "ini ruangan apa" (sidebar kiri) → "ini daftar kerjanya" (main). Tidak ada info konteks yang harus dicari.</li>
+    <li><b>1 fokus, 1 area</b>: scroll utama cuma di tabel. Sidebar tetap, tidak hilang saat scroll.</li>
+    <li><b>Default state bersih</b>: input di tabel transparan = "tidak ada gangguan". Hanya muncul saat relevan (hover/focus).</li>
+    <li><b>Action bar di atas tabel</b>: tombol-tombolnya dekat dengan outputnya, bukan di header yang terpisah.</li>
+  </ul>
+</div>
+
+<p class="subtitle" style="margin-top:20px;">Hover ke baris tabel (input akan muncul), hover ke dot room (tooltip), dan click button mana saja. Balas di terminal.</p>

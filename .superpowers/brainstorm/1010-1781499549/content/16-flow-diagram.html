@@ -1,0 +1,177 @@
+<style>
+  .flow-card { transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1), border-color 220ms ease; cursor: pointer; }
+  .flow-card:hover { transform: translateY(-2px); border-color: rgba(26,26,26,0.16) !important; box-shadow: 0 2px 4px rgba(45,45,45,0.04), 0 16px 32px rgba(45,45,45,0.10) !important; }
+  .flow-arrow { stroke-dasharray: 6 4; animation: flowdash 30s linear infinite; }
+  @keyframes flowdash { to { stroke-dashoffset: -1000; } }
+  .flow-pulse { animation: flowpulse 2.6s ease-in-out infinite; transform-origin: center; }
+  @keyframes flowpulse { 0%,100% { opacity: 0.9; } 50% { opacity: 0.45; } }
+</style>
+
+<h2>Navigation Flow — Kertas Kerja Digital</h2>
+<p class="subtitle">Peta lengkap semua halaman dan bagaimana mereka terhubung. Garis solid = navigasi langsung. Garis dashed oranye = data flow antar modul. Klik kartu untuk lihat mockup.</p>
+
+<div style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:14px;padding:24px;box-shadow:0 1px 2px rgba(45,45,45,0.03),0 6px 18px rgba(45,45,45,0.04);">
+<svg viewBox="0 0 1100 720" style="width:100%;height:auto;display:block;">
+
+  <!-- arrow defs -->
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L0,10 L10,5 z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="arr-amber" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L0,10 L10,5 z" fill="#C96442"/>
+    </marker>
+  </defs>
+
+  <!-- background grid (subtle) -->
+  <defs>
+    <pattern id="g" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(26,26,26,0.03)" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="1100" height="720" fill="url(#g)"/>
+
+  <!-- ═══ LOGIN (top center) ═══ -->
+  <g class="flow-card">
+    <rect x="450" y="20" width="200" height="74" rx="12" fill="#FDFCF7" stroke="#1A1A1A" stroke-width="1.5"/>
+    <circle cx="475" cy="57" r="14" fill="#1A1A1A"/>
+    <text x="475" y="61" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700" fill="#C96442">KKD</text>
+    <text x="500" y="48" font-family="Sora, sans-serif" font-size="13" font-weight="600" fill="#1A1A1A">Login</text>
+    <text x="500" y="64" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8580" letter-spacing="0.1em">PUBLIC</text>
+    <text x="500" y="78" font-family="Sora, sans-serif" font-size="9" fill="#6B6660">/login</text>
+  </g>
+
+  <!-- arrow Login → Bento -->
+  <line x1="550" y1="100" x2="550" y2="148" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="565" y="130" font-family="JetBrains Mono, monospace" font-size="8" fill="#6B6660" letter-spacing="0.08em">auth</text>
+
+  <!-- ═══ BENTO MENU (center hub) ═══ -->
+  <g class="flow-card">
+    <rect x="370" y="155" width="360" height="80" rx="14" fill="#FDFCF7" stroke="#1A1A1A" stroke-width="2"/>
+    <circle cx="395" cy="195" r="16" fill="rgba(201,100,66,0.10)"/>
+    <circle cx="395" cy="195" r="4" fill="#C96442"/>
+    <text x="420" y="180" font-family="Sora, sans-serif" font-size="16" font-weight="600" fill="#1A1A1A" letter-spacing="-0.01em">Bento Menu</text>
+    <text x="420" y="200" font-family="JetBrains Mono, monospace" font-size="9" fill="#8B8580" letter-spacing="0.1em">PILIH APLIKASI</text>
+    <text x="420" y="215" font-family="Sora, sans-serif" font-size="9" fill="#6B6660">/ (default setelah login)</text>
+  </g>
+
+  <!-- 4 arrows down to modules -->
+  <line x1="430" y1="240" x2="180" y2="320" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="500" y1="240" x2="450" y2="320" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="600" y1="240" x2="730" y2="320" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="670" y1="240" x2="950" y2="320" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- admin arrow (curved) -->
+  <path d="M 720 195 Q 880 195 950 320" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+  <text x="850" y="195" font-family="JetBrains Mono, monospace" font-size="8" fill="#C96442" letter-spacing="0.1em" font-weight="700">ADMIN ONLY</text>
+
+  <!-- ═══ APP1: UPLOAD (left) ═══ -->
+  <g class="flow-card">
+    <rect x="60" y="325" width="240" height="100" rx="14" fill="#FDFCF7" stroke="rgba(26,26,26,0.16)" stroke-width="1.5"/>
+    <text x="80" y="350" font-family="JetBrains Mono, monospace" font-size="8" fill="#C96442" letter-spacing="0.15em" font-weight="700">MOD 01 · OPERATIONAL</text>
+    <text x="80" y="372" font-family="Sora, sans-serif" font-size="14" font-weight="600" fill="#1A1A1A">Upload File</text>
+    <text x="80" y="390" font-family="Sora, sans-serif" font-size="10" fill="#6B6660">/app1</text>
+    <text x="80" y="408" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8580" letter-spacing="0.05em">PILIH: LANJUTKAN / AMBIL SERVER</text>
+  </g>
+
+  <!-- arrow Upload → Opname (same flow, downward) -->
+  <line x1="180" y1="430" x2="180" y2="490" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="195" y="465" font-family="JetBrains Mono, monospace" font-size="8" fill="#6B6660" letter-spacing="0.08em">MULAI</text>
+
+  <!-- ═══ APP1: OPNAME (left, below upload) ═══ -->
+  <g class="flow-card">
+    <rect x="60" y="495" width="240" height="100" rx="14" fill="#FDFCF7" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="80" y="520" font-family="JetBrains Mono, monospace" font-size="8" fill="#C96442" letter-spacing="0.15em" font-weight="700">MOD 01 · KERJA UTAMA</text>
+    <text x="80" y="542" font-family="Sora, sans-serif" font-size="14" font-weight="600" fill="#1A1A1A">Opname</text>
+    <text x="80" y="560" font-family="Sora, sans-serif" font-size="10" fill="#6B6660">/app1/opname</text>
+    <text x="80" y="578" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8580" letter-spacing="0.05em">SCAN · INPUT · TANDA TANGAN</text>
+  </g>
+
+  <!-- arrow Opname → Save/Load (back to upload view, dashed) -->
+  <path d="M 300 540 Q 360 540 360 380 Q 360 365 320 365" fill="none" stroke="#8B8580" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#arr)"/>
+  <text x="365" y="450" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8580" letter-spacing="0.08em">SAVE/LOAD</text>
+
+  <!-- ═══ APP2: EXTRACT (center-left) ═══ -->
+  <g class="flow-card">
+    <rect x="350" y="325" width="220" height="100" rx="14" fill="#FDFCF7" stroke="rgba(26,26,26,0.16)" stroke-width="1.5"/>
+    <text x="370" y="350" font-family="JetBrains Mono, monospace" font-size="8" fill="#C96442" letter-spacing="0.15em" font-weight="700">MOD 02 · REPORTING</text>
+    <text x="370" y="372" font-family="Sora, sans-serif" font-size="14" font-weight="600" fill="#1A1A1A">Extract &amp; MAT</text>
+    <text x="370" y="390" font-family="Sora, sans-serif" font-size="10" fill="#6B6660">/app2</text>
+    <text x="370" y="408" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8580" letter-spacing="0.05em">FILTER · EXPORT EXCEL</text>
+  </g>
+
+  <!-- arrow Opname → App2 Extract (data flow, dashed terracotta) -->
+  <path d="M 300 540 Q 350 540 380 430" fill="none" stroke="#C96442" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arr-amber)"/>
+  <text x="305" y="495" font-family="JetBrains Mono, monospace" font-size="8" fill="#C96442" letter-spacing="0.08em" font-weight="700">SYNC DATA</text>
+
+  <!-- ═══ APP3: MASTER (center-right) ═══ -->
+  <g class="flow-card">
+    <rect x="620" y="325" width="220" height="100" rx="14" fill="#FDFCF7" stroke="rgba(26,26,26,0.16)" stroke-width="1.5"/>
+    <text x="640" y="350" font-family="JetBrains Mono, monospace" font-size="8" fill="#C96442" letter-spacing="0.15em" font-weight="700">MOD 03 · DATABASE</text>
+    <text x="640" y="372" font-family="Sora, sans-serif" font-size="14" font-weight="600" fill="#1A1A1A">Master &amp; Recouncil</text>
+    <text x="640" y="390" font-family="Sora, sans-serif" font-size="10" fill="#6B6660">/app3</text>
+    <text x="640" y="408" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8580" letter-spacing="0.05em">3 STEP: UPLOAD → FILTER → GENERATE</text>
+  </g>
+
+  <!-- arrow App2 Extract → App3 Master (data flow, dashed terracotta) -->
+  <line x1="570" y1="375" x2="620" y2="375" stroke="#C96442" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arr-amber)"/>
+  <text x="572" y="368" font-family="JetBrains Mono, monospace" font-size="8" fill="#C96442" letter-spacing="0.08em" font-weight="700">DATA</text>
+
+  <!-- arrow App3 Tab1 → App3 Tab2 (internal) -->
+  <line x1="730" y1="430" x2="730" y2="490" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="745" y="465" font-family="JetBrains Mono, monospace" font-size="8" fill="#6B6660" letter-spacing="0.08em">LANJUT</text>
+
+  <!-- ═══ APP3: RECOUNCIL (right of app3) ═══ -->
+  <g class="flow-card" style="opacity:0.5;">
+    <rect x="620" y="495" width="220" height="100" rx="14" fill="#FDFCF7" stroke="rgba(26,26,26,0.16)" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="640" y="520" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8580" letter-spacing="0.15em" font-weight="700">MOD 03 · RECONCILIATION</text>
+    <text x="640" y="542" font-family="Sora, sans-serif" font-size="14" font-weight="600" fill="#1A1A1A">Recouncil</text>
+    <text x="640" y="560" font-family="Sora, sans-serif" font-size="10" fill="#6B6660">/app3 (tab 2)</text>
+    <text x="640" y="578" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8580" letter-spacing="0.05em">MATCH / MISSING / EXTRA</text>
+  </g>
+
+  <!-- arrow App2 → App3 Recouncil (cross) -->
+  <path d="M 570 410 Q 580 480 620 530" fill="none" stroke="#C96442" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arr-amber)"/>
+  <text x="555" y="475" font-family="JetBrains Mono, monospace" font-size="8" fill="#C96442" letter-spacing="0.08em" font-weight="700">RECONCILE</text>
+
+  <!-- ═══ ADMIN (right) ═══ -->
+  <g class="flow-card">
+    <rect x="890" y="325" width="180" height="100" rx="14" fill="#FDFCF7" stroke="rgba(26,26,26,0.16)" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="910" y="350" font-family="JetBrains Mono, monospace" font-size="8" fill="#C96442" letter-spacing="0.15em" font-weight="700">SISTEM</text>
+    <text x="910" y="372" font-family="Sora, sans-serif" font-size="14" font-weight="600" fill="#1A1A1A">Admin</text>
+    <text x="910" y="390" font-family="Sora, sans-serif" font-size="10" fill="#6B6660">/admin</text>
+    <text x="910" y="408" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8580" letter-spacing="0.05em">USERS · AUDIT · BACKUP</text>
+  </g>
+
+  <!-- footer -->
+  <g>
+    <line x1="40" y1="660" x2="1060" y2="660" stroke="rgba(26,26,26,0.08)" stroke-width="1"/>
+    <text x="40" y="685" font-family="JetBrains Mono, monospace" font-size="9" fill="#8B8580" letter-spacing="0.12em">KERTAS KERJA DIGITAL · PT SANTOS JAYA ABADI</text>
+    <text x="40" y="702" font-family="JetBrains Mono, monospace" font-size="8" fill="#8B8580" letter-spacing="0.08em">SOLID = NAVIGASI · DASHED CHARCOAL = SAVE/LOAD · DASHED ORANYE = DATA FLOW</text>
+  </g>
+
+</svg>
+</div>
+
+<div class="section" style="margin-top:18px;">
+  <h3>Cara baca diagram</h3>
+  <ul>
+    <li><b>Garis solid charcoal</b>: navigasi langsung user (klik tombol, klik link).</li>
+    <li><b>Garis dashed charcoal</b>: navigasi sekunder / save-load (balik ke upload dengan session).</li>
+    <li><b>Garis dashed oranye (terracotta)</b>: <b>data flow</b> antar modul. Bukan klik user, tapi data yang dipakai bersama. Mis. hasil scan di App1 dipakai oleh App2 Extract untuk rekap.</li>
+    <li><b>Border dashed pada kartu</b>: akses terbatas (admin only / Capacitor only / step lanjutan).</li>
+  </ul>
+  <h3 style="margin-top:18px;">Alur lengkap</h3>
+  <ol>
+    <li><b>Login</b> → masuk dengan username + password (offline cache didukung).</li>
+    <li><b>Bento Menu</b> → 4 modul utama + 1 admin (admin only).</li>
+    <li><b>App1 — Upload</b>: pilih file dari lokal atau server. Lalu klik "Mulai Baru" → masuk Opname.</li>
+    <li><b>App1 — Opname</b>: kerja utama. Scan barcode per ruang, input kondisi, tanda tangan. Save/Load untuk restore sesi.</li>
+    <li><b>App2 — Extract</b>: tarik data hasil opname dari server, filter per departemen/lokasi, export Excel recouncil per ruang + MAT report.</li>
+    <li><b>App3 — Master (Tab 1)</b>: upload 4 file (Master, EXA, ADD, INV) → pilih filter BAT/ENG/HRGA/ICT/kosong → generate Excel konsolidasi.</li>
+    <li><b>App3 — Recouncil (Tab 2)</b>: upload hasil opname + master + ASPx → sistem compare → tabel match/missing/extra.</li>
+    <li><b>Admin</b>: kelola user, lihat audit trail, backup, system info. Hanya untuk role admin.</li>
+  </ol>
+  <h3 style="margin-top:18px;">Mobile flow (Capacitor APK)</h3>
+  <p>Pada mode tablet (Capacitor), Login → Bento Menu → langsung redirect ke <b>App1 Upload</b>. App2, App3, Admin disembunyikan (hanya web). User tidak bisa logout dari tablet kecuali tap tombol logout di header.</p>
+</div>

@@ -1691,5 +1691,220 @@
     "ip": "::ffff:10.10.188.252",
     "status": "SUCCESS",
     "details": {}
+  },
+  {
+    "id": "1776239707977aobv",
+    "timestamp": "2026-04-15T07:55:07.977Z",
+    "actor": "ICT_SJA1",
+    "action": "LOGIN_SUCCESS",
+    "target": "Role: admin",
+    "ip": "10.10.6.13",
+    "status": "SUCCESS",
+    "details": {}
+  },
+  {
+    "id": "1776302257647vf75",
+    "timestamp": "2026-04-16T01:17:37.647Z",
+    "actor": "ICT_SJA1",
+    "action": "LOGIN_SUCCESS",
+    "target": "Role: admin",
+    "ip": "10.10.6.13",
+    "status": "SUCCESS",
+    "details": {}
+  },
+  {
+    "id": "1781498607008u8qq",
+    "timestamp": "2026-06-15T04:43:27.008Z",
+    "actor": "ICT_SJA1",
+    "action": "LOGIN_SUCCESS",
+    "target": "Role: admin",
+    "ip": "172.19.0.1",
+    "status": "SUCCESS",
+    "details": {}
+  },
+  {
+    "id": "1781529143555f6zf",
+    "timestamp": "2026-06-15T13:12:23.555Z",
+    "actor": "ICT_SJA1",
+    "action": "LOGIN_SUCCESS",
+    "target": "Role: admin",
+    "ip": "172.19.0.1",
+    "status": "SUCCESS",
+    "details": {}
+  },
+  {
+    "id": "1781529252594abnv",
+    "timestamp": "2026-06-15T13:14:12.594Z",
+    "actor": "ICT_SJA1",
+    "action": "LOGIN_SUCCESS",
+    "target": "Role: admin",
+    "ip": "172.19.0.1",
+    "status": "SUCCESS",
+    "details": {}
+  },
+  {
+    "id": "17815292877864w35",
+    "timestamp": "2026-06-15T13:14:47.786Z",
+    "actor": "ICT_SJA1",
+    "action": "LOGIN_SUCCESS",
+    "target": "Role: admin",
+    "ip": "172.19.0.1",
+    "status": "SUCCESS",
+    "details": {}
+  },
+  {
+    "id": "17815295253283wyn",
+    "timestamp": "2026-06-15T13:18:45.328Z",
+    "actor": "ICT_SJA1",
+    "action": "LOGIN_SUCCESS",
+    "target": "Role: admin",
+    "ip": "172.19.0.1",
+    "status": "SUCCESS",
+    "details": {}
+  },
+  {
+    "id": "1781529563461nt10",
+    "timestamp": "2026-06-15T13:19:23.461Z",
+    "actor": "ICT_SJA1",
+    "action": "LOGIN_SUCCESS",
+    "target": "Role: admin",
+    "ip": "172.19.0.1",
+    "status": "SUCCESS",
+    "details": {}
+  },
+  {
+    "id": "17815296972132z9y",
+    "timestamp": "2026-06-15T13:21:37.213Z",
+    "actor": "ICT_SJA1",
+    "action": "LOGIN_SUCCESS",
+    "target": "Role: admin",
+    "ip": "172.19.0.1",
+    "status": "SUCCESS",
+    "details": {}
+  },
+  {
+    "id": "17815378126101u9l",
+    "timestamp": "2026-06-15T15:36:52.610Z",
+    "actor": "ICT_SJA1",
+    "action": "LOGIN_SUCCESS",
+    "target": "Role: admin",
+    "ip": "172.19.0.1",
+    "status": "SUCCESS",
+    "details": {}
+  },
+  {
+    "id": "17815390401968kyq",
+    "timestamp": "2026-06-15T15:57:20.196Z",
+    "actor": "ICT_SJA1",
+    "action": "LOGIN_SUCCESS",
+    "target": "Role: admin",
+    "ip": "172.19.0.1",
+    "status": "SUCCESS",
+    "details": {}
+  },
+  {
+    "id": "17815401306779lrs",
+    "timestamp": "2026-06-15T16:15:30.677Z",
+    "actor": "ICT_SJA1",
+    "action": "LOGIN_SUCCESS",
+    "target": "Role: admin",
+    "ip": "172.19.0.1",
+    "status": "SUCCESS",
+    "details": {}
+  },
+  {
+    "id": "17816609515619kg8",
+    "timestamp": "2026-06-17T01:49:11.561Z",
+    "actor": "ICT_SJA1",
+    "action": "LOGIN_SUCCESS",
+    "target": "Role: admin",
+    "ip": "172.19.0.1",
+    "status": "SUCCESS",
+    "details": {}
+  },
+  {
+    "id": "17816625525636eea",
+    "timestamp": "2026-06-17T02:15:52.563Z",
+    "actor": "ICT_SJA1",
+    "action": "LOGIN_SUCCESS",
+    "target": "Role: admin",
+    "ip": "172.19.0.1",
+    "status": "SUCCESS",
+    "details": {}
+  },
+  {
+    "id": "1781667899476ui7y",
+    "timestamp": "2026-06-17T03:44:59.476Z",
+    "actor": "ICT_SJA1",
+    "action": "LOGIN_SUCCESS",
+    "target": "Role: admin",
+    "ip": "172.19.0.1",
+    "status": "SUCCESS",
+    "details": {}
+  },
+  {
+    "id": "17816679443328mdv",
+    "timestamp": "2026-06-17T03:45:44.332Z",
+    "actor": "ICT_SJA1",
+    "action": "LOGIN_SUCCESS",
+    "target": "Role: admin",
+    "ip": "172.19.0.1",
+    "status": "SUCCESS",
+    "details": {}
+  },
+  {
+    "id": "1781668031001e2vo",
+    "timestamp": "2026-06-17T03:47:11.001Z",
+    "actor": "ICT_SJA1",
+    "action": "LOGIN_SUCCESS",
+    "target": "Role: admin",
+    "ip": "172.19.0.1",
+    "status": "SUCCESS",
+    "details": {}
+  },
+  {
+    "action": "LOGIN_SUCCESS",
+    "actor": "ICT_SJA1",
+    "details": {},
+    "ip": "::1",
+    "status": "SUCCESS",
+    "target": "Role: admin",
+    "timestamp": "2026-06-23T09:50:41.298Z"
+  },
+  {
+    "action": "LOGIN_SUCCESS",
+    "actor": "ICT_SJA1",
+    "details": {},
+    "ip": "::1",
+    "status": "SUCCESS",
+    "target": "Role: admin",
+    "timestamp": "2026-06-23T09:51:05.806Z"
+  },
+  {
+    "action": "LOGIN_SUCCESS",
+    "actor": "ICT_SJA1",
+    "details": {},
+    "ip": "::1",
+    "status": "SUCCESS",
+    "target": "Role: admin",
+    "timestamp": "2026-06-24T01:23:36.363Z"
+  },
+  {
+    "action": "LOGIN_SUCCESS",
+    "actor": "ICT_SJA1",
+    "details": {},
+    "ip": "::1",
+    "status": "SUCCESS",
+    "target": "Role: admin",
+    "timestamp": "2026-06-24T02:39:56.471Z"
+  },
+  {
+    "action": "LOGIN_SUCCESS",
+    "actor": "ICT_SJA1",
+    "details": {},
+    "ip": "::1",
+    "status": "SUCCESS",
+    "target": "Role: admin",
+    "timestamp": "2026-06-24T05:25:56.831Z"
   }
-]
+]{"level":"info","message":{"action":"LOGIN_SUCCESS","actor":"ICT_SJA1","details":{},"ip":"::1","status":"SUCCESS","target":"Role: admin"},"timestamp":"2026-08-03T09:01:06.514Z"}

@@ -1,0 +1,76 @@
+<h2>Pilih gaya penanda status ruangan</h2>
+<p class="subtitle">Target: dropdown APP1/Opname lebih cepat dibaca daripada teks panjang + angka 18/18.</p>
+
+<div class="cards">
+  <div class="card" data-choice="A" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="border:1px solid #e4d5c3;border-radius:14px;background:#fffaf3;padding:12px;width:100%;font-family:Inter,system-ui,sans-serif;">
+        <div style="font-size:12px;color:#7a5b3a;margin-bottom:8px;font-weight:700;">Ruang terpilih</div>
+        <div style="border:2px solid #d97706;border-radius:12px;padding:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fff;">
+          <span style="font-weight:800;font-size:13px;color:#2b2118;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Ruang 801 Packing Line 3</span>
+          <span style="background:#16a34a;color:#fff;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:800;">✓ Selesai</span>
+        </div>
+        <div style="margin-top:8px;border:1px solid #ead8c2;border-radius:12px;overflow:hidden;background:#fff;">
+          <div style="display:flex;align-items:center;gap:8px;padding:9px 10px;background:#dcfce7;"><span style="width:22px;height:22px;border-radius:99px;background:#16a34a;color:white;display:grid;place-items:center;font-size:11px;font-weight:900;">✓</span><b style="font-size:12px;flex:1;">801 Packing</b><span style="font-size:11px;color:#166534;font-weight:800;">18/18</span></div>
+          <div style="display:flex;align-items:center;gap:8px;padding:9px 10px;"><span style="width:22px;height:22px;border-radius:99px;background:#f97316;color:white;display:grid;place-items:center;font-size:11px;font-weight:900;">…</span><b style="font-size:12px;flex:1;">806 Transit Barang</b><span style="font-size:11px;color:#9a3412;font-weight:800;">9/13</span></div>
+          <div style="display:flex;align-items:center;gap:8px;padding:9px 10px;"><span style="width:22px;height:22px;border-radius:99px;background:#e5e7eb;color:#6b7280;display:grid;place-items:center;font-size:11px;font-weight:900;">○</span><b style="font-size:12px;flex:1;">910 Packing Line 3</b><span style="font-size:11px;color:#6b7280;font-weight:800;">0/1</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. Badge eksplisit</h3>
+      <p>Status langsung terbaca: ✓ Selesai, … Proses, ○ Belum. Paling jelas untuk operator.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="B" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="border:1px solid #e4d5c3;border-radius:14px;background:#fffaf3;padding:12px;width:100%;font-family:Inter,system-ui,sans-serif;">
+        <div style="border:2px solid #d97706;border-radius:12px;padding:10px;background:#fff;">
+          <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;"><b style="font-size:13px;color:#2b2118;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Ruang 801 Packing Line 3</b><span style="font-size:12px;font-weight:900;color:#16a34a;">100%</span></div>
+          <div style="height:6px;background:#f3e5d3;border-radius:99px;margin-top:8px;overflow:hidden;"><div style="width:100%;height:100%;background:#16a34a;"></div></div>
+        </div>
+        <div style="margin-top:8px;display:grid;gap:7px;">
+          <div style="display:grid;grid-template-columns:5px 1fr auto;gap:8px;align-items:center;background:#fff;border:1px solid #d8eadc;border-radius:10px;padding:9px;"><span style="height:34px;background:#16a34a;border-radius:99px;"></span><b style="font-size:12px;">801 Packing</b><span style="font-size:11px;font-weight:900;color:#16a34a;">18/18</span></div>
+          <div style="display:grid;grid-template-columns:5px 1fr auto;gap:8px;align-items:center;background:#fff;border:1px solid #f4d4b5;border-radius:10px;padding:9px;"><span style="height:34px;background:#f97316;border-radius:99px;"></span><b style="font-size:12px;">806 Transit Barang</b><span style="font-size:11px;font-weight:900;color:#f97316;">9/13</span></div>
+          <div style="display:grid;grid-template-columns:5px 1fr auto;gap:8px;align-items:center;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:9px;"><span style="height:34px;background:#cbd5e1;border-radius:99px;"></span><b style="font-size:12px;">910 Packing Line 3</b><span style="font-size:11px;font-weight:900;color:#64748b;">0/1</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. Progress bar mini</h3>
+      <p>Lebih “pro max”: setiap ruangan punya warna + progress kecil. Bagus untuk lihat progres sekilas.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="C" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="border:1px solid #e4d5c3;border-radius:14px;background:#fffaf3;padding:12px;width:100%;font-family:Inter,system-ui,sans-serif;">
+        <div style="display:flex;gap:6px;margin-bottom:8px;">
+          <span style="flex:1;text-align:center;border-radius:10px;background:#dcfce7;color:#166534;padding:7px 4px;font-size:11px;font-weight:900;">Selesai 8</span>
+          <span style="flex:1;text-align:center;border-radius:10px;background:#ffedd5;color:#9a3412;padding:7px 4px;font-size:11px;font-weight:900;">Proses 6</span>
+          <span style="flex:1;text-align:center;border-radius:10px;background:#f1f5f9;color:#475569;padding:7px 4px;font-size:11px;font-weight:900;">Belum 12</span>
+        </div>
+        <div style="border:2px solid #d97706;border-radius:12px;padding:10px;background:#fff;display:flex;justify-content:space-between;gap:8px;">
+          <b style="font-size:13px;color:#2b2118;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Cari / pilih ruangan…</b><span style="font-size:12px;font-weight:900;color:#92400e;">⌘K</span>
+        </div>
+        <div style="margin-top:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+          <span style="border-radius:10px;background:#16a34a;color:#fff;text-align:center;padding:10px 0;font-size:12px;font-weight:900;">1</span>
+          <span style="border-radius:10px;background:#16a34a;color:#fff;text-align:center;padding:10px 0;font-size:12px;font-weight:900;">2</span>
+          <span style="border-radius:10px;background:#ffedd5;color:#9a3412;text-align:center;padding:10px 0;font-size:12px;font-weight:900;border:1px solid #fb923c;">3</span>
+          <span style="border-radius:10px;background:#f8fafc;color:#64748b;text-align:center;padding:10px 0;font-size:12px;font-weight:900;border:1px solid #cbd5e1;">4</span>
+          <span style="border-radius:10px;background:#f8fafc;color:#64748b;text-align:center;padding:10px 0;font-size:12px;font-weight:900;border:1px solid #cbd5e1;">5</span>
+          <span style="border-radius:10px;background:#16a34a;color:#fff;text-align:center;padding:10px 0;font-size:12px;font-weight:900;">6</span>
+          <span style="border-radius:10px;background:#ffedd5;color:#9a3412;text-align:center;padding:10px 0;font-size:12px;font-weight:900;border:1px solid #fb923c;">7</span>
+          <span style="border-radius:10px;background:#f8fafc;color:#64748b;text-align:center;padding:10px 0;font-size:12px;font-weight:900;border:1px solid #cbd5e1;">8</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. Dashboard + grid</h3>
+      <p>Paling kuat untuk banyak ruangan. Ada ringkasan selesai/proses/belum + grid angka cepat.</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle">Klik pilihan di browser atau jawab di terminal: A, B, atau C.</p>

@@ -2,6 +2,14 @@ import React, { useState, useRef } from 'react';
 import { UploadCloud, CheckCircle2, FileSpreadsheet, Loader2, ArrowRight, Download, Filter, FileWarning, Database, LayoutTemplate, Box, Sparkles } from 'lucide-react';
 import '../index.css';
 
+import {
+  FILTER_CATEGORIES,
+  canExtractFilters,
+  countBatsByCategory,
+  getEffectiveBats as getEffectiveBatsForSelection,
+  getSourceFileCount,
+} from '../utils/app3ConsolidationUi';
+
 const SLOT_TYPES = ['master', 'exa', 'add', 'inv'];
 const VALID_EXT = /\.(xlsx|xls)$/i;
 
@@ -21,6 +29,11 @@ export default function App3ConsolidationPage() {
     };
     const dragCounters = useRef({ master: 0, exa: 0, add: 0, inv: 0 });
 
+    const sourceFileCount = getSourceFileCount(files);
+    const canContinueUpload = canExtractFilters(files);
+    const countByCat = countBatsByCategory(bats);
+    const effectiveBats = getEffectiveBatsForSelection(bats, selectedBats);
+
     const handleFileChange = (type, file) => {
         if (!file) return;
         if (!VALID_EXT.test(file.name)) {
@@ -34,7 +47,6 @@ export default function App3ConsolidationPage() {
     const handlePickerChange = (type, e) => {
         const file = e.target.files && e.target.files[0];
         handleFileChange(type, file);
-        // Reset so picking the same file again still fires onChange
         e.target.value = '';
     };
 
@@ -85,10 +97,14 @@ export default function App3ConsolidationPage() {
         finally { setLoadingBats(false); }
     };
 
-    const toggleBat = (b) => setSelectedBats(prev => prev.includes(b) ? prev.filter(x => x !== b) : [...prev, b]);
+    const toggleCategory = (cat) => {
+        setSelectedBats(prev => {
+            if (prev.includes(cat)) return prev.filter(x => x !== cat);
+            return [...prev, cat];
+        });
+    };
 
     const processConsolidation = async () => {
-        const effectiveBats = getEffectiveBats();
         if (effectiveBats.length === 0) { setErrorMsg('Harap pilih minimal satu filter target.'); return; }
         setProcessing(true); setErrorMsg('');
         const formData = new FormData();
@@ -125,17 +141,20 @@ export default function App3ConsolidationPage() {
                 onDragOver={handleDragOver}
                 onDrop={e => handleDrop(e, type)}
                 onClick={() => fileInputRefs[type].current.click()}
-                className={`wa-zone ${isSet ? 'loaded' : ''}`}
-                style={{ padding: 24, textAlign: 'center' }}
+                className={`app3-upload-slot ${isSet ? 'is-loaded' : ''} ${isDrag ? 'is-dragging' : ''} ${type === 'master' ? 'is-optional' : 'is-source'}`}
             >
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
-                    <div style={{ marginBottom: 12 }}>
-                        {isSet ? <CheckCircle2 size={32} color="var(--success-500)" /> : <Icon size={32} color="var(--charcoal-900)" />}
-                    </div>
-                    <h3 style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, fontSize: 16, color: 'var(--charcoal-900)', margin: '0 0 4px 0' }}>{title}</h3>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: isSet ? 'var(--success-500)' : 'var(--charcoal-500)', margin: 0 }}>
-                        {isSet ? files[type].name : subtitle}
-                    </p>
+                <div className="app3-upload-slot__content">
+                  <span className={`app3-upload-slot__badge ${isSet ? 'valid' : type === 'master' ? 'optional' : 'source'}`}>
+                    {isSet ? 'VALID' : type === 'master' ? 'OPSIONAL' : 'SOURCE'}
+                  </span>
+                  <div className="app3-upload-slot__icon">
+                    {isSet ? <CheckCircle2 size={24} /> : <Icon size={24} />}
+                  </div>
+                  <h3 className="app3-upload-slot__title">{title}</h3>
+                  <p className={isSet ? 'app3-upload-slot__file' : 'app3-upload-slot__hint'}>
+                    {isSet ? files[type].name : subtitle}
+                  </p>
+                  <div className="app3-upload-slot__action">{isSet ? 'Ganti file' : 'Pilih / drop file'}</div>
                 </div>
                 <input
                     type="file"
@@ -148,244 +167,143 @@ export default function App3ConsolidationPage() {
         );
     };
 
-    const FILTER_CATEGORIES = ['ICT', 'ENG', 'BAT', 'HRGA', 'Kosong'];
-
-    const classifyBat = (b) => {
-        if (!b || String(b).trim() === '' || String(b).toLowerCase() === 'nan' || String(b).toLowerCase() === 'none') return 'Kosong';
-        const upper = String(b).toUpperCase();
-        if (upper.startsWith('ICT')) return 'ICT';
-        if (upper.startsWith('ENG')) return 'ENG';
-        if (upper.startsWith('HRGA')) return 'HRGA';
-        if (upper.startsWith('BAT')) return 'BAT';
-        return 'BAT';
-    };
-
-    const countByCat = bats.reduce((acc, b) => {
-        const cat = classifyBat(b);
-        acc[cat] = (acc[cat] || 0) + 1;
-        return acc;
-    }, {});
-
-    const selectedBatsForCategory = (cat) => bats.filter(b => classifyBat(b) === cat);
-
-    const toggleCategory = (cat) => {
-        setSelectedBats(prev => {
-            if (prev.includes(cat)) return prev.filter(x => x !== cat);
-            return [...prev, cat];
-        });
-    };
-
-    const getEffectiveBats = () => {
-        if (selectedBats.length === 0) return [];
-        return selectedBats.flatMap(cat => selectedBatsForCategory(cat));
-    };
-
     return (
-        <div style={{ padding: '32px', maxWidth: '1400px', margin: '0 auto' }}>
-            <div className="upload-dashboard-bento" style={{ gap: '24px' }}>
+      <div className="app3-page">
+        <div className="app3-container">
 
-                {/* 3-Step Stepper */}
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 18 }}>
-                    <div className="wa-step" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <div className={`wa-step-num ${step > 1 ? 'wa-step done' : ''}`} style={step === 1 ? { background: 'var(--charcoal-900)', color: 'var(--cream-surface)' } : step > 1 ? { background: 'var(--success-500)', color: 'var(--cream-surface)' } : {}}>{step > 1 ? '✓' : '1'}</div>
-                        <div>
-                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: 'var(--charcoal-400)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Step 1</div>
-                            <div style={{ fontSize: 11, fontWeight: 600 }}>Upload 4 File</div>
-                        </div>
-                    </div>
-                    <div className="wa-step-line" style={{ width: 60, height: 2, background: step >= 2 ? 'var(--success-500)' : 'rgba(26,26,26,0.08)', margin: '0 8px', transition: 'background 400ms ease' }} />
-                    <div className="wa-step" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <div className={`wa-step-num ${step === 2 ? 'active' : ''}`} style={step === 2 ? { background: 'var(--charcoal-900)', color: 'var(--cream-surface)' } : {}}>{step > 2 ? '✓' : '2'}</div>
-                        <div>
-                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: step === 2 ? 'var(--terracotta-500)' : 'var(--charcoal-400)', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 700 }}>Step 2 {step === 2 ? '· Aktif' : ''}</div>
-                            <div style={{ fontSize: 11, fontWeight: 600 }}>Pilih Filter</div>
-                        </div>
-                    </div>
-                    <div className="wa-step-line" style={{ width: 60, height: 2, background: 'rgba(26,26,26,0.08)', margin: '0 8px' }} />
-                    <div className="wa-step" style={{ display: 'flex', alignItems: 'center', gap: 10, opacity: 0.55 }}>
-                        <div className="wa-step-num" style={{}}>3</div>
-                        <div>
-                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: 'var(--charcoal-400)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Step 3</div>
-                            <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--charcoal-400)' }}>Generate Excel</div>
-                        </div>
-                    </div>
+          <nav className="app3-stepper" aria-label="Langkah konsolidasi">
+            {[['1', 'Upload'], ['2', 'Filter'], ['3', 'Generate Excel']].map(([value, label]) => {
+              const valueNum = Number(value);
+              const stateClass = step === valueNum ? 'active' : step > valueNum ? 'done' : 'inactive';
+              return (
+                <div key={value} className={`app3-step ${stateClass}`}>
+                  <div className="app3-step__num">{step > valueNum ? '✓' : value}</div>
+                  <div>
+                    <div className="app3-step__label">Step {value}</div>
+                    <div className="app3-step__title">{label}</div>
+                  </div>
                 </div>
+              );
+            })}
+          </nav>
 
-                {/* Hero Header */}
-                <div className="bento-header" style={{ marginBottom: '16px', flexDirection: 'column', alignItems: 'flex-start', borderBottom: '3px solid var(--charcoal-900)', paddingBottom: '24px' }}>
-                    <div style={{
-                        display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px',
-                        background: 'var(--charcoal-900)', color: 'var(--amber-400)',
-                        fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 800,
-                        textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px'
-                    }}>
-                        <Sparkles size={14} /> Data Pipeline Intelligence
-                    </div>
-                    <h1 className="bento-title" style={{ fontSize: '32px', marginBottom: '12px' }}>
-                        Master Data <span style={{ color: 'var(--amber-500)' }}>Consolidation</span>
-                    </h1>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--charcoal-500)', maxWidth: '800px', lineHeight: 1.6 }}>
-                        Harmonisasi dokumen EXA, ADD, dan INV menjadi satu single source of truth. Mendukung pemecahan smart multi-barcode dan master archiving otomatis.
-                    </p>
-                </div>
-
-                {successMsg && (
-                    <div className="wa-status success" style={{ padding: 12, background: 'rgba(22,163,74,0.05)', border: '1px solid rgba(22,163,74,0.2)', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 10, marginBottom: '24px' }}>
-                        <CheckCircle2 size={16} color="var(--success-500)" />
-                        <div style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, fontSize: 13, color: 'var(--success-800)' }}>{successMsg}</div>
-                    </div>
-                )}
-                {errorMsg && (
-                    <div className="wa-status danger" style={{ padding: 12, background: 'rgba(220,38,38,0.05)', border: '1px solid rgba(220,38,38,0.2)', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 10, marginBottom: '24px' }}>
-                        <FileWarning size={16} color="var(--danger-500)" />
-                        <div style={{ fontFamily: 'var(--font-sora)', fontWeight: 600, fontSize: 13, color: 'var(--danger-800)' }}>{errorMsg}</div>
-                    </div>
-                )}
-
-                {/* Step 1: Document Upload Arena */}
-                <div style={{
-                    transition: 'all 0.5s',
-                    opacity: step === 1 ? 1 : 0.4,
-                    filter: step === 1 ? 'none' : 'grayscale(100%)',
-                    pointerEvents: step === 1 ? 'auto' : 'none',
-                    transform: step === 1 ? 'translateY(0)' : 'translateY(-10px)'
-                }}>
-                    <div className="editorial-glass-card" style={{ padding: 0, overflow: 'hidden' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 22px', borderBottom: '1px solid rgba(26,26,26,0.06)' }}>
-                            <div style={{ width: 28, height: 28, background: 'var(--charcoal-900)', color: 'var(--cream-surface)', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700 }}>1</div>
-                            <div style={{ flex: 1 }}>
-                                <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--charcoal-900)' }}>Pipeline Ingestion</div>
-                                <div style={{ fontSize: 11, color: 'var(--charcoal-500)', marginTop: 2 }}>Unggah file sumber untuk diekstrak filternya.</div>
-                            </div>
-                        </div>
-
-                        <div style={{ padding: '32px' }}>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '32px' }}>
-                                <UploadSlot type="master" icon={Database} title="Master Eksisting" subtitle="Opsional: Kamus Data Master Lama (Arsip)" />
-                                <UploadSlot type="exa" icon={LayoutTemplate} title="Sumber EXA" subtitle="Drag & drop file EXA di sini" />
-                                <UploadSlot type="add" icon={Box} title="Sumber ADD" subtitle="Drag & drop file ADD di sini" />
-                                <UploadSlot type="inv" icon={FileSpreadsheet} title="Sumber INV" subtitle="Drag & drop file INV di sini" />
-                            </div>
-
-                            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                <button
-                                    onClick={extractBats}
-                                    disabled={loadingBats || (!files.exa && !files.add && !files.inv)}
-                                    className="wa-btn-terracotta"
-                                    style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 24px', fontSize: 12 }}
-                                >
-                                    {loadingBats ? (
-                                        <><Loader2 size={16} className="spin" /> MENGANALISA...</>
-                                    ) : (
-                                        <><Filter size={16} /> EKSTRAK FILTER KATEGORI <ArrowRight size={16} /></>
-                                    )}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Step 2: Intelligent Filter & Process */}
-                {step === 2 && (
-                    <div style={{ marginTop: '32px' }}>
-                        <div className="editorial-glass-card" style={{ padding: 0, overflow: 'hidden' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 22px', borderBottom: '1px solid rgba(26,26,26,0.06)' }}>
-                                <div style={{ width: 28, height: 28, background: 'var(--charcoal-900)', color: 'var(--cream-surface)', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700 }}>2</div>
-                                <div style={{ flex: 1 }}>
-                                    <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--charcoal-900)' }}>Target Filtrasi & Eksekusi</div>
-                                    <div style={{ fontSize: 11, color: 'var(--charcoal-500)', marginTop: 2 }}>Pilih BAT dan lakukan konsolidasi akhir.</div>
-                                </div>
-                            </div>
-
-                            <div style={{ padding: '32px' }}>
-                                <div className="wa-card" style={{ padding: '20px', marginBottom: '24px' }}>
-                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 700, color: 'var(--charcoal-400)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 14 }}>Pilih Kategori Filter</div>
-                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12 }}>
-                                        {FILTER_CATEGORIES.map(cat => {
-                                            const isSelected = selectedBats.includes(cat);
-                                            const count = countByCat[cat] || 0;
-                                            return (
-                                                <div
-                                                    key={cat}
-                                                    onClick={() => toggleCategory(cat)}
-                                                    className={isSelected ? 'wa-card selected' : 'wa-card'}
-                                                    style={{
-                                                        background: isSelected ? 'var(--charcoal-900)' : 'var(--cream-surface)',
-                                                        border: isSelected ? '1.5px solid var(--charcoal-900)' : '1.5px solid rgba(26,26,26,0.12)',
-                                                        borderRadius: 10,
-                                                        padding: '14px 12px',
-                                                        textAlign: 'center',
-                                                        cursor: 'pointer',
-                                                        color: isSelected ? 'var(--cream-surface)' : 'var(--charcoal-900)',
-                                                        boxShadow: isSelected ? '0 4px 12px rgba(0,0,0,0.15)' : 'var(--shadow-md)',
-                                                        transition: 'all 200ms cubic-bezier(0.2, 0.8, 0.2, 1)',
-                                                    }}
-                                                >
-                                                    <div style={{ fontSize: 14, fontWeight: 600, letterSpacing: '-0.01em' }}>{cat}</div>
-                                                    <div style={{ display: 'inline-block', marginTop: 6, padding: '2px 8px', background: isSelected ? 'var(--terracotta-500)' : 'rgba(26,26,26,0.06)', color: isSelected ? 'var(--cream-surface)' : 'var(--charcoal-500)', borderRadius: 9999, fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 700, letterSpacing: '0.05em' }}>{count}</div>
-                                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: isSelected ? 'rgba(255,255,255,0.6)' : 'var(--charcoal-400)', letterSpacing: '0.08em', marginTop: 6, textTransform: 'uppercase' }}>RECORD</div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-
-                                {bats.length === 0 && (
-                                    <div style={{ marginBottom: '24px', padding: '14px 18px', background: 'var(--cream-input)', border: '1px solid rgba(26,26,26,0.08)', borderRadius: 8, fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--charcoal-500)', fontStyle: 'italic' }}>
-                                        Tidak ada referensi BAT di source file.
-                                    </div>
-                                )}
-
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '14px 18px', background: 'var(--cream-input)', border: '1px solid rgba(26,26,26,0.08)', borderRadius: 8, marginBottom: '24px', flexWrap: 'wrap' }}>
-                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 700, color: 'var(--charcoal-400)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Live Summary</div>
-                                    <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-                                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--charcoal-500)' }}>Total BAT: <strong style={{ color: 'var(--charcoal-900)' }}>{bats.length}</strong></span>
-                                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--charcoal-500)' }}>Selected: <strong style={{ color: 'var(--terracotta-500)' }}>{selectedBats.length}</strong></span>
-                                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--charcoal-500)' }}>Effective records: <strong style={{ color: 'var(--charcoal-900)' }}>{getEffectiveBats().length}</strong></span>
-                                    </div>
-                                </div>
-
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-                                    <button
-                                        onClick={() => setStep(1)}
-                                        disabled={processing}
-                                        className="wa-btn-ghost"
-                                    >
-                                        ← KEMBALI KE INGESTION
-                                    </button>
-
-                                    <button
-                                        onClick={processConsolidation}
-                                        disabled={processing || selectedBats.length === 0}
-                                        className="wa-btn-terracotta"
-                                        style={{ padding: '14px 28px', fontSize: 12 }}
-                                    >
-                                        {processing ? (
-                                            <>
-                                                <Loader2 size={18} className="animate-spin" />
-                                                <span>MENYUSUN DATA MASTER...</span>
-                                            </>
-                                        ) : (
-                                            <><Download size={18} strokeWidth={2.5} /> FORMAT & UNDUH SEKARANG</>
-                                        )}
-                                    </button>
-                                </div>
-
-                                {processing && (
-                                    <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                        <div style={{ height: '8px', width: '100%', background: 'var(--charcoal-300)', border: '1px solid var(--charcoal-900)' }}>
-                                            <div className="animate-progress origin-left" style={{ height: '100%', background: 'var(--amber-500)', width: '100%' }}></div>
-                                        </div>
-                                        <p className="animate-pulse" style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--charcoal-600)', fontWeight: 700, textTransform: 'uppercase' }}>
-                                            Menjalankan Regex Barcode Parsing & Algoritma Drop Duplicates...
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                )}
+          {successMsg && (
+            <div className="app3-alert app3-alert--success" role="status">
+              <CheckCircle2 size={18} />
+              <span>{successMsg}</span>
             </div>
+          )}
+          {errorMsg && (
+            <div className="app3-alert app3-alert--danger" role="alert">
+              <FileWarning size={18} />
+              <span>{errorMsg}</span>
+            </div>
+          )}
+
+          <section className={`app3-panel ${step !== 1 ? 'is-muted' : ''}`}>
+            <div className="app3-panel__header">
+              <div className="app3-panel__num">1</div>
+              <div>
+                <h2>Upload File</h2>
+                <p>Masukkan file sumber sebelum ekstrak filter.</p>
+              </div>
+            </div>
+            <div className="app3-panel__body">
+              <div className="app3-rule-strip">
+                <span><strong>Aturan lanjut:</strong> minimal satu source valid dari EXA / ADD / INV.</span>
+                <strong>ANTI-SALAH UPLOAD</strong>
+              </div>
+              <div className="app3-upload-grid">
+                <UploadSlot type="master" icon={Database} title="Master Lama" subtitle="Opsional: kamus master existing untuk arsip" />
+                <UploadSlot type="exa" icon={LayoutTemplate} title="EXA" subtitle="Source document Excel" />
+                <UploadSlot type="add" icon={Box} title="ADD" subtitle="Source document Excel" />
+                <UploadSlot type="inv" icon={FileSpreadsheet} title="INV" subtitle="Source document Excel" />
+              </div>
+              <div className="app3-action-row">
+                <div className="app3-readiness">
+                  <span className={sourceFileCount > 0 ? 'ok' : ''}>{sourceFileCount} SOURCE VALID</span>
+                  <span>.XLSX / .XLS SAJA</span>
+                  <span>MASTER OPSIONAL</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={extractBats}
+                  disabled={loadingBats || !canContinueUpload}
+                  className="wa-btn-terracotta app3-primary-action"
+                >
+                  {loadingBats ? <><Loader2 size={16} className="spin" /> MENGANALISA...</> : <><Filter size={16} /> EKSTRAK FILTER <ArrowRight size={16} /></>}
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {step === 2 && (
+            <section className="app3-panel">
+              <div className="app3-panel__header">
+                <div className="app3-panel__num">2</div>
+                <div>
+                  <h2>Filter Kategori</h2>
+                  <p>Pilih kategori yang akan masuk output Excel.</p>
+                </div>
+              </div>
+              <div className="app3-panel__body">
+                <div className="app3-summary-chips">
+                  <span>TOTAL BAT: <strong>{bats.length}</strong></span>
+                  <span>SELECTED: <strong>{selectedBats.length}</strong></span>
+                  <span>EFFECTIVE RECORDS: <strong>{effectiveBats.length}</strong></span>
+                </div>
+
+                {bats.length === 0 ? (
+                  <div className="app3-empty-state">Tidak ada referensi BAT di source file.</div>
+                ) : (
+                  <div className="app3-category-grid">
+                    {FILTER_CATEGORIES.map((cat) => {
+                      const isSelected = selectedBats.includes(cat);
+                      const count = countByCat[cat] || 0;
+                      return (
+                        <button
+                          key={cat}
+                          type="button"
+                          onClick={() => toggleCategory(cat)}
+                          className={`app3-category-card ${isSelected ? 'selected' : ''}`}
+                        >
+                          <span className="app3-category-card__title">
+                            {cat}
+                            <strong>{count}</strong>
+                          </span>
+                          <span className="app3-category-card__hint">
+                            {isSelected ? 'Masuk hasil Excel' : cat === 'Kosong' ? 'Data tanpa prefix kategori' : 'Klik untuk tambah filter'}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                <div className="app3-action-row">
+                  <button type="button" onClick={() => setStep(1)} disabled={processing} className="wa-btn-ghost">
+                    ← KEMBALI
+                  </button>
+                  <button
+                    type="button"
+                    onClick={processConsolidation}
+                    disabled={processing || selectedBats.length === 0}
+                    className="wa-btn-terracotta app3-primary-action"
+                  >
+                    {processing ? <><Loader2 size={18} className="spin" /> MENYUSUN DATA MASTER...</> : <><Download size={18} /> GENERATE EXCEL</>}
+                  </button>
+                </div>
+
+                {processing && (
+                  <div className="app3-processing" role="status">
+                    <div><span /></div>
+                    <p>Menyusun data master… tunggu sampai file otomatis terunduh.</p>
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
         </div>
+      </div>
     );
 }

@@ -1,0 +1,72 @@
+<h2>App2 — Extract Hasil Opname & MAT (kondisi sekarang)</h2>
+<p class="subtitle">Ini struktur tampilan app2 saat ini. Kotak merah = titik yang terasa "basic". Lihat dulu, lalu jawab pertanyaan di terminal.</p>
+
+<div class="mockup">
+  <div class="mockup-header">Preview: /app2 — layout sekarang</div>
+  <div class="mockup-body" style="background:#faf9f7;padding:16px;font-family:system-ui;">
+
+    <!-- header -->
+    <div style="margin-bottom:14px;">
+      <div style="font-family:monospace;font-size:9px;color:#9a948c;letter-spacing:.15em;">MODUL 02 · REPORTING</div>
+      <div style="font-size:22px;font-weight:600;color:#2b2b2b;">Extract MAT</div>
+      <div style="font-size:12px;color:#777;">Tarik hasil opname per periode, bandingkan dengan master, generate rekap MAT.</div>
+    </div>
+
+    <!-- filter card -->
+    <div style="position:relative;border:1px solid #e7e3dd;border-radius:10px;padding:14px;background:#fff;margin-bottom:12px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div><div style="font-family:monospace;font-size:8px;color:#aaa;">PERIODE OPNAME</div><div style="height:34px;border:1px solid #e0dcd5;border-radius:7px;margin-top:4px;background:#fdfcfb;"></div></div>
+        <div><div style="font-family:monospace;font-size:8px;color:#aaa;">FILTER DEPARTEMEN</div><div style="height:34px;border:1px solid #e0dcd5;border-radius:7px;margin-top:4px;background:#fdfcfb;"></div></div>
+      </div>
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid #eee;display:flex;gap:10px;align-items:center;">
+        <div style="flex:1;height:46px;border:1px solid #e0dcd5;border-radius:8px;background:#fdfcfb;display:flex;align-items:center;padding:0 10px;font-size:11px;color:#999;">Pilih File Excel... (opsional)</div>
+        <div style="height:36px;width:90px;border:1px solid #e0dcd5;border-radius:7px;"></div>
+        <div style="height:36px;width:150px;border-radius:7px;background:#c4622d;"></div>
+      </div>
+      <div style="position:absolute;top:-10px;right:-8px;background:#dc2626;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;">1 · banyak inline-style, tak konsisten</div>
+    </div>
+
+    <!-- summary bar -->
+    <div style="position:relative;border:1px solid #e7e3dd;border-radius:10px;padding:12px 16px;background:#fff;margin-bottom:12px;display:flex;gap:18px;">
+      <div style="flex:1;"><div style="font-family:monospace;font-size:8px;color:#aaa;">TOTAL RUANGAN</div><div style="font-size:20px;font-weight:700;">12</div></div>
+      <div style="width:1px;background:#eee;"></div>
+      <div style="flex:1;"><div style="font-family:monospace;font-size:8px;color:#aaa;">ASET TERSCAN</div><div style="font-size:20px;font-weight:700;color:#16a34a;">340</div></div>
+      <div style="width:1px;background:#eee;"></div>
+      <div style="flex:1;"><div style="font-family:monospace;font-size:8px;color:#aaa;">TIDAK TERSCAN</div><div style="font-size:20px;font-weight:700;color:#dc2626;">58</div></div>
+      <div style="width:1px;background:#eee;"></div>
+      <div style="flex:1;"><div style="font-family:monospace;font-size:8px;color:#aaa;">SALAH RUANGAN</div><div style="font-size:20px;font-weight:700;color:#dc2626;">7</div></div>
+      <div style="position:absolute;top:-10px;right:-8px;background:#dc2626;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;">2 · angka mentah, tak ada progress visual</div>
+    </div>
+
+    <!-- room list -->
+    <div style="position:relative;border:1px solid #e7e3dd;border-radius:10px;background:#fff;overflow:hidden;">
+      <div style="padding:10px 16px;background:#f5f3ef;font-family:monospace;font-size:10px;color:#777;border-bottom:1px solid #eee;">DAFTAR RUANGAN · 12</div>
+      <div style="padding:11px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f0ede8;">
+        <span style="color:#bbb;">›</span>
+        <div style="flex:1;font-size:12px;font-weight:600;">RUANG ICT LANTAI 2</div>
+        <div style="font-family:monospace;font-size:11px;color:#777;">28 TERSCAN</div>
+        <div style="font-size:10px;color:#dc2626;font-weight:700;">3 TIDAK TERSCAN</div>
+        <div style="font-size:10px;border:1px solid #e0dcd5;border-radius:6px;padding:4px 8px;">👁 Preview</div>
+      </div>
+      <div style="padding:11px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f0ede8;">
+        <span style="color:#bbb;">›</span>
+        <div style="flex:1;font-size:12px;font-weight:600;">RUANG SERVER</div>
+        <div style="font-family:monospace;font-size:11px;color:#777;">15 TERSCAN</div>
+        <div style="font-size:10px;color:#16a34a;font-weight:700;">0 TIDAK TERSCAN</div>
+        <div style="font-size:10px;border:1px solid #e0dcd5;border-radius:6px;padding:4px 8px;">👁 Preview</div>
+      </div>
+      <div style="position:absolute;top:-10px;right:-8px;background:#dc2626;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;">3 · baris padat, hierarki lemah, badge kontras rendah</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <p class="label">Diagnosa singkat</p>
+  <ul style="font-size:13px;line-height:1.7;color:#444;">
+    <li><b>Inline-style berat</b> — hampir semua styling inline di JSX; CSS file <code>extract-opname.css</code> (469 baris) sebagian besar dead code (class <code>.extract-*</code> tak dipakai).</li>
+    <li><b>Summary bar flat</b> — 4 angka berjajar tanpa progress bar / konteks visual.</li>
+    <li><b>Daftar ruangan</b> — baris seragam, susah scan cepat mana ruangan selesai vs bermasalah.</li>
+    <li><b>Tak ada empty/loading state yang dirancang</b>, dan responsif tablet/mobile minim.</li>
+  </ul>
+</div>

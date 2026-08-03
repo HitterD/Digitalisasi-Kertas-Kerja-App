@@ -1,0 +1,240 @@
+<style>
+  .ex-card { transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1), border-color 220ms ease; }
+  .ex-card:hover { transform: translateY(-2px); border-color: rgba(26,26,26,0.14) !important; box-shadow: 0 2px 4px rgba(45,45,45,0.04), 0 14px 30px rgba(45,45,45,0.08) !important; }
+
+  .ex-row { transition: background 140ms ease, box-shadow 140ms ease; }
+  .ex-row:hover { background: rgba(201,100,66,0.04) !important; }
+  .ex-row.expanded { background: rgba(201,100,66,0.03) !important; }
+  .ex-row.expanded td:first-child { box-shadow: inset 3px 0 0 0 #C96442; }
+
+  .ex-pill { transition: all 180ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .ex-pill:hover { background: rgba(26,26,26,0.05); }
+  .ex-pill.active { background: #FDFCF7; color: #1A1A1A !important; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .ex-pill.active .ex-pill-ic { color: #C96442; }
+  .ex-pill-ic { transition: color 180ms ease; color: #8B8580; }
+
+  .ex-cta { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .ex-cta:hover { background: #2A2A2A !important; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+  .ex-cta:active { transform: translateY(0) scale(0.98); }
+
+  .ex-terracotta { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .ex-terracotta:hover { background: #D87554 !important; transform: translateY(-1px); box-shadow: 0 6px 14px rgba(201,100,66,0.30); }
+  .ex-terracotta:active { transform: translateY(0) scale(0.97); }
+
+  .ex-ghost { transition: all 180ms ease; cursor: pointer; }
+  .ex-ghost:hover { background: #FDFCF7 !important; border-color: #1A1A1A !important; color: #1A1A1A !important; }
+
+  .ex-barcode-btn { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .ex-barcode-btn:hover { background: #C96442 !important; color: #FDFCF7 !important; transform: translateY(-1px); box-shadow: 0 6px 14px rgba(201,100,66,0.25); }
+
+  .ex-select, .ex-input { background: #FDFCF7; border: 1px solid rgba(26,26,26,0.08); border-radius: 8px; padding: 8px 12px; font-size: 11.5px; color: #1A1A1A; font-family: inherit; outline: none; width: 100%; transition: all 160ms ease; }
+  .ex-select:hover, .ex-input:hover { border-color: rgba(26,26,26,0.16); }
+  .ex-select:focus, .ex-input:focus { border-color: #C96442; box-shadow: 0 0 0 3px rgba(201,100,66,0.12); }
+
+  .ex-progress-bar { transition: width 600ms cubic-bezier(0.25, 1, 0.5, 1); }
+
+  .ex-chev { transition: transform 200ms ease; }
+  .ex-row-toggle.open .ex-chev { transform: rotate(90deg); }
+</style>
+
+<h2>App2 — Extract Hasil Opname &amp; MAT</h2>
+<p class="subtitle">Halaman reporting — tarik data opname dari database, filter per departemen/ruangan, generate Excel recouncil &amp; MAT. Bahasa visual sama dengan login + bento + opname.</p>
+
+<div class="mockup">
+  <div class="mockup-header">Preview: /app2 (Extract Hasil Opname)</div>
+  <div class="mockup-body" style="background:#F5EFE6;padding:0;font-family:'Sora',system-ui,sans-serif;">
+
+    <!-- In-app header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:rgba(253,251,247,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(26,26,26,0.06);">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <button style="background:transparent;border:none;cursor:pointer;padding:4px;color:#6B6660;display:flex;align-items:center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        </button>
+        <div style="width:1px;height:18px;background:rgba(26,26,26,0.1);"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:26px;height:26px;background:#1A1A1A;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#C96442;letter-spacing:0.05em;">KKD</div>
+          </div>
+          <div style="font-size:13px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Extract &amp; MAT</div>
+        </div>
+      </div>
+      <div class="ex-barcode-btn" style="display:flex;align-items:center;gap:8px;background:#1A1A1A;color:#FDFCF7;border-radius:8px;padding:8px 14px;font-size:11px;font-weight:600;letter-spacing:0.05em;border:none;font-family:inherit;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        BARCODE CHECKER
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div style="padding:24px 24px;">
+
+      <!-- Page header -->
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid rgba(26,26,26,0.08);">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.2em;text-transform:uppercase;">Modul 02 · Reporting</div>
+          <div style="font-size:24px;font-weight:600;color:#1A1A1A;letter-spacing:-0.02em;margin-top:4px;">Extract Hasil Opname &amp; MAT</div>
+          <div style="font-size:12px;color:#6B6660;margin-top:6px;max-width:520px;line-height:1.5;">Tarik data dari database, bandingkan dengan master, generate laporan recouncil &amp; MAT.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="ex-ghost" style="display:flex;align-items:center;gap:6px;background:transparent;color:#1A1A1A;border:1px solid rgba(26,26,26,0.12);border-radius:8px;padding:9px 14px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/></svg>
+            Sync DB
+          </button>
+          <button class="ex-terracotta" style="display:flex;align-items:center;gap:6px;background:#C96442;color:#FDFCF7;border:none;border-radius:8px;padding:9px 16px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;box-shadow:0 2px 6px rgba(201,100,66,0.2);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export Excel
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter row -->
+      <div class="ex-card" style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:14px;padding:18px 22px;margin-bottom:14px;box-shadow:0 1px 2px rgba(45,45,45,0.03);">
+        <div style="display:grid;grid-template-columns:1fr 1.5fr 1fr 1fr auto;gap:14px;align-items:end;">
+          <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;margin-bottom:6px;">Periode</div>
+            <select class="ex-select"><option>Juni 2026</option><option>Mei 2026</option><option>April 2026</option></select>
+          </div>
+          <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;margin-bottom:6px;">Departemen</div>
+            <select class="ex-select"><option>Semua Departemen</option><option>ICT</option><option>Produksi</option><option>Gudang</option></select>
+          </div>
+          <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;margin-bottom:6px;">Lokasi</div>
+            <select class="ex-select"><option>Semua Lokasi</option><option>Line 1</option><option>Line 2</option><option>Line 3</option></select>
+          </div>
+          <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;margin-bottom:6px;">Status</div>
+            <select class="ex-select"><option>Semua Status</option><option>Sudah Scan</option><option>Belum Scan</option></select>
+          </div>
+          <button class="ex-cta" style="background:#1A1A1A;color:#FDFCF7;border:none;border-radius:8px;padding:9px 16px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;height:36px;">
+            Terapkan
+          </button>
+        </div>
+      </div>
+
+      <!-- Summary strip -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">
+        <div style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:10px;padding:12px 16px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;">Master Record</div>
+          <div style="font-size:20px;font-weight:700;color:#1A1A1A;letter-spacing:-0.01em;margin-top:3px;">1.247</div>
+        </div>
+        <div style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:10px;padding:12px 16px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;">Sudah Scan</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-top:3px;">
+            <span style="font-size:20px;font-weight:700;color:#16a34a;letter-spacing:-0.01em;">986</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;letter-spacing:0.05em;">79.1%</span>
+          </div>
+        </div>
+        <div style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:10px;padding:12px 16px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;">Belum Scan</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-top:3px;">
+            <span style="font-size:20px;font-weight:700;color:#C96442;letter-spacing:-0.01em;">261</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;letter-spacing:0.05em;">20.9%</span>
+          </div>
+        </div>
+        <div style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:10px;padding:12px 16px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;">Selisih</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-top:3px;">
+            <span style="font-size:20px;font-weight:700;color:#1A1A1A;letter-spacing:-0.01em;">±3</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;letter-spacing:0.05em;">item</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Room table -->
+      <div class="ex-card" style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(45,45,45,0.03),0 6px 18px rgba(45,45,45,0.04);">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <thead>
+            <tr style="background:#FAF6EF;">
+              <th style="width:36px;padding:11px 12px;"></th>
+              <th style="padding:11px 12px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">RUANGAN</th>
+              <th style="padding:11px 12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">MASTER</th>
+              <th style="padding:11px 12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">SCAN</th>
+              <th style="padding:11px 12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);width:240px;">PROGRESS</th>
+              <th style="padding:11px 12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">SELISIH</th>
+              <th style="padding:11px 12px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#8B8580;letter-spacing:0.12em;text-transform:uppercase;border-bottom:1px solid rgba(26,26,26,0.06);">AKSI</th>
+            </tr>
+          </thead>
+          <tbody style="font-family:'Sora',sans-serif;color:#1A1A1A;">
+            <tr class="ex-row expanded">
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="ex-row-toggle open" style="cursor:pointer;color:#6B6660;display:flex;align-items:center;justify-content:center;"><svg class="ex-chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(90deg);"><polyline points="9 18 15 12 9 6"/></svg></div></td>
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-size:12px;font-weight:600;">Ruang 801 — Packing Kaca</td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6660;">18</td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#16a34a;">18</td>
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div style="flex:1;height:6px;background:rgba(26,26,26,0.06);border-radius:999px;overflow:hidden;">
+                    <div class="ex-progress-bar" style="width:100%;height:100%;background:linear-gradient(90deg,#16a34a,#22c55e);border-radius:999px;"></div>
+                  </div>
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#16a34a;letter-spacing:0.02em;">100%</span>
+                </div>
+              </td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#16a34a;">0</td>
+              <td style="padding:9px 12px;text-align:right;border-bottom:1px solid rgba(26,26,26,0.04);">
+                <button style="background:transparent;color:#C96442;border:none;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;padding:4px 8px;">Preview ›</button>
+              </td>
+            </tr>
+            <tr class="ex-row">
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="ex-row-toggle" style="cursor:pointer;color:#6B6660;display:flex;align-items:center;justify-content:center;"><svg class="ex-chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div></td>
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-size:12px;font-weight:600;">Ruang 802 — Packing Karton</td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6660;">22</td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#16a34a;">22</td>
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div style="flex:1;height:6px;background:rgba(26,26,26,0.06);border-radius:999px;overflow:hidden;">
+                    <div class="ex-progress-bar" style="width:100%;height:100%;background:linear-gradient(90deg,#16a34a,#22c55e);border-radius:999px;"></div>
+                  </div>
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#16a34a;letter-spacing:0.02em;">100%</span>
+                </div>
+              </td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#16a34a;">0</td>
+              <td style="padding:9px 12px;text-align:right;border-bottom:1px solid rgba(26,26,26,0.04);">
+                <button style="background:transparent;color:#C96442;border:none;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;padding:4px 8px;">Preview ›</button>
+              </td>
+            </tr>
+            <tr class="ex-row">
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);"><div class="ex-row-toggle" style="cursor:pointer;color:#6B6660;display:flex;align-items:center;justify-content:center;"><svg class="ex-chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div></td>
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);font-size:12px;font-weight:600;">Ruang 803 — Gudang Bahan Baku</td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6660;">34</td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#C96442;">28</td>
+              <td style="padding:9px 12px;border-bottom:1px solid rgba(26,26,26,0.04);">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div style="flex:1;height:6px;background:rgba(26,26,26,0.06);border-radius:999px;overflow:hidden;">
+                    <div class="ex-progress-bar" style="width:82%;height:100%;background:linear-gradient(90deg,#C96442,#D88865);border-radius:999px;"></div>
+                  </div>
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#C96442;letter-spacing:0.02em;">82%</span>
+                </div>
+              </td>
+              <td style="padding:9px 12px;text-align:center;border-bottom:1px solid rgba(26,26,26,0.04);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#C96442;">−6</td>
+              <td style="padding:9px 12px;text-align:right;border-bottom:1px solid rgba(26,26,26,0.04);">
+                <button style="background:transparent;color:#C96442;border:none;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;padding:4px 8px;">Preview ›</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Struktur</h3>
+  <ol>
+    <li><b>In-app header</b> (sama dengan Opname): KKD + "Extract &amp; MAT" + BARCODE CHECKER</li>
+    <li><b>Page header</b>: meta uppercase + display title + Sync DB + Export Excel</li>
+    <li><b>Filter row</b> (1 baris): 4 dropdown + tombol Terapkan. Hairline soft card.</li>
+    <li><b>Summary strip</b> (4 metrik ringkas): Master / Scan / Belum / Selisih</li>
+    <li><b>Tabel ruangan expandable</b>: klik chevron → expanded row dengan detail sheet</li>
+  </ol>
+  <h3 style="margin-top:18px;">Animasi</h3>
+  <ul>
+    <li>Chevron rotate 90° saat row expanded</li>
+    <li>Progress bar animate width 600ms (smooth)</li>
+    <li>Filter card hover lift 2px</li>
+    <li>Row hover cream pucat</li>
+    <li>Button Sync lift + shadow oranye</li>
+    <li>Export Excel: terracotta primary (one accent), lift -1px + shadow</li>
+  </ul>
+</div>
+
+<p class="subtitle" style="margin-top:20px;">Hover filter card, row, dan tombol. Balas di terminal.</p>

@@ -126,14 +126,14 @@ export default function AdminPage() {
     };
 
     const handleEdit = (user) => {
+        const acc = Array.isArray(user.access) ? user.access : [];
         setFormData({
             username: user.username, password: '', role: user.role,
-            access: { app1: user.access.includes('app1'), app2: user.access.includes('app2'), app3: user.access.includes('app3') }
+            access: { app1: acc.includes('app1'), app2: acc.includes('app2'), app3: acc.includes('app3') }
         });
         setIsEditing(true);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
-
     const handleDeleteUser = async (username) => {
         if (!window.confirm(`Hapus user ${username}?`)) return;
         try {
@@ -390,29 +390,45 @@ export default function AdminPage() {
                                     <div style={{ fontSize: 11, color: 'var(--charcoal-500)', marginTop: 1 }}>Buat akun dan atur hak akses per modul.</div>
                                 </div>
                             </div>
-                            <form onSubmit={handleUserSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: 12, alignItems: 'end' }}>
-                                <div>
-                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>Username</div>
-                                    <input className="wa-input" required disabled={isEditing} placeholder="nama.user" value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} />
+                            <form onSubmit={handleUserSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
+                                    <div>
+                                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>Username</div>
+                                        <input className="wa-input" required disabled={isEditing} placeholder="nama.user" value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} />
+                                    </div>
+                                    <div>
+                                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>Password{isEditing && ' (kosongkan jika tidak diubah)'}</div>
+                                        <input className="wa-input" type="password" required={!isEditing} placeholder="••••••••" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
+                                    </div>
+                                    <div>
+                                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>Role</div>
+                                        <select className="wa-select" value={formData.role} onChange={(e) => setFormData({ ...formData, role: e.target.value })}>
+                                            <option value="user">user</option>
+                                            <option value="admin">admin</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div>
-                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>Password{isEditing && ' (kosongkan jika tidak diubah)'}</div>
-                                    <input className="wa-input" type="password" required={!isEditing} placeholder="••••••••" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
-                                </div>
-                                <div>
-                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>Role</div>
-                                    <select className="wa-select" value={formData.role} onChange={(e) => setFormData({ ...formData, role: e.target.value })}>
-                                        <option value="user">user</option>
-                                        <option value="admin">admin</option>
-                                    </select>
-                                </div>
-                                <div style={{ display: 'flex', gap: 6 }}>
-                                    {isEditing && (
-                                        <button type="button" onClick={() => { setIsEditing(false); setFormData({ username: '', password: '', role: 'user', access: { app1: false, app2: false, app3: false } }); }} className="wa-btn-ghost" style={{ height: 36, padding: '0 16px' }}>Batal</button>
-                                    )}
-                                    <button type="submit" className="wa-btn-terracotta" style={{ height: 36, padding: '0 16px', display: 'flex', alignItems: 'center', gap: 6 }}>
-                                        <UserPlus size={13} /> {isEditing ? 'Simpan' : 'Tambah'}
-                                    </button>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: 'var(--cream-input)', borderRadius: 6, border: '1px solid rgba(26,26,26,0.08)' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+                                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-500)', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 700 }}>Akses Aplikasi:</div>
+                                        <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer', color: 'var(--charcoal-900)' }}>
+                                            <input type="checkbox" name="app1" checked={formData.access.app1} onChange={handleAccessChange} style={{ accentColor: 'var(--terracotta-500)', width: 14, height: 14 }} /> APP 1
+                                        </label>
+                                        <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer', color: 'var(--charcoal-900)' }}>
+                                            <input type="checkbox" name="app2" checked={formData.access.app2} onChange={handleAccessChange} style={{ accentColor: 'var(--terracotta-500)', width: 14, height: 14 }} /> APP 2
+                                        </label>
+                                        <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer', color: 'var(--charcoal-900)' }}>
+                                            <input type="checkbox" name="app3" checked={formData.access.app3} onChange={handleAccessChange} style={{ accentColor: 'var(--terracotta-500)', width: 14, height: 14 }} /> APP 3
+                                        </label>
+                                    </div>
+                                    <div style={{ display: 'flex', gap: 6 }}>
+                                        {isEditing && (
+                                            <button type="button" onClick={() => { setIsEditing(false); setFormData({ username: '', password: '', role: 'user', access: { app1: false, app2: false, app3: false } }); }} className="wa-btn-ghost" style={{ height: 32, padding: '0 14px', fontSize: 11 }}>Batal</button>
+                                        )}
+                                        <button type="submit" className="wa-btn-terracotta" style={{ height: 32, padding: '0 14px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11 }}>
+                                            <UserPlus size={13} /> {isEditing ? 'Simpan' : 'Tambah'}
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
                         </div>

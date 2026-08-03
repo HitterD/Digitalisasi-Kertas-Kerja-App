@@ -1,0 +1,219 @@
+<style>
+  .up-card { transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1), border-color 220ms ease; cursor: pointer; }
+  .up-card:hover { transform: translateY(-2px); border-color: rgba(26,26,26,0.14) !important; box-shadow: 0 2px 4px rgba(45,45,45,0.04), 0 14px 30px rgba(45,45,45,0.08) !important; }
+  .up-card:active { transform: translateY(0) scale(0.985); transition-duration: 80ms; }
+
+  .up-zone { transition: all 220ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .up-zone:hover { border-color: #C96442 !important; background: #FDFCF7 !important; transform: translateY(-2px); }
+  .up-zone:hover .up-zone-icon { background: rgba(201,100,66,0.10); color: #C96442; }
+  .up-zone-icon { transition: all 220ms ease; }
+
+  .up-cta { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .up-cta:hover { background: #2A2A2A !important; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+  .up-cta:active { transform: translateY(0) scale(0.98); transition-duration: 80ms; }
+
+  .up-terracotta { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .up-terracotta:hover { background: #D87554 !important; transform: translateY(-1px); box-shadow: 0 6px 14px rgba(201,100,66,0.30); }
+  .up-terracotta:active { transform: translateY(0) scale(0.97); transition-duration: 80ms; }
+
+  .up-ghost { transition: all 180ms ease; cursor: pointer; }
+  .up-ghost:hover { background: #FDFCF7 !important; border-color: #1A1A1A !important; color: #1A1A1A !important; }
+
+  .up-pill { transition: all 180ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .up-pill:hover { background: rgba(26,26,26,0.05); }
+  .up-pill.active { background: #FDFCF7; color: #1A1A1A !important; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .up-pill.active .up-pill-ic { color: #C96442; }
+  .up-pill-ic { transition: color 180ms ease; color: #8B8580; }
+
+  .up-icon-wrap { display:inline-flex; align-items:center; justify-content:center; width:42px; height:42px; border-radius:10px; background: rgba(26,26,26,0.04); transition: background 220ms ease; }
+  .up-icon-wrap svg { transition: stroke 220ms ease; }
+  .up-card:hover .up-icon-wrap { background: rgba(201,100,66,0.10); }
+  .up-card:hover .up-icon-wrap svg { stroke: #C96442; }
+</style>
+
+<h2>UploadPage (App1 entry) — Warm Atelier</h2>
+<p class="subtitle">Halaman masuk App1 sebelum mulai kerja. Tombol LANJUTKAN / AMBIL DARI SERVER di-soft-kan (bukan brutalism hard-shadow). 3-card layout: Saved Session + Network Sync + Database Upload. Bahasa visual sama dengan login, bento, opname.</p>
+
+<div class="mockup">
+  <div class="mockup-header">Preview: /app1 (Upload dashboard)</div>
+  <div class="mockup-body" style="background:#F5EFE6;padding:0;font-family:'Sora',system-ui,sans-serif;">
+
+    <!-- In-app header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:rgba(253,251,247,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(26,26,26,0.06);">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <button style="background:transparent;border:none;cursor:pointer;padding:4px;color:#6B6660;display:flex;align-items:center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        </button>
+        <div style="width:1px;height:18px;background:rgba(26,26,26,0.1);"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:26px;height:26px;background:#1A1A1A;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#C96442;letter-spacing:0.05em;">KKD</div>
+          </div>
+          <div style="font-size:13px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Opname Aset</div>
+        </div>
+        <div style="display:flex;background:rgba(26,26,26,0.04);border-radius:8px;padding:3px;gap:2px;margin-left:8px;">
+          <div class="up-pill active" style="display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;color:#1A1A1A;">
+            <span class="up-pill-ic">⌂</span> Home
+          </div>
+          <div class="up-pill" style="display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;color:#6B6660;">
+            <span class="up-pill-ic">✓</span> Kertas Kerja
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="text-align:right;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#8B8580;letter-spacing:0.15em;text-transform:uppercase;">Sesi</div>
+          <div style="font-size:11px;color:#1A1A1A;font-weight:600;">Belum ada</div>
+        </div>
+        <div class="up-ghost" style="background:transparent;color:#1A1A1A;border:1px solid rgba(26,26,26,0.12);border-radius:8px;padding:7px 12px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;">↻ Refresh</div>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div style="padding:24px 24px;">
+
+      <!-- Page header -->
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid rgba(26,26,26,0.08);">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.2em;text-transform:uppercase;">Modul 01 · Operasional</div>
+          <div style="font-size:24px;font-weight:600;color:#1A1A1A;letter-spacing:-0.02em;margin-top:4px;">Kertas Kerja Opname</div>
+          <div style="font-size:12px;color:#6B6660;margin-top:6px;max-width:520px;line-height:1.5;">Mulai dengan memuat database Master dan file Opname, atau lanjutkan sesi yang sudah ada.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="up-cta" style="display:flex;align-items:center;gap:6px;background:#1A1A1A;color:#FDFCF7;border:none;border-radius:8px;padding:10px 16px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Lanjutkan dari Lokal
+          </button>
+          <button class="up-terracotta" style="display:flex;align-items:center;gap:6px;background:#C96442;color:#FDFCF7;border:none;border-radius:8px;padding:10px 16px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;box-shadow:0 2px 6px rgba(201,100,66,0.2);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+            Ambil dari Server
+          </button>
+        </div>
+      </div>
+
+      <!-- 3 cards: Session | Network Sync | Database Upload -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:14px;">
+
+        <!-- Card 1: Saved Session -->
+        <div class="up-card" style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:14px;padding:22px;box-shadow:0 1px 2px rgba(45,45,45,0.03),0 6px 18px rgba(45,45,45,0.04);">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;">
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.2em;">SESI LOKAL</div>
+              <div style="font-size:15px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;margin-top:3px;">Tersimpan di Browser</div>
+            </div>
+            <div class="up-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            </div>
+          </div>
+          <div style="padding:14px;background:#F5EFE6;border-radius:10px;border:1px dashed rgba(26,26,26,0.1);text-align:center;margin-bottom:14px;">
+            <div style="font-size:11px;color:#6B6660;line-height:1.4;font-style:italic;">Belum ada sesi tersimpan.<br/>Mulai opname baru atau ambil dari server.</div>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.1em;display:flex;align-items:center;gap:6px;">
+            <span>STORAGE: LOCAL</span>
+            <span style="color:#C9C2B5;">|</span>
+            <span style="color:#C96442;font-weight:600;">0 SESI</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Network Sync -->
+        <div class="up-card" style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:14px;padding:22px;box-shadow:0 1px 2px rgba(45,45,45,0.03),0 6px 18px rgba(45,45,45,0.04);">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;">
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.2em;">SERVER SYNC</div>
+              <div style="font-size:15px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;margin-top:3px;">Status Jaringan</div>
+            </div>
+            <div class="up-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#F5EFE6;border-radius:8px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:6px;height:6px;background:#16a34a;border-radius:50%;"></div>
+                <span style="font-size:11px;color:#1A1A1A;font-weight:600;">Tablet → PC</span>
+              </div>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#16a34a;font-weight:600;letter-spacing:0.1em;">READY</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#F5EFE6;border-radius:8px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:6px;height:6px;background:#C9C2B5;border-radius:50%;"></div>
+                <span style="font-size:11px;color:#1A1A1A;font-weight:600;">PC → Cloud</span>
+              </div>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.1em;">IDLE</span>
+            </div>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.1em;display:flex;align-items:center;gap:6px;">
+            <span>LAST SYNC: NEVER</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Database Upload -->
+        <div class="up-card" style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:14px;padding:22px;box-shadow:0 1px 2px rgba(45,45,45,0.03),0 6px 18px rgba(45,45,45,0.04);">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;">
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.2em;">DATABASE</div>
+              <div style="font-size:15px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;margin-top:3px;">Upload File Excel</div>
+            </div>
+            <div class="up-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+            <!-- Master DB zone -->
+            <div class="up-zone" style="border:1.5px dashed rgba(26,26,26,0.12);border-radius:10px;padding:14px;text-align:center;background:transparent;">
+              <div class="up-zone-icon" style="width:36px;height:36px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:rgba(26,26,26,0.04);color:#1A1A1A;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+              </div>
+              <div style="font-size:12px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Master DB</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.05em;margin-top:3px;">.XLSX · REFERENSI</div>
+            </div>
+
+            <!-- Opname File zone -->
+            <div class="up-zone" style="border:1.5px dashed rgba(26,26,26,0.12);border-radius:10px;padding:14px;text-align:center;background:transparent;">
+              <div class="up-zone-icon" style="width:36px;height:36px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:rgba(26,26,26,0.04);color:#1A1A1A;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+              </div>
+              <div style="font-size:12px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">File Opname</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.05em;margin-top:3px;">.XLSX · DATA</div>
+            </div>
+          </div>
+
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.1em;display:flex;align-items:center;gap:6px;">
+            <span>DRAG &amp; DROP ATAU KLIK ZONA</span>
+            <span style="color:#C9C2B5;">|</span>
+            <span style="color:#C96442;font-weight:600;">0/2 DIMUAT</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer info -->
+      <div style="margin-top:20px;display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid rgba(26,26,26,0.08);font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.12em;">
+        <span>V1.0.4 · BUILD 2026.06</span>
+        <span>PT SANTOS JAYA ABADI · INTERNAL</span>
+        <span>◆ PRODUCTION</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Apa yang beda dari brutalism</h3>
+  <ul>
+    <li><b>Tombol "LANJUTKAN" & "AMBIL DARI SERVER"</b>: dari <code>4px 4px 0 charcoal hard-shadow</code> → pill charcoal + terracotta. Hover: lift + soft shadow. Click: scale 0.98.</li>
+    <li><b>Page title</b>: dari `<code>KERTAS KERJA OPNAME</code>` uppercase mono → mixed case Sora 24px + meta uppercase mono di atasnya.</li>
+    <li><b>3-card layout</b>: dari 2+1 bento grid → tetap 3 kolom (Session | Network | Database) tapi dengan soft card, hairline border, shadow 1px+6px.</li>
+    <li><b>Upload zone</b>: dari 2px solid border indigo dengan floating icon animasi → 1.5px dashed charcoal 12%, icon-wrap dalam container, hover border terracotta + icon bg terracotta pucat.</li>
+    <li><b>Empty state</b>: dari icon besar + text generic → italic di dalam dashed box kecil (lebih tenang, tidak lebay).</li>
+  </ul>
+  <h3 style="margin-top:18px;">Flow dari Upload → Opname</h3>
+  <ol>
+    <li>User pilih salah satu: <b>Lanjutkan dari Lokal</b> (muka Save/Load modal) ATAU <b>Ambil dari Server</b> (muka Server File Browser modal).</li>
+    <li>Setelah file dimuat, <b>parsedData</b> state terisi, halaman re-render ke view "File Berhasil Dibaca" dengan daftar sheet + tombol "Mulai Baru" / "Tambah Ruangan" / "Pisahkan File".</li>
+    <li>Setelah klik "Mulai Baru", navigasi ke <b>/app1/opname</b> dengan state baru. Halaman Opname (v4) ambil alih.</li>
+  </ol>
+</div>
+
+<p class="subtitle" style="margin-top:20px;">Hover ke card, button, dan upload zone. Balas di terminal.</p>

@@ -42,7 +42,7 @@ function buildSalahRuanganAction(item, oracleDataMap) {
     // Resolve PIC: prefer PIC_RUANGAN from DB, fallback to oracleDataMap pic
     let pic = safeVal(item.PIC_RUANGAN || item.pic);
     if (!pic && oracleDataMap) {
-        const barcodeVal = item.Barcode || item.BARCODE_ASSET;
+        const barcodeVal = String(item.Barcode || item.BARCODE_ASSET).trim().toUpperCase();
         const oData = oracleDataMap.get(barcodeVal);
         if (oData) pic = safeVal(oData.pic);
     }
@@ -185,14 +185,28 @@ const getApp1CetakUlangForRoom = (app1DataMap, roomName) => {
 };
 
 /**
- * Cari PIC pertama yang tersedia dari sekumpulan items.
+ * Cari PIC pertama yang tersedia dari sekumpulan items, memprioritaskan aset yang memang berada di ruangan ini secara master.
  */
-function getPicForRoom(items, oracleDataMap) {
+function getPicForRoom(items, roomName, oracleDataMap) {
+    // Prioritas 1: Cari PIC dari aset yang MASTER-nya adalah ruangan ini
     for (const item of items) {
-        const barcodeVal = item.Barcode || item.BARCODE_ASSET;
+        const rMaster = String(item.Ruangan_Barcode || item.NAMA_RUANGAN || '').trim().toUpperCase();
+        const rCurrent = String(roomName).trim().toUpperCase();
+        
+        if (rMaster === rCurrent) {
+            const barcodeVal = String(item.Barcode || item.BARCODE_ASSET).trim().toUpperCase();
+            const pic = item.pic || item.PIC_RUANGAN || (oracleDataMap && oracleDataMap.has(barcodeVal) ? oracleDataMap.get(barcodeVal).pic : '');
+            if (pic) return pic;
+        }
+    }
+
+    // Prioritas 2: Fallback ke item pertama apa pun yang ada PIC-nya
+    for (const item of items) {
+        const barcodeVal = String(item.Barcode || item.BARCODE_ASSET).trim().toUpperCase();
         const pic = item.pic || item.PIC_RUANGAN || (oracleDataMap && oracleDataMap.has(barcodeVal) ? oracleDataMap.get(barcodeVal).pic : '');
         if (pic) return pic;
     }
+    
     return '';
 }
 
@@ -250,12 +264,7 @@ function fillMetaSheets(wb, room, pic, periode) {
 const sortAlphaNum = (aStr, bStr) => {
     const a = String(aStr || '');
     const b = String(bStr || '');
-    if (a === b) return 0;
-    if (/^\d+$/.test(a) && /^\d+$/.test(b)) {
-        if (a.length !== b.length) return a.length - b.length;
-        return a < b ? -1 : 1;
-    }
-    return a.localeCompare(b, undefined, { numeric: true });
+    return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
 };
 const sortScanned = (items) => [...items].sort((a, b) => sortAlphaNum(a.Barcode, b.Barcode));
 const sortNotScanned = (items) => [...items].sort((a, b) => sortAlphaNum(a.BARCODE_ASSET, b.BARCODE_ASSET));
@@ -321,7 +330,7 @@ export async function generateAllExports({ periode, scannedByRoom, notScannedDat
         const wb = new ExcelJS.Workbook();
         await wb.xlsx.load(opnameTemplateBuf);
 
-        const pic = getPicForRoom([...scanned, ...notScanned], oracleDataMap);
+        const pic = getPicForRoom([...scanned, ...notScanned], room, oracleDataMap);
         const tglOpname = parseTglOpname(scanned);
 
         // 1. FORM TEMUAN HASIL OPNAME
@@ -484,7 +493,7 @@ export async function generateAllExports({ periode, scannedByRoom, notScannedDat
                 if (isSalahRuangan(item)) bgColor = ROW_COLORS.SALAH_RUANGAN;
                 else if (isCetakUlang(item)) bgColor = ROW_COLORS.CETAK_ULANG;
 
-                const oData = oracleDataMap ? oracleDataMap.get(item.Barcode) : null;
+                const oData = oracleDataMap ? oracleDataMap.get(String(item.Barcode).trim().toUpperCase()) : null;
 
                 const row = wsRec.getRow(rowIdx);
                 row.values = [
@@ -506,7 +515,7 @@ export async function generateAllExports({ periode, scannedByRoom, notScannedDat
 
             if (sortedNotScanned.length > 0) {
                 for (const item of sortedNotScanned) {
-                    const oData = oracleDataMap ? oracleDataMap.get(item.BARCODE_ASSET) : null;
+                    const oData = oracleDataMap ? oracleDataMap.get(String(item.BARCODE_ASSET).trim().toUpperCase()) : null;
                     const row = wsRec.getRow(rowIdx);
                     row.values = [
                         no++,
@@ -543,8 +552,16 @@ export async function generateAllExports({ periode, scannedByRoom, notScannedDat
     const matItems = [];
     for (const item of allScanned) {
         if (isSalahRuangan(item)) {
-            const barcodeVal = item.Barcode || item.BARCODE_ASSET;
-            item._picResolved = item.pic || item.PIC_RUANGAN || (oracleDataMap && oracleDataMap.has(barcodeVal) ? oracleDataMap.get(barcodeVal).pic : '');
+            const barcodeVal = String(item.Barcode || item.BARCODE_ASSET).trim().toUpperCase();
+            
+            // Resolve destination room's PIC for the MAT form
+            const newRoom = item.Ruangan_Opname;
+            const itemsInNewRoom = [...(scannedByRoom[newRoom] || []), ...(notScannedData[newRoom] || [])];
+            const destPic = getPicForRoom(itemsInNewRoom, newRoom, oracleDataMap);
+            
+            // Fallback to master PIC if destination PIC cannot be determined
+            item._picResolved = destPic || item.pic || item.PIC_RUANGAN || (oracleDataMap && oracleDataMap.has(barcodeVal) ? oracleDataMap.get(barcodeVal).pic : '');
+            
             matItems.push(item);
         }
     }
@@ -604,7 +621,7 @@ export function buildPreviewData({ room, scanned = [], notScanned = [], oracleDa
     const sortedScanned = sortScanned(scanned);
     const sortedNotScanned = sortNotScanned(notScanned);
 
-    const pic = getPicForRoom([...scanned, ...notScanned], oracleDataMap);
+    const pic = getPicForRoom([...scanned, ...notScanned], room, oracleDataMap);
     const tglOpname = parseTglOpname(scanned);
 
     const preview = {
@@ -711,7 +728,7 @@ export function buildPreviewData({ room, scanned = [], notScanned = [], oracleDa
         if (isSalahRuangan(item)) bgColor = '#' + ROW_COLORS.SALAH_RUANGAN;
         else if (isCetakUlang(item)) bgColor = '#' + ROW_COLORS.CETAK_ULANG;
 
-        const oData = oracleDataMap ? oracleDataMap.get(item.Barcode) : null;
+        const oData = oracleDataMap ? oracleDataMap.get(String(item.Barcode).trim().toUpperCase()) : null;
         preview.sheets.recouncil.push({
             no: noRec++,
             oracleId: oData?.oracleId || '',
@@ -728,7 +745,7 @@ export function buildPreviewData({ room, scanned = [], notScanned = [], oracleDa
     }
 
     for (const item of sortedNotScanned) {
-        const oData = oracleDataMap ? oracleDataMap.get(item.BARCODE_ASSET) : null;
+        const oData = oracleDataMap ? oracleDataMap.get(String(item.BARCODE_ASSET).trim().toUpperCase()) : null;
         preview.sheets.recouncil.push({
             no: noRec++,
             oracleId: oData?.oracleId || '',
@@ -777,7 +794,7 @@ export async function generateSingleExport({ periode, room, scanned, notScanned,
     const wb = new ExcelJS.Workbook();
     await wb.xlsx.load(opnameTemplateBuf);
 
-    const pic = getPicForRoom([...scanned, ...notScanned], oracleDataMap);
+    const pic = getPicForRoom([...scanned, ...notScanned], room, oracleDataMap);
     const tglOpname = parseTglOpname(scanned);
 
     // 1. FORM TEMUAN HASIL OPNAME
@@ -938,7 +955,7 @@ export async function generateSingleExport({ periode, room, scanned, notScanned,
             if (isSalahRuangan(item)) bgColor = ROW_COLORS.SALAH_RUANGAN;
             else if (isCetakUlang(item)) bgColor = ROW_COLORS.CETAK_ULANG;
 
-            const oData = oracleDataMap ? oracleDataMap.get(item.Barcode) : null;
+            const oData = oracleDataMap ? oracleDataMap.get(String(item.Barcode).trim().toUpperCase()) : null;
 
             const row = wsRec.getRow(rowIdx);
             row.values = [
@@ -959,7 +976,7 @@ export async function generateSingleExport({ periode, room, scanned, notScanned,
 
         if (sortedNotScanned.length > 0) {
             for (const item of sortedNotScanned) {
-                const oData = oracleDataMap ? oracleDataMap.get(item.BARCODE_ASSET) : null;
+                const oData = oracleDataMap ? oracleDataMap.get(String(item.BARCODE_ASSET).trim().toUpperCase()) : null;
                 const row = wsRec.getRow(rowIdx);
                 row.values = [
                     no++, oData?.oracleId || '',

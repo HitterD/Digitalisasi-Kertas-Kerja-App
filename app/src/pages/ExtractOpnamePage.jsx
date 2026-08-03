@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Download, RefreshCw, Database, ChevronDown, ChevronRight, FileSpreadsheet, Search, Upload, Building2, ScanLine, AlertCircle, XCircle, CheckCircle2, Eye, Loader2 } from 'lucide-react';
 import { fetchWithAuth, apiUrl } from '../utils/apiConfig';
 import { generateAllExports, generateSingleExport, buildPreviewData } from '../utils/excelExportOpname';
+import { overallProgress, roomProgress, roomStatus } from '../utils/extractStats';
 import { saveExtractOpnameState, loadExtractOpnameState } from '../utils/db';
 import { parseMasterDatabase } from '../utils/masterDbParser';
 import SearchableGroupedSelect from '../components/SearchableGroupedSelect';
@@ -407,10 +408,10 @@ export default function ExtractOpnamePage() {
             )}
 
             {/* Filter + Upload card */}
-            <div className="wa-card" style={{ padding: 18, marginBottom: 14 }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px 24px', marginBottom: 14 }}>
+            <div className="x-filter">
+                <div className="x-filter__grid">
                     <div>
-                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>Periode Opname</div>
+                        <div className="x-field__label">Periode Opname</div>
                         <SearchableGroupedSelect
                             groupedOptions={groupedPeriods}
                             value={selectedPeriod}
@@ -419,7 +420,7 @@ export default function ExtractOpnamePage() {
                         />
                     </div>
                     <div>
-                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 6 }}>Filter Departemen Aset</div>
+                        <div className="x-field__label">Filter Departemen Aset</div>
                         <select className="wa-select" value={departmentFilter} onChange={(e) => setDepartmentFilter(e.target.value)}>
                             <option value="Semua Departemen">Semua Departemen</option>
                             <option value="ICT">ICT / IT</option>
@@ -430,27 +431,23 @@ export default function ExtractOpnamePage() {
                     </div>
                 </div>
 
-                <div style={{ paddingTop: 14, borderTop: '1px solid rgba(26,26,26,0.06)' }}>
-                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 8 }}>Master Data Asset Management (ASPxGridView1)</div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, background: 'var(--cream-input)', border: '1px solid rgba(26,26,26,0.08)', borderRadius: 8, padding: '10px 12px' }}>
-                            <div style={{ width: 30, height: 30, borderRadius: 7, background: 'rgba(22,163,74,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div className="x-filter__master">
+                    <div className="x-field__label">Master Data Asset Management (ASPxGridView1)</div>
+                    <div className="x-filter__master-row">
+                        <div className="x-filefield">
+                            <div className="x-filefield__icon">
                                 <FileSpreadsheet size={14} color="var(--success-500)" />
                             </div>
-                            <div style={{ flex: 1 }}>
-                                <div style={{ fontSize: 11.5, color: 'var(--charcoal-900)', fontWeight: 600 }}>{oracleFileName || 'Pilih File Excel...'}</div>
-                                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: oracleDataMap ? 'var(--success-500)' : 'var(--charcoal-400)', letterSpacing: '0.05em', marginTop: 2, fontWeight: 600 }}>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                                <div className="x-filefield__name">{oracleFileName || 'Pilih File Excel...'}</div>
+                                <div className={`x-filefield__status${oracleDataMap ? ' x-filefield__status--loaded' : ''}`}>
                                     {oracleDataMap ? '✓ MASTER DATA DIMUAT' : 'OPSIONAL · DRAG & DROP'}
                                 </div>
                             </div>
                         </div>
                         <input type="file" accept=".xlsx,.xls" onChange={handleOracleUpload} style={{ display: 'none' }} ref={oracleInputRef} />
                         <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
-                            <button
-                                className="wa-btn-ghost"
-                                onClick={() => oracleInputRef.current?.click()}
-                                title="Pilih file Excel master data"
-                            >
+                            <button className="wa-btn-ghost" onClick={() => oracleInputRef.current?.click()} title="Pilih file Excel master data">
                                 <Upload size={13} /> Pilih File
                             </button>
                             <button
@@ -468,82 +465,132 @@ export default function ExtractOpnamePage() {
                 </div>
             </div>
 
-            {/* 4 Summary cards */}
-            <div className="summary-grid">
-                <div className="wa-card" style={{ padding: '14px 18px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                        <div className="wa-icon-wrap" style={{ width: 30, height: 30 }}><Building2 size={14} color="var(--charcoal-900)" /></div>
-                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Total Ruangan</div>
+            {/* Progress Hero */}
+            {(() => {
+                const op = overallProgress(filteredTotalScanned, filteredTotalNotScanned);
+                const fmt = (n) => n.toLocaleString('id-ID', { maximumFractionDigits: 1 });
+                return (
+                    <div className="x-summary">
+                        <div className="x-summary__top">
+                            <div>
+                                <div className="x-summary__eyebrow">Progres Opname</div>
+                                <div className="x-summary__subtitle">
+                                    {totalRooms} ruangan{selectedPeriod ? ` · ${selectedPeriod}` : ''}
+                                </div>
+                            </div>
+                            <div>
+                                <div className="x-summary__pct">
+                                    {op.hasData ? fmt(op.scannedPct) : '—'}<small>%</small>
+                                </div>
+                                <div className="x-summary__ratio">{filteredTotalScanned} / {op.total} ASET</div>
+                            </div>
+                        </div>
+                        <div className="x-bar">
+                            <div className="x-bar__scanned" style={{ width: `${op.scannedPct}%` }} />
+                            <div className="x-bar__not" style={{ width: `${op.notScannedPct}%` }} />
+                        </div>
+                        {!op.hasData && <div className="x-summary__empty">Belum ada data — pilih periode lalu sinkron.</div>}
+                        <div className="x-summary__stats">
+                            <div className="x-stat">
+                                <div className="x-stat__label">Terscan</div>
+                                <div className="x-stat__value x-stat__value--scanned">{filteredTotalScanned}</div>
+                            </div>
+                            <div className="x-stat">
+                                <div className="x-stat__label">Tidak Terscan</div>
+                                <div className="x-stat__value x-stat__value--danger">{filteredTotalNotScanned}</div>
+                            </div>
+                            <div className="x-stat">
+                                <div className="x-stat__label">Salah Ruangan</div>
+                                <div className="x-stat__value x-stat__value--danger">{salahRuanganCount}</div>
+                            </div>
+                            <div className="x-stat">
+                                <div className="x-stat__label">Ruangan</div>
+                                <div className="x-stat__value x-stat__value--neutral">{totalRooms}</div>
+                            </div>
+                        </div>
                     </div>
-                    <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--charcoal-900)', letterSpacing: '-0.02em' }}>{Object.keys(notScannedData).length || 12}</div>
-                </div>
-                <div className="wa-card" style={{ padding: '14px 18px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                        <div className="wa-icon-wrap" style={{ width: 30, height: 30, background: 'rgba(22,163,74,0.10)' }}><CheckCircle2 size={14} color="var(--success-500)" /></div>
-                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Aset Terscan</div>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-                        <span style={{ fontSize: 24, fontWeight: 700, color: 'var(--success-500)', letterSpacing: '-0.02em' }}>{scannedData.length || 97}</span>
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--charcoal-400)', letterSpacing: '0.05em' }}>{scannedData.length > 0 ? Math.round((scannedData.length / Math.max(1, scannedData.length + Object.values(notScannedData).flat().length)) * 1000) / 10 : 79.1}%</span>
-                    </div>
-                </div>
-                <div className="wa-card" style={{ padding: '14px 18px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                        <div className="wa-icon-wrap" style={{ width: 30, height: 30, background: 'rgba(220,38,38,0.10)' }}><XCircle size={14} color="var(--danger-500)" /></div>
-                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Aset Tidak Terscan</div>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-                        <span style={{ fontSize: 24, fontWeight: 700, color: 'var(--danger-500)', letterSpacing: '-0.02em' }}>{Object.values(notScannedData).flat().length || 31}</span>
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--charcoal-400)', letterSpacing: '0.05em' }}>{scannedData.length > 0 ? Math.round((Object.values(notScannedData).flat().length / Math.max(1, scannedData.length + Object.values(notScannedData).flat().length)) * 1000) / 10 : 20.9}%</span>
-                    </div>
-                </div>
-                <div className="wa-card" style={{ padding: '14px 18px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                        <div className="wa-icon-wrap" style={{ width: 30, height: 30, background: 'rgba(220,38,38,0.10)' }}><AlertCircle size={14} color="var(--danger-500)" /></div>
-                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--charcoal-400)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Salah Ruangan (MAT)</div>
-                    </div>
-                    <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--danger-500)', letterSpacing: '-0.02em' }}>{salahRuanganCount || 20}</div>
-                </div>
-            </div>
+                );
+            })()}
 
-            {/* Room expandable list */}
-            <div className="wa-card" style={{ overflow: 'hidden' }}>
-                <div style={{ padding: '12px 18px', background: 'var(--cream-input)', borderBottom: '1px solid rgba(26,26,26,0.06)', fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--charcoal-500)', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600 }}>
-                    Daftar Ruangan · {Object.keys(notScannedData).length || 12}
-                </div>
-                {Object.entries(notScannedData).length === 0 ? (
-                    <div style={{ padding: 18, textAlign: 'center', fontSize: 12, color: 'var(--charcoal-500)', fontStyle: 'italic' }}>
-                        Pilih periode dan sinkronisasi data untuk melihat ruangan.
+            {/* Room cards */}
+            <div className="x-rooms">
+                <div className="x-rooms__header">Daftar Ruangan · {totalRooms}</div>
+                {allRooms.length === 0 ? (
+                    <div className="x-state">
+                        <div className="x-state__icon"><Database size={30} strokeWidth={1.5} /></div>
+                        <div className="x-state__title">Belum ada data</div>
+                        <div className="x-state__hint">Pilih periode dan sinkronisasi data untuk melihat ruangan.</div>
                     </div>
                 ) : (
-                    Object.entries(notScannedData).slice(0, 5).map(([room, items]) => (
-                        <div key={room} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 18px', borderBottom: '1px solid rgba(26,26,26,0.04)', cursor: 'pointer' }} onClick={() => toggleRoom(room)}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 20, color: 'var(--charcoal-500)' }}>
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: expandedRooms.has(room) ? 'rotate(90deg)' : 'none', transition: 'transform 200ms ease' }}>
-                                    <polyline points="9 18 15 12 9 6" />
-                                </svg>
+                    allRooms.map((room) => {
+                        const notScannedItems = filteredNotScannedData[room] || [];
+                        const scannedItems = scannedByRoom[room] || [];
+                        const isExpanded = expandedRooms.has(room);
+                        const status = roomStatus(notScannedItems.length);
+                        const pct = roomProgress(scannedItems.length, notScannedItems.length).pct;
+
+                        return (
+                            <div key={room} className={`x-room x-room--${status}`}>
+                                <div className="x-room__head" onClick={() => toggleRoom(room)}>
+                                    <span className={`x-room__chevron${isExpanded ? ' x-room__chevron--open' : ''}`}>
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                            <polyline points="9 18 15 12 9 6" />
+                                        </svg>
+                                    </span>
+                                    <div className="x-room__main">
+                                        <div className="x-room__name">{room}</div>
+                                        <div className="x-room__progress">
+                                            <div className="x-room__progress-track">
+                                                <div className="x-room__progress-fill" style={{ width: `${pct}%` }} />
+                                            </div>
+                                            <span className="x-room__progress-label">{Math.round(pct)}%</span>
+                                        </div>
+                                    </div>
+                                    <span className="x-pill x-pill--scanned">{scannedItems.length} TERSCAN</span>
+                                    {notScannedItems.length > 0 && (
+                                        <span className="x-pill x-pill--not">{notScannedItems.length} TIDAK</span>
+                                    )}
+                                    <button className="x-pill x-pill--ghost" onClick={(e) => { e.stopPropagation(); handlePreviewSingleRoom(room); }}>
+                                        <Eye size={11} /> Preview
+                                    </button>
+                                </div>
+                                {isExpanded && (
+                                    <div className="x-room__body">
+                                        {notScannedItems.length > 0 && (
+                                            <div>
+                                                <div className="x-room__group-label x-room__group-label--not">BELUM TERSCAN ({notScannedItems.length})</div>
+                                                {notScannedItems.map((item, i) => (
+                                                    <div key={i} className="x-room__item">• {item.BARCODE_ASSET} — {item.NAMA_ASSET}</div>
+                                                ))}
+                                            </div>
+                                        )}
+                                        {scannedItems.length > 0 && (
+                                            <div>
+                                                <div className="x-room__group-label x-room__group-label--scanned">TERSCAN ({scannedItems.length})</div>
+                                                {scannedItems.slice(0, 10).map((item, i) => (
+                                                    <div key={i} className="x-room__item">• {item.Barcode}</div>
+                                                ))}
+                                                {scannedItems.length > 10 && (
+                                                    <div className="x-room__more">...dan {scannedItems.length - 10} lainnya</div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
-                            <div style={{ flex: 1, fontSize: 12, fontWeight: 600, color: 'var(--charcoal-900)' }}>{room}</div>
-                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700, color: 'var(--charcoal-500)' }}>0/{items.length}</div>
-                            <div className={items.length > 0 ? 'wa-status danger' : 'wa-status success'}>
-                                {items.length} TIDAK TERSCAN
-                            </div>
-                            <button className="wa-btn-ghost" onClick={(e) => { e.stopPropagation(); handlePreviewSingleRoom(room); }} style={{ fontSize: 10, padding: '5px 10px' }}>
-                                <Eye size={11} /> Preview
-                            </button>
-                        </div>
-                    ))
+                        );
+                    })
                 )}
             </div>
 
             {/* Sticky bottom action bar */}
-            <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'rgba(253,251,247,0.95)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderTop: '1px solid rgba(26,26,26,0.08)', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 10 }}>
+            <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'var(--bg-primary)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderTop: '1px solid var(--border)', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 10 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                    <div className="wa-icon-wrap" style={{ background: 'rgba(26,26,26,0.04)' }}>
-                        <FileSpreadsheet size={14} color="var(--charcoal-900)" />
+                    <div className="wa-icon-wrap" style={{ background: 'var(--border)' }}>
+                        <FileSpreadsheet size={14} color="var(--text-primary)" />
                     </div>
                     <div>
-                        <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--charcoal-900)' }}>{Object.keys(notScannedData).length || 12} file Excel <span style={{ color: 'var(--charcoal-500)', fontWeight: 500 }}>({scannedData.length || 97} terscan + {Object.values(notScannedData).flat().length || 31} tidak terscan)</span></div>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)' }}>{totalRooms} file Excel <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>({filteredTotalScanned} terscan + {filteredTotalNotScanned} tidak terscan)</span></div>
                         <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--success-500)', letterSpacing: '0.1em', marginTop: 2, fontWeight: 700 }}>✓ 1 HASIL_MAT</div>
                     </div>
                 </div>

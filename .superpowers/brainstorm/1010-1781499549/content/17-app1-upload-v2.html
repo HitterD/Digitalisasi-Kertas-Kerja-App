@@ -1,0 +1,225 @@
+<style>
+  .u2-card { transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1), border-color 220ms ease; }
+  .u2-card:hover { transform: translateY(-2px); border-color: rgba(26,26,26,0.14) !important; box-shadow: 0 2px 4px rgba(45,45,45,0.04), 0 14px 30px rgba(45,45,45,0.08) !important; }
+
+  .u2-cta { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .u2-cta:hover { background: #2A2A2A !important; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+  .u2-cta:active { transform: translateY(0) scale(0.98); }
+
+  .u2-terracotta { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .u2-terracotta:hover { background: #D87554 !important; transform: translateY(-1px); box-shadow: 0 6px 14px rgba(201,100,66,0.30); }
+  .u2-terracotta:active { transform: translateY(0) scale(0.97); }
+
+  .u2-ghost { transition: all 180ms ease; cursor: pointer; }
+  .u2-ghost:hover { background: #FDFCF7 !important; border-color: #1A1A1A !important; color: #1A1A1A !important; }
+
+  .u2-barcode-btn { transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .u2-barcode-btn:hover { background: #C96442 !important; color: #FDFCF7 !important; transform: translateY(-1px); box-shadow: 0 6px 14px rgba(201,100,66,0.25); }
+
+  .u2-pill { transition: all 180ms cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; }
+  .u2-pill:hover { background: rgba(26,26,26,0.05); }
+  .u2-pill.active { background: #FDFCF7; color: #1A1A1A !important; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .u2-pill.active .u2-pill-ic { color: #C96442; }
+  .u2-pill-ic { transition: color 180ms ease; color: #8B8580; }
+
+  .u2-icon-wrap { display:inline-flex; align-items:center; justify-content:center; width:42px; height:42px; border-radius:10px; background: rgba(26,26,26,0.04); transition: background 220ms ease; }
+  .u2-card:hover .u2-icon-wrap { background: rgba(201,100,66,0.10); }
+  .u2-card:hover .u2-icon-wrap svg { stroke: #C96442; }
+  .u2-icon-wrap svg { transition: stroke 220ms ease; }
+
+  .u2-pulse { animation: u2pulse 2.4s ease-in-out infinite; }
+  @keyframes u2pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+</style>
+
+<h2>App1 Upload v2 — match struktur aktual</h2>
+<p class="subtitle">4 cards sesuai app: <b>Opname Tersimpan</b> (LANJUTKAN OPNAME) · <b>Hub Sinkronisasi Jaringan</b> (Bagikan Sesi + Tarik Hasil Opname) · <b>Sumber Data Aset</b> (Sinkron Semua dari Server terracotta) · <b>Database Master Aset</b> (SQL Server status hijau).</p>
+
+<div class="mockup">
+  <div class="mockup-header">Preview: /app1 (App1 Home/Upload)</div>
+  <div class="mockup-body" style="background:#F5EFE6;padding:0;font-family:'Sora',system-ui,sans-serif;">
+
+    <!-- In-app header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:rgba(253,251,247,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(26,26,26,0.06);">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <button style="background:transparent;border:none;cursor:pointer;padding:4px;color:#6B6660;display:flex;align-items:center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        </button>
+        <div style="width:1px;height:18px;background:rgba(26,26,26,0.1);"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:26px;height:26px;background:#1A1A1A;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#C96442;letter-spacing:0.05em;">KKD</div>
+          </div>
+          <div style="font-size:13px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Opname Aset</div>
+        </div>
+        <div style="display:flex;background:rgba(26,26,26,0.04);border-radius:8px;padding:3px;gap:2px;margin-left:8px;">
+          <div class="u2-pill active" style="display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;color:#1A1A1A;">
+            <span class="u2-pill-ic">⌂</span> Home
+          </div>
+          <div class="u2-pill" style="display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;color:#6B6660;">
+            <span class="u2-pill-ic">✓</span> Kertas Kerja
+          </div>
+        </div>
+      </div>
+      <div class="u2-barcode-btn" style="display:flex;align-items:center;gap:8px;background:#1A1A1A;color:#FDFCF7;border-radius:8px;padding:8px 14px;font-size:11px;font-weight:600;letter-spacing:0.05em;border:none;font-family:inherit;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        BARCODE CHECKER
+      </div>
+    </div>
+
+    <div style="padding:24px;">
+
+      <!-- Page header -->
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid rgba(26,26,26,0.08);">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div class="u2-icon-wrap" style="background:rgba(26,26,26,0.06);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+          </div>
+          <div>
+            <div style="font-size:24px;font-weight:600;color:#1A1A1A;letter-spacing:-0.02em;">Kertas Kerja Opname</div>
+            <div style="font-size:12px;color:#6B6660;margin-top:4px;max-width:520px;line-height:1.5;">Mulai opname baru, lanjutkan sesi sebelumnya, atau sinkronkan data dari jaringan.</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="u2-cta" style="display:flex;align-items:center;gap:6px;background:#1A1A1A;color:#FDFCF7;border:none;border-radius:8px;padding:10px 16px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Lanjutkan dari Lokal (Save)
+          </button>
+          <button class="u2-terracotta" style="display:flex;align-items:center;gap:6px;background:#C96442;color:#FDFCF7;border:none;border-radius:8px;padding:10px 16px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;box-shadow:0 2px 6px rgba(201,100,66,0.2);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+            Ambil Data Server (Baru)
+          </button>
+        </div>
+      </div>
+
+      <!-- 4-CARD GRID (2x2) -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
+        <!-- Card 1: Opname Tersimpan -->
+        <div class="u2-card" style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:14px;padding:22px;box-shadow:0 1px 2px rgba(45,45,45,0.03),0 6px 18px rgba(45,45,45,0.04);">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div class="u2-icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              </div>
+              <div>
+                <div style="font-size:15px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Opname Tersimpan</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#6B6660;letter-spacing:0.05em;margin-top:2px;">SJA1-06202601-ICT-20260615.xlsx</div>
+              </div>
+            </div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;font-weight:700;padding:4px 10px;background:#1A1A1A;color:#FDFCF7;border-radius:999px;">79 RUANGAN</div>
+          </div>
+          <div style="font-size:11.5px;color:#6B6660;line-height:1.5;margin-bottom:14px;">Data opname sebelumnya masih tersimpan. Klik untuk lanjutkan.</div>
+          <button class="u2-cta" style="display:inline-flex;align-items:center;gap:6px;background:#1A1A1A;color:#FDFCF7;border:none;border-radius:8px;padding:8px 14px;font-size:10.5px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            Lanjutkan Opname
+          </button>
+        </div>
+
+        <!-- Card 2: Hub Sinkronisasi Jaringan -->
+        <div class="u2-card" style="background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:14px;padding:22px;box-shadow:0 1px 2px rgba(45,45,45,0.03),0 6px 18px rgba(45,45,45,0.04);">
+          <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;">
+            <div class="u2-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+            </div>
+            <div>
+              <div style="font-size:15px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Hub Sinkronisasi Jaringan</div>
+              <div style="font-size:11.5px;color:#6B6660;margin-top:4px;line-height:1.5;">Sinkronisasi Lokal 2 Arah antara <b>PC</b> dan <b>Tablet Android</b>.</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="u2-ghost" style="display:flex;align-items:center;gap:10px;background:transparent;border:1px solid rgba(26,26,26,0.12);border-radius:8px;padding:10px 12px;cursor:pointer;">
+              <div style="width:28px;height:28px;background:rgba(26,26,26,0.06);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+              <div style="flex:1;">
+                <div style="font-size:11.5px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Bagikan Sesi</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.08em;">PC → JARINGAN LOKAL</div>
+              </div>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B8580" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+            <div class="u2-ghost" style="display:flex;align-items:center;gap:10px;background:transparent;border:1px solid rgba(26,26,26,0.12);border-radius:8px;padding:10px 12px;cursor:pointer;">
+              <div style="width:28px;height:28px;background:rgba(26,26,26,0.06);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </div>
+              <div style="flex:1;">
+                <div style="font-size:11.5px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Tarik Hasil Opname</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8B8580;letter-spacing:0.08em;">TABLET → PC</div>
+              </div>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B8580" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Sumber Data Aset (full width) -->
+        <div class="u2-card" style="grid-column:span 2;background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:14px;padding:22px;box-shadow:0 1px 2px rgba(45,45,45,0.03),0 6px 18px rgba(45,45,45,0.04);">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+            <div class="u2-icon-wrap" style="background:rgba(26,26,26,0.06);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+            </div>
+            <div style="flex:1;">
+              <div style="font-size:15px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Sumber Data Aset</div>
+              <div style="font-size:11.5px;color:#6B6660;margin-top:3px;">Tekan untuk mengambil data terbaru · Data tersimpan offline setelah sinkron.</div>
+            </div>
+            <button class="u2-terracotta" style="display:flex;align-items:center;gap:6px;background:#C96442;color:#FDFCF7;border:none;border-radius:8px;padding:10px 18px;font-size:11px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;box-shadow:0 2px 6px rgba(201,100,66,0.2);">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/></svg>
+              Sinkron Semua dari Server
+            </button>
+          </div>
+          <div style="padding:14px 16px;background:#F5EFE6;border-radius:10px;border:1px dashed rgba(26,26,26,0.1);">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="u2-pulse" style="width:6px;height:6px;background:#16a34a;border-radius:50%;"></div>
+              <div style="font-size:11.5px;color:#1A1A1A;font-weight:600;">98,837 record tersedia</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#6B6660;letter-spacing:0.05em;margin-left:auto;">TERAKHIR SYNC: 15-JUN-26 11:45</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Database Master Aset (full width) -->
+        <div class="u2-card" style="grid-column:span 2;background:#FDFCF7;border:1px solid rgba(26,26,26,0.06);border-radius:14px;padding:22px;box-shadow:0 1px 2px rgba(45,45,45,0.03),0 6px 18px rgba(45,45,45,0.04);">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+            <div class="u2-icon-wrap" style="background:rgba(22,163,74,0.10);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            </div>
+            <div style="flex:1;">
+              <div style="font-size:15px;font-weight:600;color:#1A1A1A;letter-spacing:-0.01em;">Database Master Aset</div>
+              <div style="font-size:11.5px;color:#6B6660;margin-top:3px;">Kamus utama barcode &amp; metadata aset perusahaan.</div>
+            </div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;font-weight:700;padding:4px 10px;background:rgba(22,163,74,0.10);color:#16a34a;border-radius:999px;">✓ 98,837 ASET</div>
+          </div>
+          <div style="padding:14px 16px;background:rgba(22,163,74,0.05);border:1px solid rgba(22,163,74,0.2);border-radius:10px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="u2-pulse" style="width:6px;height:6px;background:#16a34a;border-radius:50%;"></div>
+              <div style="font-size:12px;color:#16a34a;font-weight:600;">SQL Server (98837 aset) — 98,837 barcode dimuat</div>
+            </div>
+            <div style="font-size:11px;color:#6B6660;line-height:1.5;">Sumber: <b>SQL Server + Input barcode otomatis</b> mengisi data dari database.</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8B8580;letter-spacing:0.05em;margin-top:6px;">⏱ Terakhir sync: 15 Jun 2026, 11:45</div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:14px;">
+            <button class="u2-ghost" style="background:transparent;color:#1A1A1A;border:1px solid rgba(26,26,26,0.12);border-radius:8px;padding:8px 14px;font-size:10.5px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/></svg>
+              Sinkron Ulang
+            </button>
+            <button class="u2-ghost" style="background:transparent;color:#1A1A1A;border:1px solid rgba(26,26,26,0.12);border-radius:8px;padding:8px 14px;font-size:10.5px;font-weight:600;letter-spacing:0.05em;font-family:inherit;text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Upload File
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Apa yang beda dari v1</h3>
+  <ul>
+    <li><b>4 cards</b> (bukan 3) sesuai struktur aktual: <span style="color:#C96442;font-weight:600;">Opname Tersimpan</span> (1fr) + <span style="color:#C96442;font-weight:600;">Hub Sinkronisasi Jaringan</span> (1fr) di baris atas, lalu <span style="color:#C96442;font-weight:600;">Sumber Data Aset</span> (full-width) + <span style="color:#C96442;font-weight:600;">Database Master Aset</span> (full-width) di baris bawah.</li>
+    <li><b>Hub Sinkronisasi</b> punya 2 sub-button inline (Bagikan Sesi + Tarik Hasil Opname), bukan card terpisah.</li>
+    <li><b>Sumber Data Aset</b> tampilkan badge "98,837 record tersedia" + timestamp sync terakhir.</li>
+    <li><b>Database Master Aset</b> punya status card hijau "SQL Server (98837 aset) — 98,837 barcode dimuat" dengan 2 tombol: Sinkron Ulang + Upload File.</li>
+  </ul>
+</div>
+
+<p class="subtitle" style="margin-top:20px;">Hover ke card, button, dan icon-wrap. Balas di terminal.</p>

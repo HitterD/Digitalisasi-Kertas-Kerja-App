@@ -19,23 +19,24 @@ export default function SavedSessionCard() {
     if (state.rooms.length === 0) return null;
 
     return (
-        <div className="wa-card" style={{ padding: 22 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
-                <div className="wa-icon-wrap" style={{ background: 'rgba(26,26,26,0.06)' }}>
-                    <Package size={20} color="var(--charcoal-900)" />
+        <div className="app1-home__panel">
+            <div className="app1-home__panel-header">
+                <div>
+                    <p className="app1-home__label">Sesi Lokal</p>
+                    <h2 className="app1-home__panel-title">Opname Tersimpan</h2>
                 </div>
-                <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--charcoal-900)' }}>Opname Tersimpan</div>
-                    <div style={{ fontSize: 11.5, color: 'var(--charcoal-500)', marginTop: 3 }}>Lanjutkan sesi opname sebelumnya dari lokal.</div>
+                <div className="app1-home__badge app1-home__badge--success">
+                    {state.rooms.length} RUANGAN
                 </div>
-                <div className="wa-status">{state.rooms.length} RUANGAN</div>
             </div>
-            <p style={{ fontSize: 12, color: 'var(--charcoal-600)', marginBottom: 14, marginTop: 0 }}>
-                File: <strong>{state.fileName}</strong> — Data opname sebelumnya masih tersimpan.
+            <p className="app1-home__text">
+                File: <strong style={{ color: 'var(--text-primary)' }}>{state.fileName}</strong> — Data opname sebelumnya masih tersimpan.
             </p>
-            <button className="wa-btn" onClick={handleContinue} style={{ width: '100%' }}>
-                <ArrowRight size={14} /> Lanjutkan Opname
-            </button>
+            <div className="app1-home__actions" style={{ marginTop: 16 }}>
+                <button className="app1-home__button app1-home__button--secondary" onClick={handleContinue} style={{ width: '100%' }}>
+                    Lanjutkan Sesi <ArrowRight size={14} />
+                </button>
+            </div>
         </div>
     );
 }

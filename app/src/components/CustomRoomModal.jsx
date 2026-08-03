@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { Database } from 'lucide-react';
 
-const CustomRoomModal = ({ isOpen, onClose, onSubmit, defaultPeriod }) => {
+const CustomRoomModal = ({ isOpen, onClose, onSubmit, defaultPeriod, onOpenSqlImport }) => {
     const [roomName, setRoomName] = useState('');
     const [picName, setPicName] = useState('');
     const [period, setPeriod] = useState(defaultPeriod || '');
@@ -42,9 +43,14 @@ const CustomRoomModal = ({ isOpen, onClose, onSubmit, defaultPeriod }) => {
                             <input type="text" className="form-input" value={period} onChange={e => setPeriod(e.target.value)} placeholder="Opsional" />
                         </div>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '16px' }}>
-                        <button type="button" className="wa-btn-ghost" onClick={onClose}>Batal</button>
-                        <button type="submit" className="wa-btn wa-btn-terracotta">Simpan Ruangan</button>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px' }}>
+                        <button type="button" className="wa-btn-ghost" onClick={onOpenSqlImport} style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--terracotta-500)', fontSize: '13px' }}>
+                            <Database size={16} /> Import dari SQL
+                        </button>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <button type="button" className="wa-btn-ghost" onClick={onClose}>Batal</button>
+                            <button type="submit" className="wa-btn wa-btn-terracotta">Simpan Ruangan</button>
+                        </div>
                     </div>
                 </form>
             </div>

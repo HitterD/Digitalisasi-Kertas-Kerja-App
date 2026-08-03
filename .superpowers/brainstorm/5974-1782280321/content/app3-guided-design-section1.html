@@ -1,0 +1,62 @@
+<h2>App3 Guided Upload — Struktur Akhir</h2>
+<p class="subtitle">Section 1: scope, topbar, dan alur utama. Fokus: anti-salah upload + selaras App1/App2.</p>
+
+<style>
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  .mock-app { border:1px solid #e8e5de; border-radius:22px; overflow:hidden; background:#faf9f5; box-shadow:0 18px 45px rgba(38,38,36,.10); }
+  .topbar { height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 18px; background:#fff; border-bottom:1px solid #e8e5de; }
+  .left { display:flex; align-items:center; gap:14px; }
+  .back { width:34px; height:34px; border-radius:10px; border:1px solid #e8e5de; background:#f5f4ef; display:grid; place-items:center; color:#595755; font-weight:800; }
+  .divider { width:1px; height:22px; background:#e8e5de; }
+  .brand { display:flex; align-items:center; gap:10px; }
+  .brand-icon { width:28px; height:28px; border-radius:8px; background:#f5f4ef; color:#d97757; display:grid; place-items:center; font-size:15px; }
+  .brand-title { font-size:13px; font-weight:800; color:#262624; }
+  .brand-sub { font-size:9px; letter-spacing:.11em; color:#8b8580; font-weight:800; text-transform:uppercase; }
+  .tabs { display:flex; gap:4px; border:1px solid #e8e5de; background:#f5f4ef; border-radius:999px; padding:4px; }
+  .tab { border-radius:999px; padding:8px 13px; font-size:10px; font-weight:800; color:#595755; }
+  .tab.active { background:#262624; color:#faf9f5; }
+  .theme { width:34px; height:34px; border-radius:10px; border:1px solid #e8e5de; background:#fff; display:grid; place-items:center; color:#595755; }
+  .main { padding:22px; display:grid; gap:18px; }
+  .hero { border:1px solid #e8e5de; background:#fff; border-radius:18px; padding:20px; display:flex; align-items:flex-start; justify-content:space-between; gap:18px; }
+  .eyebrow { font-size:9px; letter-spacing:.16em; color:#d97757; font-weight:900; text-transform:uppercase; }
+  .h1 { margin-top:6px; font-size:24px; line-height:1.15; font-weight:900; color:#262624; }
+  .copy { margin-top:8px; max-width:620px; font-size:13px; line-height:1.55; color:#595755; }
+  .status { min-width:210px; border:1px solid #e8e5de; border-radius:14px; padding:12px; background:#f5f4ef; }
+  .status-row { display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid #e8e5de; font-size:11px; color:#595755; }
+  .status-row:last-child { border-bottom:0; }
+  .status strong { color:#262624; }
+  .flow { display:grid; grid-template-columns: repeat(3,1fr); gap:12px; }
+  .flow-card { border:1px solid #e8e5de; background:#fff; border-radius:16px; padding:15px; }
+  .num { width:26px; height:26px; border-radius:8px; display:grid; place-items:center; background:#262624; color:#faf9f5; font-size:11px; font-weight:900; margin-bottom:10px; }
+  .flow-title { font-size:13px; font-weight:850; color:#262624; }
+  .flow-sub { margin-top:6px; font-size:11px; line-height:1.45; color:#595755; }
+  .note { border-left:3px solid #d97757; background:rgba(217,119,87,.08); padding:12px 14px; border-radius:12px; color:#595755; font-size:12px; line-height:1.5; }
+  @media(max-width:850px){ .hero{display:block}.status{margin-top:14px}.flow{grid-template-columns:1fr}.topbar{height:auto;gap:12px;align-items:flex-start;flex-direction:column;padding:14px}.tabs{width:100%;}.tab{flex:1;text-align:center}.theme{display:none} }
+</style>
+
+<div class="wrap">
+  <div class="mock-app">
+    <div class="topbar">
+      <div class="left">
+        <div class="back">←</div><div class="divider"></div>
+        <div class="brand"><div class="brand-icon">▦</div><div><div class="brand-title">Master Data</div><div class="brand-sub">Consolidation & Evaluation</div></div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="tabs"><div class="tab active">Consolidation</div><div class="tab">Evaluation</div></div>
+        <div class="theme">◐</div>
+      </div>
+    </div>
+    <div class="main">
+      <div class="hero">
+        <div><div class="eyebrow">APP3 · GUIDED UPLOAD</div><div class="h1">Upload benar dulu, baru generate Excel.</div><div class="copy">Halaman dipandu 3 langkah: Upload source, pilih filter kategori, lalu generate. File wajib/opsional dibuat jelas agar operator tidak salah masukkan dokumen.</div></div>
+        <div class="status"><div class="status-row"><span>Status</span><strong>Step 1 aktif</strong></div><div class="status-row"><span>File source</span><strong>0/3</strong></div><div class="status-row"><span>Master lama</span><strong>Opsional</strong></div></div>
+      </div>
+      <div class="flow">
+        <div class="flow-card"><div class="num">1</div><div class="flow-title">Upload</div><div class="flow-sub">Slot file dengan label wajib/opsional, ekstensi valid, dan status siap.</div></div>
+        <div class="flow-card"><div class="num">2</div><div class="flow-title">Filter</div><div class="flow-sub">Kategori tampil sebagai kartu count. Pilihan harus jelas sebelum proses.</div></div>
+        <div class="flow-card"><div class="num">3</div><div class="flow-title">Generate Excel</div><div class="flow-sub">CTA final satu tombol. Loading, success, error tampil di konteks.</div></div>
+      </div>
+      <div class="note"><strong>Evaluation tab</strong> tetap satu topbar yang sama. Untuk scope awal, hanya diselaraskan ringan: token, spacing, tab state, dan warna. Redesign penuh Evaluation tidak ikut agar diff tidak liar.</div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<h2>Toggle — 2-State or 3-State?</h2>
+<p class="subtitle">Existing <code>useTheme</code> hook already supports 3 modes (light / system / dark). Question is whether to expose all three.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="two-state" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#FAF9F5; padding:20px; border-radius:8px; border:1px solid #E8E5DE;">
+      <div style="display:flex; gap:6px; padding:8px 12px; background:#fff; border:1px solid #E8E5DE; border-radius:8px; width:fit-content; margin:0 auto;">
+        <div style="padding:6px 14px; background:#262624; color:#F5F4EF; border-radius:6px; font-size:11px; font-weight:600;">☀️ Light</div>
+        <div style="padding:6px 14px; color:#8B8580; border-radius:6px; font-size:11px;">🌙 Dark</div>
+      </div>
+      <p style="text-align:center; margin-top:12px; font-size:10px; color:#8B8580; font-family:var(--font-mono);">Click toggles. No third option.</p>
+    </div>
+    <div class="card-body">
+      <h3>A. 2-state (light / dark)</h3>
+      <p>Simplest. Matches your spec. Default = light. Click flips. No OS-preference behavior — user is in full control.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="three-state" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#FAF9F5; padding:20px; border-radius:8px; border:1px solid #E8E5DE;">
+      <div style="display:flex; gap:4px; padding:6px 8px; background:#fff; border:1px solid #E8E5DE; border-radius:8px; width:fit-content; margin:0 auto;">
+        <div style="padding:5px 10px; background:#262624; color:#F5F4EF; border-radius:5px; font-size:10px; font-weight:600;">☀️ Light</div>
+        <div style="padding:5px 10px; color:#8B8580; border-radius:5px; font-size:10px;">⚙ System</div>
+        <div style="padding:5px 10px; color:#8B8580; border-radius:5px; font-size:10px;">🌙 Dark</div>
+      </div>
+      <p style="text-align:center; margin-top:12px; font-size:10px; color:#8B8580; font-family:var(--font-mono);">3 buttons. Default = Light.</p>
+    </div>
+    <div class="card-body">
+      <h3>B. 3-state (light / system / dark)</h3>
+      <p>More flexible. "System" follows OS preference. Default = light. UI takes 3× the width.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="segmented" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#FAF9F5; padding:20px; border-radius:8px; border:1px solid #E8E5DE;">
+      <div style="display:flex; gap:0; padding:4px; background:#F5F4EF; border:1px solid #E8E5DE; border-radius:8px; width:fit-content; margin:0 auto;">
+        <div style="padding:6px 12px; background:#fff; color:#262624; border-radius:5px; font-size:11px; font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,0.05);">☀️</div>
+        <div style="padding:6px 12px; color:#8B8580; border-radius:5px; font-size:11px;">🌙</div>
+      </div>
+      <p style="text-align:center; margin-top:12px; font-size:10px; color:#8B8580; font-family:var(--font-mono);">Icon-only. Sliding pill. 2-state.</p>
+    </div>
+    <div class="card-body">
+      <h3>C. 2-state segmented (icon-only)</h3>
+      <p>Most compact. Sun/moon icons. Animated pill slides between them. Same 2-state logic as A.</p>
+    </div>
+  </div>
+
+</div>
